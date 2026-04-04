@@ -1,19 +1,25 @@
 {% extends "layout.html" %}
 
+{% block css %}
+    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block title %}
-    Brand Dog
+    Vortex
 {% endblock %}
 
 {% block main %}
-    <main class="index">
-
+    <main class="home">
         <div class="home-content">
-            <h1>Brand <span>Dog</span></h1>
+            <h1>VORTEX</h1>
+
             <p>
-                Brand Dog is a modern hoodies brand focused on simple, stylish, and comfortable designs. We aim to deliver high-quality pieces that fit your everyday lifestyle, combining clean looks with a bold identity.
+                NOT MADE FOR EVETY ONE.
             </p>
-            <a class="btn" href="/products">Shop Now</a>
         </div>
 
+        <a class="btn" href="/collection">
+            SHOP NOW <i class="ri-arrow-right-line"></i>
+        </a>
     </main>
 {% endblock %}

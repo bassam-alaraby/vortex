@@ -1,0 +1,33 @@
+/* --- home --- */
+.home {
+    width: 100%;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.home-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+h1
+{
+    font-size: 5rem;
+    font-weight: 600;
+    color: black;
+    font-family: 'Playfair Display', sans-serif;
+}
+
+p
+{
+    font-size: 2rem;
+    color: black;
+}
