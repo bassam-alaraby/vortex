@@ -10,7 +10,40 @@
 
 {% block main %}
     <main class="collection">
-        <h1>The Collection</h1>
+        <div class="heading">
+            <h1>COLLECTION</h1>
+        </div>
         
+        <div class="collection-grid">
+            {% for product in products %}
+            <div class="card">
+                <img src="{{ url_for('static', filename=product.image) }}" alt="T-Shirt">
+
+                <div class="card-info">
+                    <div class="price">
+                        <span class="before">{{ (product.price + 100) | int }}</span>
+                        <span class="after">{{ product.price | int }} E£</span>
+                    </div>
+
+                    <div class="card-btn">
+                        <a href="#" class="btn add-to-cart">ADD TO CART</a>
+                        <a href="#" class="btn arrow"><i class="ri-arrow-right-long-line"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="pages-nav">
+
+            {% if page > 1 %}
+            <a href="{{ url_for('collection', page=page-1) }}" class="btn">Previous Page</a>
+            {% endif %}
+
+            {% if page < total_pages %}
+            <a href="{{ url_for('collection', page=page+1) }}" class="btn">Next Page</a>
+            {% endif %}
+
+        </div>
     </main>
 {% endblock %}

@@ -6,10 +6,10 @@
 
         <meta charset="utf-8">
 
-        <!-- Remix Icons -->
-        <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.1/fonts/remixicon.css" rel="stylesheet">
+
         <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
         {% block css %}{% endblock %}
 
@@ -22,7 +22,7 @@
         <nav class="navbar">
             <div class="logo">
                 <a href="/">
-                    <h2>VORTEX</h2>
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Vortex Logo" class="logo">
                 </a>
             </div>
 
@@ -40,10 +40,16 @@
                 </a>
             </div>
 
-            <div class="cart">
-                <a href="#">
-                    <i class="ri-shopping-bag-line"></i>
-                </a>
+            <div class="nav-right">
+                <div class="cart">
+                    <a href="#">
+                        <i class="ri-shopping-bag-line"></i>
+                    </a>
+                </div>
+                
+                <button class="hamburger" id="hamburger">
+                    <i class="ri-menu-line"></i>
+                </button>
             </div>
         </nav>
 
@@ -51,9 +57,9 @@
         {% block main %}{% endblock %}
 
         <footer class="footer">
-            © 2026 Vortex. All rights reserved.
+            <p class="footer-tagline">"NOT MADE FOR EVERYONE."</p>
 
-            <div class="footer-icons">
+            <div class="social-links">
                 <a href="#" target="_blank" class="footer-btn">
                     <i class="ri-facebook-fill"></i>
                 </a>
@@ -62,11 +68,19 @@
                     <i class="ri-instagram-line"></i>
                 </a>
 
-                <a href="https://wa.me/201234567890" target="_blank" class="footer-btn">
-                    <i class="ri-whatsapp-line"></i>
+                <a href="#" target="_blank" class="footer-btn">
+                    <i class="ri-tiktok-fill"></i>
                 </a>
             </div>
+
+            <p class="footer-contact-text">
+                WhatsApp: <a href="https://wa.me/201234567890">+20 123 456 7890</a>
+            </p>
+
+            <p class="footer-copy"><i class="ri-copyright-line"></i> 2026 VORTEX. All rights reserved.</p>
         </footer>
+
+        <script src="{{ url_for('static', filename='js/hamburger.js') }}"></script>
 
     </body>
 

@@ -10,16 +10,30 @@
 
 {% block main %}
     <main class="home">
-        <div class="home-content">
-            <h1>VORTEX</h1>
-
-            <p>
-                NOT MADE FOR EVETY ONE.
-            </p>
+        <div class="hero">
+            <img src="{{ url_for('static', filename='images/cover_image.jpg') }}" alt="Vortex Cover" class="cover-image">
+            
+            <a class="btn" href="/collection">
+                SHOP NOW<i class="ri-arrow-right-long-line"></i>
+            </a>
         </div>
 
-        <a class="btn" href="/collection">
-            SHOP NOW <i class="ri-arrow-right-line"></i>
-        </a>
+        <div class="categories">
+            <div class="category-card">
+                <img src="{{ url_for('static', filename='images/products/boxy_fit_t_shirt_green.webp') }}" alt="Box Fit" class="category-image">
+
+                <a href="#" class="btn">
+                    BOX FIT<i class="ri-arrow-right-long-line"></i>
+                </a>
+            </div>
+
+            <div class="category-card">
+                <img src="{{ url_for('static', filename='images/products/boxy_fit_t_shirt_green.webp') }}" alt="Relaxed Fit" class="category-image">
+
+                <a href="#" class="btn">
+                    RELAXED FIT<i class="ri-arrow-right-long-line"></i>
+                </a>
+            </div>
+        </div>
     </main>
 {% endblock %}

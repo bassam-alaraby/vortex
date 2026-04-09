@@ -1,16 +1,173 @@
 /* --- collection --- */
-.collection
-{
+.collection   {
     width: 100%;
     min-height: 100vh;
+    background-color: white;
     font-family: 'Poppins', sans-serif;
 }
 
-.collection h1
-{
+.collection .heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 17vh;
+    background-image: url("/static/images/background_image.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.collection .heading h1 {
+    color: white;
     font-size: 2.5rem;
     font-weight: 600;
-    padding-top: 2rem;
-    font-family: 'Playfair Display', sans-serif;
-    text-align: center;
+    font-family: 'Exo 2', sans-serif;
+}
+
+.collection-grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    justify-content: center;
+    grid-gap: 20px;
+    row-gap: 30px;
+    padding: 50px;
+}
+
+.collection-grid .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.collection-grid img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    flex: 1;
+    min-height: 0;
+    display: block;
+    object-fit: cover;
+    border-radius: 30px;
+}
+
+.collection-grid .price {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 12px;
+}
+
+.collection-grid .price .before {
+    text-decoration: line-through;
+    font-size: 1.3rem;
+    color: rgb(51, 51, 51);
+}
+
+.collection-grid .price .after {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: black;
+}
+
+.collection-grid .card-btn {
+    position: absolute;
+    bottom: 65px;
+    left: 15px;
+    right: 15px;
+    transform: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.collection-grid .add-to-cart {
+    padding: 8px 40px;
+}
+
+.collection-grid .arrow {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+    .collection-grid {
+        grid-template-columns: 1fr;
+        padding: 30px 20px;
+    }
+
+    .collection-grid .card {
+        flex-direction: row;
+        height: 200px;
+    }
+
+    .collection-grid img {
+        aspect-ratio: unset;
+        width: 50%;
+        height: 100%;
+        flex: unset;
+        border-radius: 20px;
+    }
+
+    .collection-grid .card-info {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 40px 10px 0;
+        gap: 15px;
+    }
+
+    .collection-grid .price {
+        padding: 0;
+        gap: 8px;
+    }
+
+    .collection-grid .card-btn {
+        position: static;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .collection-grid .add-to-cart {
+        padding: 8px 20px;
+        color: black;
+        border-color: black;
+        white-space: nowrap;
+    }
+
+    .collection-grid .arrow {
+        color: black;
+        border-color: black;
+    }
+
+    .collection-grid .add-to-cart:hover,
+    .collection-grid .arrow:hover {
+        background-color: black;
+        color: white;
+    }
+}
+
+/* --- page navigation --- */
+.pages-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 0 20px 40px;
+}
+
+.pages-nav .btn {
+    color: black;
+    border: 2px solid black;
+}
+
+.pages-nav .btn:hover {
+    background-color: black;
+    color: white;
 }
