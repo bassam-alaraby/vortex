@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block title %}
-    Vortex
+    VORTEX
 {% endblock %}
 
 {% block main %}
     <main class="home">
         <div class="hero">
-            <img src="{{ url_for('static', filename='images/cover_image.jpg') }}" alt="Vortex Cover" class="cover-image">
+            <img src="{{ url_for('static', filename='assets/hero_image.jpg') }}" alt="Vortex Cover" class="cover-image">
             
             <a class="btn" href="/collection">
                 SHOP NOW<i class="ri-arrow-right-long-line"></i>
@@ -20,17 +20,21 @@
 
         <div class="categories">
             <div class="category-card">
-                <img src="{{ url_for('static', filename='images/products/boxy_fit_t_shirt_green.webp') }}" alt="Box Fit" class="category-image">
+                <a href="{{ url_for('collection', fit='boxy') }}">
+                    <img src="{{ url_for('static', filename='assets/products/t_shirt_boxy/plain/white/1.webp') }}" alt="Box Fit" class="category-image">
+                </a>
 
-                <a href="#" class="btn">
+                <a href="{{ url_for('collection', fit='boxy') }}" class="btn">
                     BOX FIT<i class="ri-arrow-right-long-line"></i>
                 </a>
             </div>
 
             <div class="category-card">
-                <img src="{{ url_for('static', filename='images/products/boxy_fit_t_shirt_green.webp') }}" alt="Relaxed Fit" class="category-image">
+                <a href="{{ url_for('collection', fit='relaxed') }}">
+                    <img src="{{ url_for('static', filename='assets/products/t_shirt_relaxed/plain/mint_green/1.webp') }}" alt="Relaxed Fit" class="category-image">
+                </a>
 
-                <a href="#" class="btn">
+                <a href="{{ url_for('collection', fit='relaxed') }}" class="btn">
                     RELAXED FIT<i class="ri-arrow-right-long-line"></i>
                 </a>
             </div>

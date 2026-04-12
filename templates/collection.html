@@ -5,19 +5,22 @@
 {% endblock %}
 
 {% block title %}
-    Shop Now : )
+    VORTEX - Collection
 {% endblock %}
 
-{% block main %}
+{% block main %} 
     <main class="collection">
         <div class="heading">
             <h1>COLLECTION</h1>
         </div>
-        
+
+        {% if products %}
         <div class="collection-grid">
             {% for product in products %}
             <div class="card">
-                <img src="{{ url_for('static', filename=product.image) }}" alt="T-Shirt">
+                <a href="{{ url_for('variant', id=product.id) }}">
+                    <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+                </a>
 
                 <div class="card-info">
                     <div class="price">
@@ -27,7 +30,7 @@
 
                     <div class="card-btn">
                         <a href="#" class="btn add-to-cart">ADD TO CART</a>
-                        <a href="#" class="btn arrow"><i class="ri-arrow-right-long-line"></i></a>
+                        <a href="{{ url_for('variant', id=product.id) }}" class="btn arrow"><i class="ri-arrow-right-long-line"></i></a>
                     </div>
                 </div>
             </div>
@@ -37,13 +40,24 @@
         <div class="pages-nav">
 
             {% if page > 1 %}
-            <a href="{{ url_for('collection', page=page-1) }}" class="btn">Previous Page</a>
+            <a href="{{ url_for('collection', page=page-1, fit=fit) }}" class="btn">Previous Page</a>
             {% endif %}
 
             {% if page < total_pages %}
-            <a href="{{ url_for('collection', page=page+1) }}" class="btn">Next Page</a>
+            <a href="{{ url_for('collection', page=page+1, fit=fit) }}" class="btn">Next Page</a>
             {% endif %}
 
         </div>
+        {% else %}
+            <main class="empty-state">
+                <div class="heading">
+                    <h1>ERROR</h1>
+                </div>
+
+                <div class="error-message">
+                    <p>Product not found</p>
+                </div>
+            </main>
+        {% endif %}
     </main>
 {% endblock %}

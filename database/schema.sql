@@ -1,16 +1,24 @@
--- categories table
-CREATE TABLE categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+-- settings table
+CREATE TABLE settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
 );
 
 -- products table
 CREATE TABLE products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    category_id INTEGER,
+    fit TEXT NOT NULL,
     price REAL NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    season TEXT NOT NULL
+);
+
+CREATE TABLE product_images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER,
+    image TEXT NOT NULL,
+    is_primary INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
 -- variants table
@@ -18,34 +26,33 @@ CREATE TABLE variants (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id INTEGER,
     name TEXT NOT NULL,
+    description TEXT NOT NULL,
     color TEXT NOT NULL,
     style TEXT NOT NULL,              -- 'plain' or 'printed'
-    design TEXT NOT NULL DEFAULT '',  -- '' for plain, 'Fire' for printed
-    image TEXT NOT NULL,              -- temp
+    design TEXT NOT NULL DEFAULT '',  -- '' for plain, ex: 'Fire' for printed
     stock INTEGER NOT NULL DEFAULT 1,
     FOREIGN KEY (product_id) REFERENCES products(id)
     -- UNIQUE(product_id, color, style, design)
 );
 
-/*
--- variant_sizes table
-CREATE TABLE variant_sizes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    variant_id INTEGER,
-    size TEXT NOT NULL,
-    stock INTEGER NOT NULL,
-    FOREIGN KEY (variant_id) REFERENCES variants(id),
-    UNIQUE(variant_id, size)
-); */
+-- -- variant_sizes table
+-- CREATE TABLE variant_sizes (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     variant_id INTEGER,
+--     size TEXT NOT NULL,
+--     stock INTEGER NOT NULL,
+--     FOREIGN KEY (variant_id) REFERENCES variants(id),
+--     UNIQUE(variant_id, size)
+-- );
 
--- variant_images table
-CREATE TABLE variant_images (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    variant_id INTEGER,
-    image TEXT NOT NULL,
-    is_primary INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (variant_id) REFERENCES variants(id)
-);
+-- -- variant_images table
+-- CREATE TABLE variant_images (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     variant_id INTEGER,
+--     image TEXT NOT NULL,
+--     is_primary INTEGER NOT NULL DEFAULT 0,
+--     FOREIGN KEY (variant_id) REFERENCES variants(id)
+-- );
 
 -- cart table
 CREATE TABLE cart (

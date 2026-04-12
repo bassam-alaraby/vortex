@@ -2,7 +2,6 @@
 .collection   {
     width: 100%;
     min-height: 100vh;
-    background-color: white;
     font-family: 'Poppins', sans-serif;
 }
 
@@ -11,7 +10,7 @@
     justify-content: center;
     align-items: center;
     height: 17vh;
-    background-image: url("/static/images/background_image.jpg");
+    background-image: url("/static/assets/background_image.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -29,9 +28,9 @@
     width: 100%;
     grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
     justify-content: center;
-    grid-gap: 20px;
+    grid-gap: 30px;
     row-gap: 30px;
-    padding: 50px;
+    padding: 70px 50px 50px;
 }
 
 .collection-grid .card {
@@ -71,20 +70,26 @@
 
 .collection-grid .card-btn {
     position: absolute;
-    bottom: 65px;
-    left: 15px;
-    right: 15px;
+    bottom: 64px;
+    left: 16px;
+    right: 16px;
     transform: none;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 8px;
 }
 
 .collection-grid .add-to-cart {
-    padding: 8px 40px;
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: center;
+    padding: 8px 20px;
+    color: white;
+    border-color: white;
 }
 
 .collection-grid .arrow {
+    flex: 0 0 45px;
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -92,66 +97,15 @@
     align-items: center;
     justify-content: center;
     font-size: 1.3rem;
+    color: white;
+    border-color: white;
 }
 
-@media (max-width: 768px) {
-    .collection-grid {
-        grid-template-columns: 1fr;
-        padding: 30px 20px;
-    }
-
-    .collection-grid .card {
-        flex-direction: row;
-        height: 200px;
-    }
-
-    .collection-grid img {
-        aspect-ratio: unset;
-        width: 50%;
-        height: 100%;
-        flex: unset;
-        border-radius: 20px;
-    }
-
-    .collection-grid .card-info {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 40px 10px 0;
-        gap: 15px;
-    }
-
-    .collection-grid .price {
-        padding: 0;
-        gap: 8px;
-    }
-
-    .collection-grid .card-btn {
-        position: static;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .collection-grid .add-to-cart {
-        padding: 8px 20px;
-        color: black;
-        border-color: black;
-        white-space: nowrap;
-    }
-
-    .collection-grid .arrow {
-        color: black;
-        border-color: black;
-    }
-
-    .collection-grid .add-to-cart:hover,
-    .collection-grid .arrow:hover {
-        background-color: black;
-        color: white;
-    }
-}
+.collection-grid .add-to-cart:hover,
+.collection-grid .arrow:hover {
+    background-color: white;
+    color: black;
+}   
 
 /* --- page navigation --- */
 .pages-nav {
@@ -159,7 +113,7 @@
     justify-content: center;
     align-items: center;
     gap: 20px;
-    padding: 0 20px 40px;
+    padding-bottom: 70px;
 }
 
 .pages-nav .btn {
@@ -170,4 +124,145 @@
 .pages-nav .btn:hover {
     background-color: black;
     color: white;
+}
+
+/* --- empty state --- */
+.empty-state {
+    width: 100%;
+    min-height: 100vh;
+    background-color: white;
+    font-family: 'Poppins', sans-serif;
+}
+
+.empty-state .heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 17vh;
+    background-image: url("/static/assets/background_image.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.empty-state .heading h1 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 600;
+    font-family: 'Exo 2', sans-serif;
+}
+
+.empty-state .error-message {
+    height: calc(100vh - 17vh);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.empty-state .error-message p {
+    font-size: 3rem;
+    opacity: 0.8;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .collection .heading h1 { font-size: 2.2rem; }
+
+    .collection-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        row-gap: 24px;
+        padding: 30px 16px 20px;
+    }
+
+    .collection-grid .card {
+        flex-direction: column;
+    }
+
+    .collection-grid img { border-radius: 25px; }
+
+    .collection-grid .card-info {
+        display: flex;
+        flex-direction: column;
+        padding-top: 6px;
+        gap: 6px;
+    }
+
+    .collection-grid .price {
+        padding: 2px 2px 0;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .collection-grid .card-btn {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .collection-grid .add-to-cart {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 6px 8px;
+        font-size: 0.58rem;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .collection-grid .arrow {
+        flex: 0 0 32px;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        padding: 0;
+        border-radius: 50%;
+        font-size: 0.95rem;
+    }
+
+    .pages-nav { 
+        padding-bottom: 30px;
+        gap: 10px; 
+    }
+}
+
+@media (max-width: 420px) {
+    .collection-grid {
+        padding-inline: 12px;
+        gap: 16px;
+    }
+
+    .collection-grid .card-btn {
+        left: 8px;
+        right: 8px;
+        bottom: 44px;
+        gap: 5px;
+    }
+
+    .collection-grid .add-to-cart {
+        padding-inline: 6px;
+        font-size: 0.6rem;
+    }
+
+    .collection-grid .arrow {
+        flex-basis: 30px;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        min-height: 30px;
+        font-size: 0.85rem;
+    }
+
+    .collection-grid .price .before {
+        font-size: 1.05rem;
+    }
+
+    .collection-grid .price .after {
+        font-size: 1.15rem;
+    }
 }

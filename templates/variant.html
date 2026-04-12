@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block css %}
+    <link href="{{ url_for('static', filename='css/variant.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+    VORTEX - تيشيرت صيفي بوكس فيت
+{% endblock %}
+
+{% block main %}
+        <div class="rtl-page">
+            <main class="variant">
+                <div class="main-container">
+                    <div class="variant-image">
+                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" alt="Product Image">
+                    </div>
+
+                    <div class="main-info">
+                        <div class="variant-info">
+                            <div class="variant-title">
+                                <h1>تيشيرت صيفي بوكس فيت</h1>
+                                <p>قماشة ضد الوبرة والانكماش خامة عالية الجودة</p>
+                            </div>
+                        </div>
+
+                        <div class="size-selector">
+                            <button class="btn">XXXL</button>
+                            <button class="btn active">XXL</button>
+                            <button class="btn">XL</button>
+                            <button class="btn">L</button>
+                        </div>
+
+                        <div class="variant-price">
+                            <span class="after">550</span>
+                            <span class="before">1000</span>
+                        </div>
+
+                        <div class="quantity-selector">
+                            <button class="btn">
+                                <i class="ri-add-line"></i>
+                            </button>
+
+                            <div class="qty-display">1</div>
+
+                            <button class="btn">
+                                <i class="ri-subtract-line"></i>
+                            </button>
+                        </div>
+
+                        <div class="actions">
+                            <button class="btn primary">أضف إلى السلة</button>
+                            <button class="btn">اشتري الأن</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="thumbnails">
+                    <div class="thumb"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" alt="Thumbnail 1"></div>
+                    <div class="thumb"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" alt="Thumbnail 2"></div>
+                    <div class="thumb"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" alt="Thumbnail 3"></div>
+                </div>
+            </main>
+        </div>
+{% endblock %}
