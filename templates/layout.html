@@ -49,9 +49,13 @@
             </div>
 
             <div class="nav-right">
-                <div class="cart">
-                    <a href="#">
+                <div class="cart-icon">
+                    <a href="/cart">
                         <i class="ri-shopping-bag-line"></i>
+
+                        {% if cart_count > 0 %}
+                            <span class="cart-badge">{{ cart_count }}</span>
+                        {% endif %}
                     </a>
                 </div>
                 
@@ -60,6 +64,18 @@
                 </button>
             </div>
         </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                {{ message }}
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
 
         <!-- main -->
         {% block main %}{% endblock %}
@@ -88,7 +104,8 @@
             <p class="footer-copy"><i class="ri-copyright-line"></i> 2026 VORTEX. All rights reserved.</p>
         </footer>
 
-        <script src="{{ url_for('static', filename='js/hamburger.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        {% block js %}{% endblock %}
 
     </body>
 

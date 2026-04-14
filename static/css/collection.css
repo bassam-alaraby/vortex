@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 17vh;
+    height: 105px;
     background-image: url("/static/assets/background_image.jpg");
     background-size: cover;
     background-position: center;
@@ -30,7 +30,7 @@
     justify-content: center;
     grid-gap: 30px;
     row-gap: 30px;
-    padding: 70px 50px 50px;
+    padding: 40px 70px 40px;
 }
 
 .collection-grid .card {
@@ -50,6 +50,7 @@
 }
 
 .collection-grid .price {
+    height: 50px;
     display: flex;
     align-items: center;
     padding: 8px 12px;
@@ -70,13 +71,21 @@
 
 .collection-grid .card-btn {
     position: absolute;
-    bottom: 64px;
+    bottom: 66px;
     left: 16px;
     right: 16px;
     transform: none;
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.collection-grid .card-btn form {
+    flex: 1;
+}
+
+.collection-grid .card-btn form button {
+    width: 100%;
 }
 
 .collection-grid .add-to-cart {
@@ -105,7 +114,14 @@
 .collection-grid .arrow:hover {
     background-color: white;
     color: black;
+    cursor: pointer;
 }   
+
+.collection-grid .add-to-cart.is-added {
+    background-color: white;
+    color: black;
+    border-color: white;
+}
 
 /* --- page navigation --- */
 .pages-nav {
@@ -160,19 +176,19 @@
 }
 
 .empty-state .error-message p {
-    font-size: 3rem;
+    font-size: 2.2rem;
     opacity: 0.8;
     font-weight: bold;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 421px) and (max-width: 768px) {
     .collection .heading h1 { font-size: 2.2rem; }
 
     .collection-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 20px;
         row-gap: 24px;
-        padding: 30px 16px 20px;
+        padding: 30px 16px 30px;
     }
 
     .collection-grid .card {
@@ -180,27 +196,14 @@
     }
 
     .collection-grid img { border-radius: 25px; }
-
-    .collection-grid .card-info {
-        display: flex;
-        flex-direction: column;
-        padding-top: 6px;
-        gap: 6px;
-    }
-
-    .collection-grid .price {
-        padding: 2px 2px 0;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
+    
+    .collection-grid .price { height: 25px; }
 
     .collection-grid .card-btn {
-        position: absolute;
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
-        align-items: center;
-        gap: 6px;
+        left: 18px;
+        right: 18px;
+        bottom: 43px;
+        gap: 5px;
     }
 
     .collection-grid .add-to-cart {
@@ -218,9 +221,14 @@
         flex: 0 0 32px;
         width: 32px;
         height: 32px;
+        aspect-ratio: 1 / 1;
         min-width: 32px;
         min-height: 32px;
         padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
         border-radius: 50%;
         font-size: 0.95rem;
     }
@@ -232,15 +240,21 @@
 }
 
 @media (max-width: 420px) {
+    .collection .heading h1 { font-size: 2rem; }
+
     .collection-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: 24px;
         padding-inline: 12px;
         gap: 16px;
     }
 
+    .collection-grid .price { height: 25px; }
+
     .collection-grid .card-btn {
-        left: 8px;
-        right: 8px;
-        bottom: 44px;
+        left: 10px;
+        right: 10px;
+        bottom: 35px;
         gap: 5px;
     }
 
@@ -253,8 +267,14 @@
         flex-basis: 30px;
         width: 30px;
         height: 30px;
+        aspect-ratio: 1 / 1;
         min-width: 30px;
         min-height: 30px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
         font-size: 0.85rem;
     }
 

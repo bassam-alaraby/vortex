@@ -5,61 +5,81 @@
 {% endblock %}
 
 {% block title %}
-    VORTEX - تيشيرت صيفي بوكس فيت
+    VORTEX - {{ variant_details.name }}
 {% endblock %}
 
 {% block main %}
+    {% if variant_details %}
         <div class="rtl-page">
             <main class="variant">
-                <div class="main-container">
-                    <div class="variant-image">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" alt="Product Image">
+                <div class="product-display">
+                    <div class="product-gallery">
+                        <img src="{{ url_for('static', filename=variant_details.image) }}" alt="{{ variant_details.name }}">
                     </div>
 
-                    <div class="main-info">
-                        <div class="variant-info">
-                            <div class="variant-title">
-                                <h1>تيشيرت صيفي بوكس فيت</h1>
-                                <p>قماشة ضد الوبرة والانكماش خامة عالية الجودة</p>
-                            </div>
+                    <form class="product-info" method="POST" action="/add_to_cart">
+                        <input type="hidden" name="variant_id" value="{{ variant_details.id }}">
+                        <input type="hidden" name="size" id="selected-size">
+                        <input type="hidden" name="quantity" id="selected-qty" value="1">
+
+                        <div class="product-header">
+                            <h1>{{ variant_details.name }}</h1>
+                            <p>{{ variant_details.description }}</p>
+                        </div>
+
+                        <div class="product-price">
+                            <span class="after">{{ variant_details.price | int }} ج.م</span>
+                            <span class="before">{{ (variant_details.price + 100) | int }}</span>
                         </div>
 
                         <div class="size-selector">
-                            <button class="btn">XXXL</button>
-                            <button class="btn active">XXL</button>
-                            <button class="btn">XL</button>
-                            <button class="btn">L</button>
-                        </div>
-
-                        <div class="variant-price">
-                            <span class="after">550</span>
-                            <span class="before">1000</span>
+                            <button type="button" class="btn">XXXL</button>
+                            <button type="button" class="btn active">XXL</button>
+                            <button type="button" class="btn">XL</button>
+                            <button type="button" class="btn">L</button>
                         </div>
 
                         <div class="quantity-selector">
-                            <button class="btn">
-                                <i class="ri-add-line"></i>
-                            </button>
-
-                            <div class="qty-display">1</div>
-
-                            <button class="btn">
+                            <button type="button" class="btn" id="minus">
                                 <i class="ri-subtract-line"></i>
                             </button>
+
+                            <div class="qty-display" id="qty">1</div>
+
+                            <button type="button" class="btn" id="plus">
+                                <i class="ri-add-line"></i>
+                            </button>
                         </div>
 
-                        <div class="actions">
-                            <button class="btn primary">أضف إلى السلة</button>
-                            <button class="btn">اشتري الأن</button>
+                        <div class="product-actions">
+                            <button type="submit" name="action" value="cart" class="btn primary">أضف إلى السلة</button>
+                            <button type="submit" name="action" value="buy_now" class="btn">اشترِ الآن</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
 
                 <div class="thumbnails">
-                    <div class="thumb"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" alt="Thumbnail 1"></div>
-                    <div class="thumb"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" alt="Thumbnail 2"></div>
-                    <div class="thumb"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" alt="Thumbnail 3"></div>
+                {% for img in images %}
+                    <div class="thumb">
+                        <img src="{{ url_for('static', filename=img) }}" alt="{{ variant_details.name }}">
+                    </div>
+                {% endfor %}
                 </div>
             </main>
         </div>
+    {% else %}
+        <main class="empty-state">
+            <div class="heading">
+                <h1>ERROR</h1>
+            </div>
+
+            <div class="error-message">
+                <p>Product not found</p>
+            </div>
+        </main>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+        <script src="{{ url_for('static', filename='js/variant.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block css %}
+    <link href="{{ url_for('static', filename='css/error.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+    VORTEX - 500
+{% endblock %}
+
+{% block main %}
+    <main class="error-page">
+        <section class="error-hero">
+            <h1>{{ error_title }}</h1>
+            <p>{{ error_message }}</p>
+            <a href="{{ url_for('index') }}" class="btn error-btn">Back to home</a>
+        </section>
+    </main>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block css %}
+    <link href="{{ url_for('static', filename='css/cart.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+    VORTEX - YOUR CART
+{% endblock %}
+
+{% block main %}
+    {% if cart_items %}
+        <div class="rtl-page">
+            <main class="cart-page">
+                <div class="heading">
+                    <h1>YOUR CART</h1>
+                </div>
+
+                <div class="cart-layout">
+                    <div class="cart-items">
+                        {% for item in cart_items %}
+                            <article class="product-display cart-card" data-variant-id="{{ item.id }}" data-size="{{ item.size }}">
+                                <div class="product-gallery">
+                                    <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}">
+                                </div>
+
+                                <div class="product-info">
+                                    <div class="product-header">
+                                        <h2>{{ item.name }}</h2>
+                                        <p>{{ item.description }}</p>
+                                    </div>
+
+                                    <div class="product-price">
+                                        <span>{{ item.price | int }} ج.م</span>
+                                    </div>
+
+                                    <div class="size-selector">
+                                        {% for option in ['XXXL', 'XXL', 'XL', 'L'] %}
+                                            <button
+                                                type="button"
+                                                class="btn {% if option == item.size %}active{% endif %}"
+                                                data-size-option="{{ option }}"
+                                            >
+                                                {{ option }}
+                                            </button>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="quantity-selector" data-quantity="{{ item.quantity }}">
+                                        <button type="button" class="btn" aria-label="Decrease quantity">
+                                            <i class="ri-subtract-line"></i>
+                                        </button>
+
+                                        <div class="qty-display">{{ item.quantity }}</div>
+
+                                        <button type="button" class="btn" aria-label="Increase quantity">
+                                            <i class="ri-add-line"></i>
+                                        </button>
+                                    </div>
+
+                                    <button type="button" class="remove-btn">
+                                        إزالة من السلة
+                                    </button>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+
+                    <section class="cart-summary">
+                        <div class="summary-total">
+                            <span class="label">الإجمالي :</span>
+                            <span class="value">{{ total | int }} ج.م</span>
+                        </div>
+
+                        <a href="/checkout" class="summary-checkout-btn">اشترِ الآن</a>
+                    </section>
+                </div>
+            </main>
+        </div>
+    {% else %}
+        <main class="empty-state">
+            <div class="heading">
+                <h1>YOUR CART</h1>
+            </div>
+
+            <div class="error-message">
+                <p>Cart is empty</p>
+            </div>
+        </main>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+{% endblock %}

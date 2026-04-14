@@ -1,0 +1,58 @@
+.error-page {
+    min-height: calc(100vh - 105px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px 72px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.error-hero {
+    width: min(100%, 760px);
+    padding: 48px 36px;
+    border: 2px solid black;
+    border-radius: 28px;
+    text-align: center;
+}
+
+.error-hero h1 {
+    margin-bottom: 16px;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    line-height: 1;
+    font-family: 'Exo 2', sans-serif;
+}
+
+.error-hero p {
+    width: min(100%, 460px);
+    margin: 0 auto 28px;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.error-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    border-color: black;
+}
+
+.error-btn:hover {
+    background-color: black;
+    color: white;
+}
+
+@media (max-width: 640px) {
+    .error-page {
+        padding: 32px 16px 56px;
+    }
+
+    .error-hero {
+        padding: 36px 20px;
+        border-radius: 22px;
+    }
+
+    .error-hero p {
+        font-size: 0.95rem;
+    }
+}
