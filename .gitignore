@@ -1,6 +1,14 @@
-venv/
-__pycache__/
-*.db
-*.pyc
+# Local and secrets
 .env
 .codex
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+ENV/
+
+# Database
+*.db

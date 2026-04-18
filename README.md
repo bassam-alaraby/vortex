@@ -1,48 +1,54 @@
 # Vortex
 
-A Flask-based e-commerce website for a local hoodie brand.
-Uses sessions (no user accounts) to manage a shopping cart.
+مشروع متجر بسيط مبني بـ Flask.
 
----
+## التشغيل السريع (Codespaces أو Local)
 
-## تشغيل المشروع
+1. افتح التيرمنال داخل مجلد المشروع:
 
-**1. افتح التيرمنال وادخل على المجلد:**
 ```bash
 cd vortex
 ```
 
-**2. فعّل الـ virtual environment:**
+2. أنشئ virtual environment:
+
+```bash
+python3 -m venv venv
+```
+
+3. فعّل البيئة:
+
 ```bash
 source venv/bin/activate
 ```
-> هتلاقي `(venv)` ظهرت في أول السطر — يعني اشتغل.
 
-**3. شغّل التطبيق:**
+4. نزّل المكتبات من ملف المتطلبات:
+
 ```bash
-flask run
+pip install -r requirements.txt
 ```
 
----
+5. جهّز قاعدة البيانات (أول مرة فقط):
 
-## حفظ التغييرات على GitHub
-
-**1. شوف إيه اللي اتغير:**
 ```bash
-git status
+python3 database/init_db.py
 ```
 
-**2. ضيف الملفات:**
+6. شغّل التطبيق:
+
 ```bash
-git add .
+python3 app.py
 ```
 
-**3. احفظ مع رسالة:**
-```bash
-git commit -m "اكتب هنا وصف التغيير"
+7. افتح المتصفح على:
+
+```text
+http://127.0.0.1:5000
 ```
 
-**4. ابعت على GitHub:**
-```bash
-git push
-```
+## المكتبات المطلوبة
+
+المشروع يحتاج فقط:
+
+- `Flask`
+- `cs50`
