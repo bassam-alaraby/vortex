@@ -9,6 +9,7 @@ from config import Config
 from routes.main_routes import register_main_routes
 from routes.shop_routes import register_shop_routes
 from routes.cart_routes import register_cart_routes
+from routes.admin_routes import register_admin_routes
 
 # Import Helpers
 from helpers import get_cart, get_cart_count, render_error_response
@@ -51,6 +52,7 @@ def internal_server_error(error):
 register_main_routes(app)
 register_shop_routes(app, db)
 register_cart_routes(app, db)
+register_admin_routes(app, db)
 
 if __name__ == '__main__':
     # Can run locally using standard python app.py

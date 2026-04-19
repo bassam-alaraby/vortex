@@ -1,0 +1,60 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+    Order #{{ order.id }}
+{% endblock %}
+
+{% block main %}
+    <section class="admin-card">
+        <div class="admin-card__head">
+            <h1>Order #{{ order.id }}</h1>
+            <a class="link-button" href="{{ url_for('admin_orders') }}">Back to Orders</a>
+        </div>
+
+        <dl class="order-meta" dir="rtl" lang="ar">
+            <div><dt>الاسم</dt><dd>{{ order.name }}</dd></div>
+            <div><dt>الهاتف</dt><dd>{{ order.phone }}</dd></div>
+            <div><dt>العنوان</dt><dd>{{ order.address }}</dd></div>
+            <div><dt>الملاحظات</dt><dd>{{ order.notes or '-' }}</dd></div>
+            <div><dt>إجمالي السعر</dt><dd>{{ order.total_price | int }}</dd></div>
+            <div><dt>الحالة</dt><dd>{{ order.status }}</dd></div>
+            <div><dt>تاريخ الطلب</dt><dd>{{ order.created_at }}</dd></div>
+        </dl>
+
+        <h2>Order Items</h2>
+        {% if items %}
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Variant Name</th>
+                            <th>Item Price</th>
+                            <th>Quantity</th>
+                            <th>Color</th>
+                            <th>Style</th>
+                            <th>Design</th>
+                            <th>Fit</th>
+                            <th>Season</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>{{ item.variant_name }}</td>
+                                <td>{{ item.price | int }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.color }}</td>
+                                <td>{{ item.style }}</td>
+                                <td>{{ item.design or '-' }}</td>
+                                <td>{{ item.fit }}</td>
+                                <td>{{ item.season }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-message">No order items found.</p>
+        {% endif %}
+    </section>
+{% endblock %}

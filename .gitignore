@@ -1,5 +1,7 @@
 # Local and secrets
 .env
+.env.*
+!.env.example
 .codex
 
 # Python
@@ -7,8 +9,37 @@ __pycache__/
 *.py[cod]
 *$py.class
 venv/
+.venv/
 env/
 ENV/
 
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Build artifacts
+build/
+dist/
+.eggs/
+*.egg-info/
+pip-wheel-metadata/
+
 # Database
 *.db
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+.ipynb_checkpoints/
+instance/
