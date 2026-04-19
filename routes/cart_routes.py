@@ -1,10 +1,60 @@
-from flask import request, session, jsonify, redirect, flash, render_template
+from flask import request, session, jsonify, redirect, flash, render_template, url_for
+import re
 
 # Make sure importing from helpers is at the top level
 from helpers import (
-    get_cart, normalize_size, get_cart_count, handle_cart_error, 
-    calculate_cart_total
+    get_cart, normalize_size, get_cart_count, handle_cart_error,
+    calculate_cart_total, wants_json_response
 )
+
+
+ARABIC_INDIC_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
+EASTERN_ARABIC_DIGITS = str.maketrans("۰۱۲۳۴۵۶۷۸۹", "0123456789")
+NAME_PATTERN = re.compile(r"^[A-Za-z\u0600-\u06FF\s]+$")
+
+
+def normalize_spaces(value):
+    return " ".join((value or "").strip().split())
+
+
+def normalize_phone(value):
+    phone = (value or "").strip()
+    phone = phone.translate(ARABIC_INDIC_DIGITS)
+    phone = phone.translate(EASTERN_ARABIC_DIGITS)
+    phone = "".join(phone.split())
+    return phone
+
+
+def validate_checkout_input(name, phone, address, notes):
+    errors = {}
+
+    if not name:
+        errors["name"] = "يرجى إدخال الاسم."
+    elif len(name) < 2:
+        errors["name"] = "الاسم قصير جدًا."
+    elif len(name) > 60:
+        errors["name"] = "الاسم طويل جدًا."
+    elif not NAME_PATTERN.fullmatch(name):
+        errors["name"] = "الاسم يجب أن يحتوي على حروف ومسافات فقط."
+
+    if not phone:
+        errors["phone"] = "يرجى إدخال رقم الهاتف."
+    elif not phone.isdigit():
+        errors["phone"] = "رقم الهاتف يجب أن يحتوي على أرقام فقط."
+    elif len(phone) < 8 or len(phone) > 15:
+        errors["phone"] = "رقم الهاتف يجب أن يكون من 8 إلى 15 رقمًا."
+
+    if not address:
+        errors["address"] = "يرجى إدخال العنوان."
+    elif len(address) < 8:
+        errors["address"] = "العنوان قصير جدًا."
+    elif len(address) > 220:
+        errors["address"] = "العنوان طويل جدًا."
+
+    if notes and len(notes) > 500:
+        errors["notes"] = "الملاحظات يجب ألا تتجاوز 500 حرف."
+
+    return errors
 
 def register_cart_routes(app, db):
     @app.route('/add_to_cart', methods=['POST'])
@@ -50,7 +100,7 @@ def register_cart_routes(app, db):
             })
 
         if action == 'buy_now':
-            return redirect('/checkout')
+            return redirect(url_for('checkout'))
         else:
             flash('Added to cart successfully', "success")
             return redirect(request.referrer)
@@ -183,3 +233,103 @@ def register_cart_routes(app, db):
             "removed": response_item is None,
             "merged": merged
         })
+
+    @app.route("/checkout")
+    def checkout():
+        return redirect(url_for("cart", open_checkout=1))
+
+    @app.route("/checkout", methods=["POST"])
+    def checkout_submit():
+        name = normalize_spaces(request.form.get("name"))
+        phone = normalize_phone(request.form.get("phone"))
+        address = normalize_spaces(request.form.get("address"))
+        notes = normalize_spaces(request.form.get("notes"))
+        notes = notes or None
+
+        validation_errors = validate_checkout_input(name, phone, address, notes)
+
+        if validation_errors:
+            message = "يرجى مراجعة البيانات المدخلة."
+            if wants_json_response():
+                return jsonify({
+                    "success": False,
+                    "message": message,
+                    "errors": validation_errors
+                }), 400
+
+            flash(message, "error")
+            return redirect(url_for("cart", open_checkout=1))
+
+        cart = get_cart()
+        if not cart:
+            message = "السلة فارغة."
+            if wants_json_response():
+                return jsonify({
+                    "success": False,
+                    "message": message
+                }), 400
+
+            flash(message, "error")
+            return redirect(url_for("cart"))
+
+        total_price = calculate_cart_total(cart, db)
+        if total_price <= 0:
+            message = "تعذر إتمام الطلب، يرجى مراجعة السلة."
+            if wants_json_response():
+                return jsonify({
+                    "success": False,
+                    "message": message
+                }), 400
+
+            flash(message, "error")
+            return redirect(url_for("cart", open_checkout=1))
+
+        order_id = db.execute(
+            """
+            INSERT INTO orders (name, phone, address, notes, total_price)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            name,
+            phone,
+            address,
+            notes,
+            total_price
+        )
+
+        for item in cart:
+            price_row = db.execute(
+                """
+                SELECT products.price
+                FROM variants
+                JOIN products ON products.id = variants.product_id
+                WHERE variants.id = ?
+                """,
+                item["variant_id"]
+            )
+
+            if not price_row:
+                continue
+
+            db.execute(
+                """
+                INSERT INTO order_items (order_id, variant_id, quantity, price)
+                VALUES (?, ?, ?, ?)
+                """,
+                order_id,
+                item["variant_id"],
+                item["quantity"],
+                price_row[0]["price"]
+            )
+
+        session["cart"] = []
+
+        success_message = "تم استلام طلبك بنجاح، سيتم التواصل معك قريبًا."
+
+        if wants_json_response():
+            return jsonify({
+                "success": True,
+                "message": success_message
+            })
+
+        flash(success_message, "success")
+        return redirect(url_for("cart"))

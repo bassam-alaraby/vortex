@@ -10,7 +10,7 @@
 
 {% block main %}
     {% if cart_items %}
-        <div class="rtl-page">
+        <div class="rtl-page" lang="ar">
             <main class="cart-page">
                 <div class="heading">
                     <h1>YOUR CART</h1>
@@ -72,10 +72,113 @@
                             <span class="value">{{ total | int }} ج.م</span>
                         </div>
 
-                        <a href="/checkout" class="summary-checkout-btn">اشترِ الآن</a>
+                        <button type="button" class="summary-checkout-btn" data-open-checkout-modal>
+                            اشترِ الآن
+                        </button>
                     </section>
                 </div>
             </main>
+
+            <div class="checkout-modal" id="checkout-modal" dir="rtl" lang="ar" hidden>
+                <div class="checkout-modal__backdrop" data-close-checkout-modal></div>
+
+                <div class="checkout-modal__panel" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+                    <button type="button" class="checkout-modal__close" data-close-checkout-modal aria-label="إغلاق">
+                        <i class="ri-close-line"></i>
+                    </button>
+
+                    <h2 id="checkout-title">إتمام الطلب</h2>
+
+                    <div class="checkout-modal__alerts">
+                        <div class="checkout-alert" role="note">
+                            <i class="ri-whatsapp-line" aria-hidden="true"></i>
+                            <p>سيتم التواصل معك عبر واتساب لتأكيد الطلب وتفاصيل الدفع.</p>
+                        </div>
+
+                        <div class="checkout-alert" role="note">
+                            <i class="ri-bank-card-line" aria-hidden="true"></i>
+                            <p>سيتم إضافة الدفع الإلكتروني قريبًا.</p>
+                        </div>
+                    </div>
+
+                    <section class="checkout-order-summary" aria-labelledby="checkout-summary-title">
+                        <div class="checkout-order-summary__head">
+                            <h3 id="checkout-summary-title">ملخص الطلب</h3>
+                        </div>
+
+                        <ul class="checkout-summary-list" id="checkout-summary-items"></ul>
+
+                        <div class="checkout-summary-empty" id="checkout-summary-empty" hidden>
+                            لا توجد منتجات في السلة.
+                        </div>
+
+                        <div class="checkout-summary-total">
+                            <span>الإجمالي</span>
+                            <strong id="checkout-summary-total">0 ج.م</strong>
+                        </div>
+                    </section>
+
+                    <form id="checkout-form" class="checkout-form" action="{{ url_for('checkout_submit') }}" method="POST" dir="rtl" lang="ar">
+                        <label>
+                            <span>الاسم</span>
+                            <input
+                                type="text"
+                                name="name"
+                                required
+                                minlength="2"
+                                maxlength="60"
+                                autocomplete="name"
+                                data-field="name"
+                            >
+                            <small class="checkout-field-error" data-error-for="name"></small>
+                        </label>
+
+                        <label>
+                            <span>رقم الهاتف</span>
+                            <input
+                                type="tel"
+                                name="phone"
+                                required
+                                minlength="8"
+                                maxlength="15"
+                                inputmode="numeric"
+                                autocomplete="tel"
+                                data-field="phone"
+                            >
+                            <small class="checkout-field-error" data-error-for="phone"></small>
+                        </label>
+
+                        <label>
+                            <span>العنوان</span>
+                            <textarea
+                                name="address"
+                                rows="2"
+                                required
+                                minlength="8"
+                                maxlength="220"
+                                autocomplete="street-address"
+                                data-field="address"
+                            ></textarea>
+                            <small class="checkout-field-error" data-error-for="address"></small>
+                        </label>
+
+                        <label>
+                            <span>ملاحظات (اختياري)</span>
+                            <textarea
+                                name="notes"
+                                rows="3"
+                                maxlength="500"
+                                data-field="notes"
+                            ></textarea>
+                            <small class="checkout-field-error" data-error-for="notes"></small>
+                        </label>
+
+                        <button type="submit" class="summary-checkout-btn checkout-form__submit">تأكيد الطلب</button>
+                    </form>
+
+                    <p class="checkout-feedback" id="checkout-feedback" aria-live="polite"></p>
+                </div>
+            </div>
         </div>
     {% else %}
         <main class="empty-state">

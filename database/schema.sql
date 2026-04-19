@@ -35,16 +35,6 @@ CREATE TABLE variants (
     -- UNIQUE(product_id, color, style, design)
 );
 
--- -- variant_sizes table
--- CREATE TABLE variant_sizes (
---     id INTEGER PRIMARY KEY AUTOINCREMENT,
---     variant_id INTEGER,
---     size TEXT NOT NULL,
---     stock INTEGER NOT NULL,
---     FOREIGN KEY (variant_id) REFERENCES variants(id),
---     UNIQUE(variant_id, size)
--- );
-
 -- -- variant_images table
 -- CREATE TABLE variant_images (
 --     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,31 +44,23 @@ CREATE TABLE variants (
 --     FOREIGN KEY (variant_id) REFERENCES variants(id)
 -- );
 
--- cart table
-CREATE TABLE cart (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    variant_id INTEGER,
-    quantity INTEGER NOT NULL,
-    session_id TEXT NOT NULL,
-    FOREIGN KEY (variant_id) REFERENCES variants(id),
-    UNIQUE(variant_id, session_id)
-);
-
 -- orders table
 CREATE TABLE orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     phone TEXT NOT NULL,
     address TEXT NOT NULL,
+    notes TEXT,
     total_price REAL NOT NULL,
+    status TEXT DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- order_items table
 CREATE TABLE order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_id INTEGER,
-    variant_id INTEGER,
+    order_id INTEGER NOT NULL,
+    variant_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
     price REAL NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id),

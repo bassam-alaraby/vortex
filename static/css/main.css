@@ -13,6 +13,10 @@
     box-sizing: border-box;
 }
 
+:lang(ar) {
+    font-family: 'Cairo', sans-serif;
+}
+
 /* --- nav --- */
 .navbar {
     height: 105px;
