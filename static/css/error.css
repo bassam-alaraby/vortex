@@ -10,8 +10,6 @@
 .error-hero {
     width: min(100%, 760px);
     padding: 48px 36px;
-    border: 2px solid black;
-    border-radius: 28px;
     text-align: center;
 }
 
