@@ -22,10 +22,30 @@
     display: block;
 }
 
+.hero-logo {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: auto;
+}
+
+.hero h1 {
+    position: absolute;
+    top: 47%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2rem;
+    font-weight: 400;
+    text-align: center;
+}
+
 .hero .btn {
     position: absolute;
     left: 50%;
-    bottom: 25%;
+    bottom: 22%;
     transform: translateX(-50%);
     font-weight: 500;
     display: inline-flex;
@@ -74,6 +94,15 @@
 }
 
 @media (min-width: 481px) and (max-width: 900px) {
+    .hero-logo {
+        width: 220px;
+    }
+
+    .hero h1 {
+        font-size: 1.75rem;
+        white-space: nowrap;
+    }
+
     .categories {
         grid-template-columns: 1fr;
         padding: 80px 60px;
@@ -81,6 +110,16 @@
 }
 
 @media (max-width: 480px) {
+    .hero-logo {
+        width: 220px;
+    }
+
+    .hero h1 {
+        top: 44%;
+        font-size: 1.5rem;
+        white-space: nowrap;
+    }
+
     .categories {
         grid-template-columns: 1fr;
         padding: 32px 24px;

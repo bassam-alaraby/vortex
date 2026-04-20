@@ -35,15 +35,15 @@ CREATE TABLE variant_images (
     FOREIGN KEY (variant_id) REFERENCES variants(id)
 );
 
--- variant_stock table
-CREATE TABLE variant_stock (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    variant_id INTEGER NOT NULL,
-    size TEXT NOT NULL,
-    stock INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (variant_id) REFERENCES variants(id),
-    UNIQUE(variant_id, size)
-);
+-- -- variant_stock table
+-- CREATE TABLE variant_stock (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     variant_id INTEGER NOT NULL,
+--     size TEXT NOT NULL,
+--     stock INTEGER NOT NULL DEFAULT 0,
+--     FOREIGN KEY (variant_id) REFERENCES variants(id),
+--     UNIQUE(variant_id, size)
+-- );
 
 -- orders table
 CREATE TABLE orders (
