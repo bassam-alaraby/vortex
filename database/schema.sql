@@ -13,14 +13,6 @@ CREATE TABLE products (
     season TEXT NOT NULL
 );
 
-CREATE TABLE product_images (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_id INTEGER,
-    image TEXT NOT NULL,
-    is_primary INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
-
 -- variants table
 CREATE TABLE variants (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,19 +22,28 @@ CREATE TABLE variants (
     color TEXT NOT NULL,
     style TEXT NOT NULL,              -- 'plain' or 'printed'
     design TEXT NOT NULL DEFAULT '',  -- '' for plain, ex: 'Fire' for printed
-    stock INTEGER NOT NULL DEFAULT 1,
     FOREIGN KEY (product_id) REFERENCES products(id)
     -- UNIQUE(product_id, color, style, design)
+); 
+
+-- variant_images table
+CREATE TABLE variant_images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    variant_id INTEGER,
+    image TEXT NOT NULL,
+    is_primary INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (variant_id) REFERENCES variants(id)
 );
 
--- -- variant_images table
--- CREATE TABLE variant_images (
---     id INTEGER PRIMARY KEY AUTOINCREMENT,
---     variant_id INTEGER,
---     image TEXT NOT NULL,
---     is_primary INTEGER NOT NULL DEFAULT 0,
---     FOREIGN KEY (variant_id) REFERENCES variants(id)
--- );
+-- variant_stock table
+CREATE TABLE variant_stock (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    variant_id INTEGER NOT NULL,
+    size TEXT NOT NULL,
+    stock INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (variant_id) REFERENCES variants(id),
+    UNIQUE(variant_id, size)
+);
 
 -- orders table
 CREATE TABLE orders (
@@ -61,6 +62,7 @@ CREATE TABLE order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_id INTEGER NOT NULL,
     variant_id INTEGER NOT NULL,
+    size TEXT NOT NULL,
     quantity INTEGER NOT NULL,
     price REAL NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id),

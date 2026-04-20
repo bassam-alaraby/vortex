@@ -107,6 +107,7 @@ def register_admin_routes(app, db):
         items = db.execute(
             """
             SELECT
+                order_items.size,
                 order_items.quantity,
                 order_items.price,
                 variants.name AS variant_name,

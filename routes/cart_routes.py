@@ -118,14 +118,14 @@ def register_cart_routes(app, db):
                     variants.name,
                     variants.description,
                     products.price,
-                    product_images.image
+                    variant_images.image
                 FROM variants
                 JOIN products 
                     ON products.id = variants.product_id
-                JOIN product_images
-                    ON product_images.product_id = products.id
+                JOIN variant_images
+                    ON variant_images.variant_id = variants.id
                 WHERE variants.id = ?
-                AND product_images.is_primary = 1
+                AND variant_images.is_primary = 1
                 ''', item['variant_id'])
 
             if not row:
@@ -312,11 +312,12 @@ def register_cart_routes(app, db):
 
             db.execute(
                 """
-                INSERT INTO order_items (order_id, variant_id, quantity, price)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO order_items (order_id, variant_id, size, quantity, price)
+                VALUES (?, ?, ?, ?, ?)
                 """,
                 order_id,
                 item["variant_id"],
+                item["size"],
                 item["quantity"],
                 price_row[0]["price"]
             )

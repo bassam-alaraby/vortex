@@ -28,8 +28,9 @@
                     <thead>
                         <tr>
                             <th>Variant Name</th>
-                            <th>Item Price</th>
+                            <th>Size</th>
                             <th>Quantity</th>
+                            <th>Item Price</th>
                             <th>Color</th>
                             <th>Style</th>
                             <th>Design</th>
@@ -41,8 +42,9 @@
                         {% for item in items %}
                             <tr>
                                 <td>{{ item.variant_name }}</td>
-                                <td>{{ item.price | int }}</td>
+                                <td>{{ item.size }}</td>
                                 <td>{{ item.quantity }}</td>
+                                <td>{{ item.price | int }}</td>
                                 <td>{{ item.color }}</td>
                                 <td>{{ item.style }}</td>
                                 <td>{{ item.design or '-' }}</td>

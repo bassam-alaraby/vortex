@@ -21,6 +21,7 @@ app.config.from_object(Config)
 
 # Configure CS50 Library to use SQLite database
 db = SQL(app.config['DATABASE_PATH'])
+db.execute("PRAGMA foreign_keys = ON")
 
 # Register context processors
 @app.context_processor

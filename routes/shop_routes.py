@@ -68,13 +68,13 @@ def register_shop_routes(app, db):
             variants.id,
             variants.name,
             products.price,
-            product_images.image
+            variant_images.image
         FROM variants
         JOIN products
             ON products.id = variants.product_id
-        JOIN product_images 
-            ON product_images.product_id = products.id
-        WHERE product_images.is_primary = 1
+        JOIN variant_images 
+            ON variant_images.variant_id = variants.id
+        WHERE variant_images.is_primary = 1
         '''
 
         params = []
@@ -114,29 +114,29 @@ def register_shop_routes(app, db):
                 variants.description,
                 variants.product_id,
                 products.price,
-                product_images.image
+                variant_images.image
             FROM variants
             JOIN products 
                 ON products.id = variants.product_id
-            JOIN product_images
-                ON product_images.product_id = products.id
+            JOIN variant_images
+                ON variant_images.variant_id = variants.id
             WHERE variants.id = ?
-            AND product_images.is_primary = 1
+            AND variant_images.is_primary = 1
             ''', id)
         if not row:
             abort(404)
 
         variant_details = row[0]
 
-        product_id = variant_details['product_id']
+        variant_id = variant_details['id']
 
         row = db.execute(
             '''
             SELECT image
-            FROM product_images
-            WHERE product_id = ?
+            FROM variant_images
+            WHERE variant_id = ?
             AND is_primary = 0
-            ''', product_id)
+            ''', variant_id)
         images = [r['image'] for r in row]
 
         return render_template(
