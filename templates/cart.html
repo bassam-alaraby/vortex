@@ -35,7 +35,7 @@
                                     </div>
 
                                     <div class="size-selector">
-                                        {% for option in ['XXXL', 'XXL', 'XL', 'L'] %}
+                                        {% for option in sizes %}
                                             <button
                                                 type="button"
                                                 class="btn {% if option == item.size %}active{% endif %}"

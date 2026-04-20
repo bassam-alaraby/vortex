@@ -1,5 +1,11 @@
 from flask import session, request, jsonify, flash, redirect, url_for, render_template
 
+
+def get_sizes():
+    from routes.admin_routes import SIZES
+    return SIZES
+
+
 def get_cart():
     # Return cart list from session or empty
     return session.get('cart', [])

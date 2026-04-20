@@ -164,6 +164,7 @@
 }
 
 .flash-message {
+    font-family: 'Poppins', sans-serif;
     background: #111;
     color: #fff;
     min-width: 250px;

@@ -75,14 +75,3 @@ INSERT INTO variant_images (variant_id, image, is_primary) VALUES
 (8, 'assets/products/t_shirt_boxy/plain/green/1.webp', 0),
 (8, 'assets/products/t_shirt_relaxed/plain/beige/1.webp', 0),
 (8, 'assets/products/t_shirt_relaxed/plain/mint_green/1.webp', 1);
-
-
--- INSERT INTO variant_stock (variant_id, size, stock) VALUES
--- (1, 'L', 10), (1, 'XL', 8), (1, 'XXL', 5), (1, 'XXXL', 2),
--- (2, 'L', 10), (2, 'XL', 8), (2, 'XXL', 5), (2, 'XXXL', 2),
--- (3, 'L', 10), (3, 'XL', 8), (3, 'XXL', 5), (3, 'XXXL', 2),
--- (4, 'L', 10), (4, 'XL', 8), (4, 'XXL', 5), (4, 'XXXL', 2),
--- (5, 'L', 10), (5, 'XL', 8), (5, 'XXL', 5), (5, 'XXXL', 2),
--- (6, 'L', 10), (6, 'XL', 8), (6, 'XXL', 5), (6, 'XXXL', 2),
--- (7, 'L', 10), (7, 'XL', 8), (7, 'XXL', 5), (7, 'XXXL', 2),
--- (8, 'L', 10), (8, 'XL', 8), (8, 'XXL', 5), (8, 'XXXL', 2);

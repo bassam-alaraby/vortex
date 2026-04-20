@@ -1,7 +1,6 @@
 # Local and secrets
 .env
 .env.*
-.env.example
 .codex
 
 # Python

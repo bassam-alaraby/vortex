@@ -27,9 +27,13 @@ def load_env_file(file_path=".env"):
 
 load_env_file()
 
+_secret_key = os.environ.get('SECRET_KEY')
+if not _secret_key:
+    raise RuntimeError("SECRET_KEY environment variable is not set")
+
+
 class Config:
-    # Use environment variables if available, otherwise use defaults
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'vortexMO')
+    SECRET_KEY = _secret_key
     
     # Path to database, defaulting to local SQLite DB
     # The cs50 SQL library handles the 'sqlite:///' prefix automatically in most cases
@@ -46,3 +50,11 @@ class ProductionConfig(Config):
     # Ensure secure cookies in production
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = True
+
+
+def get_config():
+    env = os.environ.get("FLASK_ENV", "development").lower()
+    if env == "production":
+        return ProductionConfig
+    return DevelopmentConfig

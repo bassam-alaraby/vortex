@@ -5,6 +5,8 @@ from functools import wraps
 from flask import flash, redirect, render_template, request, session, url_for
 
 
+SIZES = ["XL", "L", "M", "S"]
+
 VALID_ORDER_STATUSES = {"pending", "confirmed", "shipped", "delivered"}
 VALID_SEASONS = {"summer", "winter", "all"}
 ORDER_STATUS_SEQUENCE = ["pending", "confirmed", "shipped", "delivered"]

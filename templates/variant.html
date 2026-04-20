@@ -33,10 +33,9 @@
                         </div>
 
                         <div class="size-selector">
-                            <button type="button" class="btn">XXXL</button>
-                            <button type="button" class="btn">XXL</button>
-                            <button type="button" class="btn active">XL</button>
-                            <button type="button" class="btn">L</button>
+                            {% for option in sizes %}
+                            <button type="button" class="btn {% if loop.first %}active{% endif %}">{{ option }}</button>
+                            {% endfor %}
                         </div>
 
                         <div class="quantity-selector">
