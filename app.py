@@ -2,28 +2,21 @@ from flask import Flask, render_template
 from cs50 import SQL
 import os
 
-# Import Configuration
 from config import get_config
 
-# Import Routes
 from routes.main_routes import register_main_routes
 from routes.shop_routes import register_shop_routes
 from routes.cart_routes import register_cart_routes
 from routes.admin_routes import register_admin_routes
 
-# Import Helpers
 from helpers import get_cart, get_cart_count, render_error_response, get_sizes
 
-# Configure application
 app = Flask(__name__)
-# Load config from object
 app.config.from_object(get_config())
 
-# Configure CS50 Library to use SQLite database
 db = SQL(app.config['DATABASE_PATH'])
 db.execute("PRAGMA foreign_keys = ON")
 
-# Register context processors
 @app.context_processor
 def inject_cart_count():
     cart = get_cart()
@@ -34,7 +27,6 @@ def inject_cart_count():
 def inject_sizes():
     return dict(sizes=get_sizes())
 
-# Register error handlers
 @app.errorhandler(404)
 def not_found(error):
     return render_error_response(
@@ -54,12 +46,10 @@ def internal_server_error(error):
         "An unexpected error occurred. Please try again later."
     )
 
-# Register routes
 register_main_routes(app)
 register_shop_routes(app, db)
 register_cart_routes(app, db)
 register_admin_routes(app, db)
 
 if __name__ == '__main__':
-    # Can run locally using standard python app.py
     app.run(debug=app.config.get('DEBUG', True))

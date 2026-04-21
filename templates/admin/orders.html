@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <section class="admin-card">
+    <section class="admin-card orders-section">
         <div class="admin-card__head">
             <h1>Orders</h1>
         </div>
@@ -53,6 +53,19 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            <div class="pagination">
+
+                {% if page > 1 %}
+                    <a class="link-button" href="{{ url_for('admin_orders', page=page-1) }}">Prev</a>
+                {% endif %}
+
+                <span>Page {{ page }} of {{ total_pages }}</span>
+
+                {% if page < total_pages %}
+                    <a class="link-button" href="{{ url_for('admin_orders', page=page+1) }}">Next</a>
+                {% endif %}
+
             </div>
         {% else %}
             <p class="empty-message">No orders found.</p>

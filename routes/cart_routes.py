@@ -1,7 +1,6 @@
 from flask import request, session, jsonify, redirect, flash, render_template, url_for
 import re
 
-# Make sure importing from helpers is at the top level
 from helpers import (
     get_cart, normalize_size, get_cart_count, handle_cart_error,
     calculate_cart_total, wants_json_response

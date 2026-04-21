@@ -281,6 +281,14 @@ a {
     border-color: #a7f3d0;
 }
 
+.orders-section .pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
 .order-meta {
     margin: 0;
     display: grid;

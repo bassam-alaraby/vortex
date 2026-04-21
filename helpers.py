@@ -7,7 +7,6 @@ def get_sizes():
 
 
 def get_cart():
-    # Return cart list from session or empty
     return session.get('cart', [])
 
 def normalize_size(size):
@@ -49,7 +48,6 @@ def handle_cart_error(message, status_code):
         }), status_code
 
     flash(message, "error")
-    # Redirects back to previous page or collection if no referrer
     return redirect(request.referrer or url_for('collection'))
 
 def render_error_response(status_code, template_name, title, message):

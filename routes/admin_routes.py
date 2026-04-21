@@ -1,6 +1,7 @@
 import hmac
 import os
 from functools import wraps
+from math import ceil
 
 from flask import flash, redirect, render_template, request, session, url_for
 
@@ -56,17 +57,45 @@ def register_admin_routes(app, db):
     @app.route("/admin/orders")
     @admin_required
     def admin_orders():
+        page = request.args.get('page')
+
+        try:
+            page = int(page)
+        except (TypeError, ValueError):
+            page = 1
+
+        if page < 1:
+            page = 1
+
+        per_page = 2
+        
+        total_count = db.execute("SELECT COUNT(*) as count FROM orders")[0]["count"]
+        total_pages = ceil(total_count / per_page)
+
+        if total_pages == 0:
+            total_pages = 1
+
+        if page > total_pages:
+            page = total_pages
+        
+        offset = (page - 1) * per_page
+        
         orders = db.execute(
             """
             SELECT id, name, phone, total_price, status, created_at
             FROM orders
             ORDER BY created_at DESC, id DESC
-            """
+            LIMIT ? OFFSET ?
+            """,
+            per_page,
+            offset,
         )
 
         return render_template(
             "admin/orders.html",
             orders=orders,
+            page=page,
+            total_pages=total_pages,
             valid_statuses=ORDER_STATUS_SEQUENCE,
         )
 
