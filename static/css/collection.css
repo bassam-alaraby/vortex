@@ -46,7 +46,8 @@
     min-height: 0;
     display: block;
     object-fit: cover;
-    border-radius: 30px;
+    border-radius: 15px;
+    box-shadow: -6px 8px 15px rgba(0, 0, 0, 0.3);
 }
 
 .collection-grid .price {
@@ -97,21 +98,7 @@
     border-color: white;
 }
 
-.collection-grid .arrow {
-    flex: 0 0 45px;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    color: white;
-    border-color: white;
-}
-
-.collection-grid .add-to-cart:hover,
-.collection-grid .arrow:hover {
+.collection-grid .add-to-cart:hover {
     background-color: white;
     color: black;
     cursor: pointer;
@@ -128,12 +115,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
     padding-bottom: 70px;
 }
 
 .pages-nav .btn {
     color: black;
+    padding: 8px 12px;
+    border-radius: 15px;
     border: 2px solid black;
 }
 
@@ -195,7 +184,10 @@
         flex-direction: column;
     }
 
-    .collection-grid img { border-radius: 25px; }
+    .collection-grid img { 
+        border-radius: 15px;
+        box-shadow: -6px 8px 15px rgba(0, 0, 0, 0.3);
+    }
     
     .collection-grid .price { height: 25px; }
 
@@ -217,22 +209,6 @@
         text-overflow: ellipsis;
     }
 
-    .collection-grid .arrow {
-        flex: 0 0 32px;
-        width: 32px;
-        height: 32px;
-        aspect-ratio: 1 / 1;
-        min-width: 32px;
-        min-height: 32px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-        border-radius: 50%;
-        font-size: 0.95rem;
-    }
-
     .pages-nav { 
         padding-bottom: 30px;
         gap: 10px; 
@@ -249,6 +225,11 @@
         gap: 16px;
     }
 
+    .collection-grid img { 
+        border-radius: 15px;
+        box-shadow: -6px 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
     .collection-grid .price { height: 25px; }
 
     .collection-grid .card-btn {
@@ -261,21 +242,6 @@
     .collection-grid .add-to-cart {
         padding-inline: 6px;
         font-size: 0.6rem;
-    }
-
-    .collection-grid .arrow {
-        flex-basis: 30px;
-        width: 30px;
-        height: 30px;
-        aspect-ratio: 1 / 1;
-        min-width: 30px;
-        min-height: 30px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-        font-size: 0.85rem;
     }
 
     .collection-grid .price .before {

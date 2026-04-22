@@ -14,7 +14,7 @@
     width: 100%;
 }
 
-.cover-image {
+.hero-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -27,19 +27,17 @@
     top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 250px;
+    width: 290px;
     height: auto;
 }
 
-.hero h1 {
+.hero-tagline {
     position: absolute;
-    top: 47%;
+    top: 48%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: white;
-    font-size: 2rem;
-    font-weight: 400;
-    text-align: center;
+    width: 550px;
+    height: auto;
 }
 
 .hero .btn {
@@ -76,7 +74,8 @@
     height: 100%;
     display: block;
     object-fit: cover;
-    border-radius: 30px;
+    border-radius: 15px;
+    box-shadow: -6px 8px 15px rgba(0, 0, 0, 0.3);
 }
 
 .categories .btn {
@@ -98,6 +97,10 @@
         width: 220px;
     }
 
+    .hero-tagline {
+        width: 400px;
+    }
+
     .hero h1 {
         font-size: 1.75rem;
         white-space: nowrap;
@@ -115,7 +118,6 @@
     }
 
     .hero h1 {
-        top: 44%;
         font-size: 1.5rem;
         white-space: nowrap;
     }

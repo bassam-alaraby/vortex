@@ -41,8 +41,6 @@
 
                                 <button class="btn add-to-cart" type="submit" name="action" value="cart">Add to Cart</button>
                             </form>
-
-                            <a href="{{ url_for('variant', id=product.id) }}" class="btn arrow"><i class="ri-arrow-right-long-line"></i></a>
                         </div>
                     </div>
                 </div>
@@ -52,11 +50,13 @@
             <div class="pages-nav">
 
                 {% if page > 1 %}
-                <a href="{{ url_for('collection', page=page-1, fit=fit) }}" class="btn">Previous Page</a>
+                <a href="{{ url_for('collection', page=page-1, fit=fit) }}" class="btn">Prev</a>
                 {% endif %}
 
+                <span>Page {{ page }} of {{ total_pages }}</span>
+
                 {% if page < total_pages %}
-                <a href="{{ url_for('collection', page=page+1, fit=fit) }}" class="btn">Next Page</a>
+                <a href="{{ url_for('collection', page=page+1, fit=fit) }}" class="btn">Next</a>
                 {% endif %}
 
             </div>

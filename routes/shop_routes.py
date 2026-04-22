@@ -31,7 +31,7 @@ def register_shop_routes(app, db):
         if page < 1:
             page = 1
 
-        per_page = 6
+        per_page = 2
 
         count_query = '''
         SELECT COUNT(*) AS count

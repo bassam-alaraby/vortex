@@ -57,7 +57,8 @@
     aspect-ratio: 1 / 1.1;
     display: block;
     object-fit: cover;
-    border-radius: 30px;
+    border-radius: 15px;
+    box-shadow: 8px 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .product-info {
@@ -177,7 +178,7 @@
     border: none;
     border-radius: 999px;
     background: linear-gradient(90deg, #ffd5dc 0%, #ffb1bd 100%);
-    color: #d35a73;
+    color: #d4564a;
     font-family: inherit;
     font-size: 1rem;
     font-weight: 700;

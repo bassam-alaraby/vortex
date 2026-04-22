@@ -239,11 +239,8 @@
 }
 
 .footer-tagline {
-    font-size: 1rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    opacity: 0.5;
-    margin: 1.2rem 0 1rem;
+    width: 350px;
+    height: auto;
 }
 
 .footer .social-links {
@@ -251,6 +248,7 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
+    margin-top: 1rem;
 }
 
 .footer-contact-text {
