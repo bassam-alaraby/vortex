@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from cs50 import SQL
 import os
 
@@ -45,6 +45,14 @@ def internal_server_error(error):
         "500",
         "An unexpected error occurred. Please try again later."
     )
+    
+@app.after_request
+def add_no_cache_headers(response):
+    if request.path.startswith("/admin"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 register_main_routes(app)
 register_shop_routes(app, db)

@@ -16,7 +16,7 @@ ORDER_STATUS_SEQUENCE = ["pending", "confirmed", "shipped", "delivered"]
 def admin_required(view_func):
     @wraps(view_func)
     def wrapped_view(*args, **kwargs):
-        if not session.get("admin"):
+        if "admin" not in session:
             return redirect(url_for("admin_login"))
         return view_func(*args, **kwargs)
 
@@ -28,7 +28,7 @@ def register_admin_routes(app, db):
     def admin_login():
         error_message = None
 
-        if session.get("admin"):
+        if "admin" in session:
             return redirect(url_for("admin_orders"))
 
         if request.method == "POST":
@@ -42,7 +42,7 @@ def register_admin_routes(app, db):
             password_match = hmac.compare_digest(password, admin_password)
 
             if username_match and password_match and admin_username and admin_password:
-                session["admin"] = username
+                session["admin"] = True
                 return redirect(url_for("admin_orders"))
 
             error_message = "بيانات الدخول غير صحيحة"
@@ -50,9 +50,10 @@ def register_admin_routes(app, db):
         return render_template("admin/login.html", error_message=error_message)
 
     @app.route("/admin/logout")
+    @admin_required
     def admin_logout():
         session.clear()
-        return redirect(url_for("index"))
+        return redirect(url_for("admin_login"))
 
     @app.route("/admin/orders")
     @admin_required
