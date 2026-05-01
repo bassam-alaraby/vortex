@@ -2,6 +2,7 @@
 .env
 .env.*
 .codex
+AGENTS.md
 
 # Python
 __pycache__/

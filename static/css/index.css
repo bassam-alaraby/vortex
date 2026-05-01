@@ -98,12 +98,8 @@
     }
 
     .hero-tagline {
-        width: 400px;
-    }
-
-    .hero h1 {
-        font-size: 1.75rem;
-        white-space: nowrap;
+        width: 440px;
+        top: 44%;
     }
 
     .categories {
@@ -114,12 +110,12 @@
 
 @media (max-width: 480px) {
     .hero-logo {
-        width: 220px;
+        width: 190px;
     }
 
-    .hero h1 {
-        font-size: 1.5rem;
-        white-space: nowrap;
+    .hero-tagline {
+        width: 390px;
+        top: 43%;
     }
 
     .categories {

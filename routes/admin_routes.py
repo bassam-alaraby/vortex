@@ -68,7 +68,7 @@ def register_admin_routes(app, db):
         if page < 1:
             page = 1
 
-        per_page = 2
+        per_page = 12
         
         total_count = db.execute("SELECT COUNT(*) as count FROM orders")[0]["count"]
         total_pages = ceil(total_count / per_page)
