@@ -1,4 +1,6 @@
 from flask import render_template, request, abort
+
+from cloudinary_utils import cloudinary_image_url
 from math import ceil
 
 def register_shop_routes(app, db):
@@ -100,7 +102,8 @@ def register_shop_routes(app, db):
             products=products,
             page=page,
             fit=fit,
-            total_pages=total_pages
+            total_pages=total_pages,
+            cloudinary_image_url=cloudinary_image_url,
         )
 
 
@@ -142,5 +145,6 @@ def register_shop_routes(app, db):
         return render_template(
             'variant.html',
             variant_details=variant_details,
-            images=images
+            images=images,
+            cloudinary_image_url=cloudinary_image_url,
         )

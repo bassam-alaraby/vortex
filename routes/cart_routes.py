@@ -5,6 +5,7 @@ from helpers import (
     get_cart, normalize_size, get_cart_count, handle_cart_error,
     calculate_cart_total, wants_json_response
 )
+from cloudinary_utils import cloudinary_image_url
 
 
 ARABIC_INDIC_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
@@ -145,7 +146,8 @@ def register_cart_routes(app, db):
         return render_template(
             "cart.html",
             cart_items=cart_items,
-            total=total
+            total=total,
+            cloudinary_image_url=cloudinary_image_url,
         )
 
     @app.route("/update_cart", methods=["POST"])

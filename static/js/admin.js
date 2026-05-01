@@ -1,8 +1,61 @@
+const setupImagePreview = (input, container) => {
+    const clearPreview = () => {
+        container.innerHTML = "";
+    };
+
+    const createPreviewCard = (file, index) => {
+        const card = document.createElement("label");
+        card.className = "image-card";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "primary_upload";
+        radio.value = String(index + 1);
+
+        const img = document.createElement("img");
+        img.alt = file.name || "Image preview";
+
+        const caption = document.createElement("span");
+        caption.textContent = "Primary";
+
+        card.appendChild(radio);
+        card.appendChild(img);
+        card.appendChild(caption);
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        return card;
+    };
+
+    input.addEventListener("change", () => {
+        clearPreview();
+        const files = Array.from(input.files || []);
+        if (!files.length) {
+            return;
+        }
+
+        files.forEach((file, index) => {
+            const card = createPreviewCard(file, index);
+            container.appendChild(card);
+        });
+    });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const hamburger = document.getElementById("admin-hamburger");
     const nav = document.getElementById("admin-nav");
 
+    const imageInput = document.getElementById("variant-images");
+    const previewContainer = document.getElementById("variant-image-preview");
+
     if (!hamburger || !nav) {
+        if (imageInput && previewContainer) {
+            setupImagePreview(imageInput, previewContainer);
+        }
         return;
     }
 
@@ -32,4 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
             setOpenState(false);
         }
     });
+
+    if (imageInput && previewContainer) {
+        setupImagePreview(imageInput, previewContainer);
+    }
 });

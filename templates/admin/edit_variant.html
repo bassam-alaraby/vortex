@@ -1,0 +1,108 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+    Edit Variant
+{% endblock %}
+
+{% block main %}
+    <section class="admin-card">
+        <div class="admin-card__head">
+            <h1>Edit Variant</h1>
+            <a class="link-button" href="{{ url_for('admin_products') }}">Back</a>
+        </div>
+
+        <form method="post" class="admin-form" enctype="multipart/form-data">
+            <label>
+                <span>Product</span>
+                <select name="product_id" required>
+                    <option value="">Select product</option>
+                    {% for product in products %}
+                        {% set current_product = form.get('product_id', selected_product_id or 0) | int %}
+                        <option value="{{ product.id }}" {% if current_product == product.id %}selected{% endif %}>{{ product.name }} (#{{ product.id }})</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                <span>Name</span>
+                <input type="text" name="name" value="{{ form.get('name', variant.name) }}" required>
+            </label>
+
+            <label>
+                <span>Description</span>
+                <textarea name="description" rows="3" required>{{ form.get('description', variant.description) }}</textarea>
+            </label>
+
+            <label>
+                <span>Color</span>
+                <select name="color">
+                    <option value="">Select color</option>
+                    {% for color in colors %}
+                        {% set current_color = form.get('color', variant.color) %}
+                        <option value="{{ color }}" {% if current_color == color %}selected{% endif %}>{{ color }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <span>Or add new color</span>
+                <input type="text" name="color_new" value="{{ form.get('color_new', '') }}">
+            </label>
+
+            <label>
+                <span>Style</span>
+                <select name="style">
+                    <option value="">Select style</option>
+                    {% for style in styles %}
+                        {% set current_style = form.get('style', variant.style) %}
+                        <option value="{{ style }}" {% if current_style == style %}selected{% endif %}>{{ style }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <span>Or add new style</span>
+                <input type="text" name="style_new" value="{{ form.get('style_new', '') }}">
+            </label>
+
+            <label>
+                <span>Design (optional)</span>
+                <select name="design">
+                    <option value="">Select design</option>
+                    {% for design in designs %}
+                        {% set current_design = form.get('design', variant.design) %}
+                        <option value="{{ design }}" {% if current_design == design %}selected{% endif %}>{{ design }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <span>Or add new design</span>
+                <input type="text" name="design_new" value="{{ form.get('design_new', '') }}">
+            </label>
+
+            <div class="admin-form-section">
+                <div class="admin-form-section__title">Existing Images</div>
+                {% if existing_images %}
+                    <div class="image-grid">
+                        {% for image in existing_images %}
+                            <label class="image-card">
+                                <input type="radio" name="primary_image" value="{{ image.id }}" {% if image.is_primary %}checked{% endif %}>
+                                <img src="{{ cloudinary_image_url(image.image) }}" alt="Variant image">
+                                <span>Primary</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="admin-muted">No images yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="admin-form-section">
+                <div class="admin-form-section__title">Add New Images</div>
+                <p class="admin-muted">Upload images and pick the primary one.</p>
+                <input type="file" name="images" id="variant-images" accept="image/png,image/jpeg" multiple>
+                <div class="image-preview" id="variant-image-preview"></div>
+            </div>
+
+            <button type="submit">Save changes</button>
+        </form>
+    </section>
+{% endblock %}

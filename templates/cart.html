@@ -21,7 +21,7 @@
                         {% for item in cart_items %}
                             <article class="product-display cart-card" data-variant-id="{{ item.id }}" data-size="{{ item.size }}">
                                 <div class="product-gallery">
-                                    <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}">
+                                    <img src="{{ cloudinary_image_url(item.image) }}" alt="{{ item.name }}">
                                 </div>
 
                                 <div class="product-info">

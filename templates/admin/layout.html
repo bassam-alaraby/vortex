@@ -10,7 +10,7 @@
     <body>
         <header class="admin-header">
             <div class="admin-header__inner">
-                <a class="admin-brand"">VORTEX DASHBOARD</a>
+                <a class="admin-brand">VORTEX DASHBOARD</a>
                 {% if session.get('admin') %}
                     <div class="admin-nav-wrap">
                         <button
@@ -26,6 +26,7 @@
 
                         <nav class="admin-nav" id="admin-nav">
                             <a href="{{ url_for('admin_orders') }}">Orders</a>
+                            <a href="{{ url_for('admin_products') }}">Products</a>
                             <a href="{{ url_for('admin_season') }}">Season</a>
                             <a href="{{ url_for('admin_logout') }}">Logout</a>
                         </nav>

@@ -23,7 +23,7 @@
                 {% for product in products %}
                 <div class="card">
                     <a href="{{ url_for('variant', id=product.id) }}">
-                        <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+                        <img src="{{ cloudinary_image_url(product.image) }}" alt="{{ product.name }}">
                     </a>
 
                     <div>

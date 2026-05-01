@@ -14,7 +14,7 @@
             <main class="variant">
                 <div class="product-display">
                     <div class="product-gallery">
-                        <img src="{{ url_for('static', filename=variant_details.image) }}" alt="{{ variant_details.name }}">
+                        <img src="{{ cloudinary_image_url(variant_details.image) }}" alt="{{ variant_details.name }}">
                     </div>
 
                     <form class="product-info" method="POST" action="/add_to_cart">
@@ -60,7 +60,7 @@
                 <div class="thumbnails">
                 {% for img in images %}
                     <div class="thumb">
-                        <img src="{{ url_for('static', filename=img) }}" alt="{{ variant_details.name }}">
+                        <img src="{{ cloudinary_image_url(img) }}" alt="{{ variant_details.name }}">
                     </div>
                 {% endfor %}
                 </div>

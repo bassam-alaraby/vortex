@@ -1,0 +1,58 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+    Edit Product
+{% endblock %}
+
+{% block main %}
+    <section class="admin-card admin-card--narrow">
+        <div class="admin-card__head">
+            <h1>Edit Product</h1>
+            <a class="link-button" href="{{ url_for('admin_products') }}">Back</a>
+        </div>
+
+        <form method="post" class="admin-form">
+            <label>
+                <span>Name</span>
+                <input type="text" name="name" value="{{ form.get('name', product.name) }}" required>
+            </label>
+
+            <label>
+                <span>Price</span>
+                <input type="number" step="0.01" name="price" value="{{ form.get('price', product.price) }}" required>
+            </label>
+
+            <label>
+                <span>Fit</span>
+                <select name="fit">
+                    <option value="">Select fit</option>
+                    {% for fit in fits %}
+                        {% set current_fit = form.get('fit', product.fit) %}
+                        <option value="{{ fit }}" {% if current_fit == fit %}selected{% endif %}>{{ fit }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <span>Or add new fit</span>
+                <input type="text" name="fit_new" value="{{ form.get('fit_new', '') }}">
+            </label>
+
+            <label>
+                <span>Season</span>
+                <select name="season">
+                    <option value="">Select season</option>
+                    {% for season in seasons %}
+                        {% set current_season = form.get('season', product.season) %}
+                        <option value="{{ season }}" {% if current_season == season %}selected{% endif %}>{{ season }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <span>Or add new season</span>
+                <input type="text" name="season_new" value="{{ form.get('season_new', '') }}">
+            </label>
+
+            <button type="submit">Save changes</button>
+        </form>
+    </section>
+{% endblock %}

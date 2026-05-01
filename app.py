@@ -3,6 +3,7 @@ from cs50 import SQL
 import os
 
 from config import get_config
+from cloudinary_utils import configure_cloudinary
 
 from routes.main_routes import register_main_routes
 from routes.shop_routes import register_shop_routes
@@ -13,6 +14,7 @@ from helpers import get_cart, get_cart_count, render_error_response, get_sizes
 
 app = Flask(__name__)
 app.config.from_object(get_config())
+configure_cloudinary()
 
 db = SQL(app.config['DATABASE_PATH'])
 db.execute("PRAGMA foreign_keys = ON")

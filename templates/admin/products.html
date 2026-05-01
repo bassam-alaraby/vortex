@@ -1,0 +1,142 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+    Admin Products
+{% endblock %}
+
+{% block main %}
+    <div class="admin-products-page">
+        <section class="admin-card admin-card--products">
+            <div class="admin-card__head">
+                <h1>Products</h1>
+                <div class="admin-actions">
+                    <a class="link-button" href="{{ url_for('admin_add_product') }}">Add product</a>
+                    <a class="link-button" href="{{ url_for('admin_add_variant') }}">Add variant</a>
+                </div>
+            </div>
+
+            {% if products %}
+                <div class="table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Preview</th>
+                                <th>Name</th>
+                                <th>Fit</th>
+                                <th>Season</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                                <tr>
+                                    <td>#{{ product.id }}</td>
+                                    <td>
+                                        {% if product.primary_image %}
+                                            <img class="admin-thumb" src="{{ cloudinary_image_url(product.primary_image) }}" alt="{{ product.name }}">
+                                        {% else %}
+                                            <span class="empty-message">No image</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.fit }}</td>
+                                    <td>{{ product.season }}</td>
+                                    <td>{{ product.price | int }}</td>
+                                    <td>
+                                        <div class="admin-action-row">
+                                            <a class="link-button" href="{{ url_for('admin_edit_product', product_id=product.id) }}">Edit</a>
+                                            <a class="link-button" href="{{ url_for('admin_add_variant_for_product', product_id=product.id) }}">Add variant</a>
+                                            <form method="post" action="{{ url_for('admin_delete_product', product_id=product.id) }}" class="inline-form" onsubmit="return confirm('Delete this product?')">
+                                                <button type="submit">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    {% if has_prev %}
+                        <a class="link-button" href="{{ url_for('admin_products', page=page-1, variants_page=variants_page) }}">Prev</a>
+                    {% endif %}
+
+                    <span>Page {{ page }} of {{ total_pages }}</span>
+
+                    {% if has_next %}
+                        <a class="link-button" href="{{ url_for('admin_products', page=page+1, variants_page=variants_page) }}">Next</a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p class="empty-message">No products found.</p>
+            {% endif %}
+        </section>
+
+        <section class="admin-card admin-card--variants">
+            <div class="admin-card__head">
+                <h2>Variants</h2>
+            </div>
+
+            {% if variants %}
+                <div class="table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Preview</th>
+                                <th>Product</th>
+                                <th>Name</th>
+                                <th>Color</th>
+                                <th>Style</th>
+                                <th>Design</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for variant in variants %}
+                                <tr>
+                                    <td>#{{ variant.id }}</td>
+                                    <td>
+                                        {% if variant.primary_image %}
+                                            <img class="admin-thumb" src="{{ cloudinary_image_url(variant.primary_image) }}" alt="{{ variant.name }}">
+                                        {% else %}
+                                            <span class="empty-message">No image</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ variant.product_name }}</td>
+                                    <td>{{ variant.name }}</td>
+                                    <td>{{ variant.color }}</td>
+                                    <td>{{ variant.style }}</td>
+                                    <td>{{ variant.design or '-' }}</td>
+                                    <td>
+                                        <div class="admin-action-row">
+                                            <a class="link-button" href="{{ url_for('admin_edit_variant', variant_id=variant.id) }}">Edit</a>
+                                            <form method="post" action="{{ url_for('admin_delete_variant', variant_id=variant.id) }}" class="inline-form" onsubmit="return confirm('Delete this variant?')">
+                                                <button type="submit">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    {% if variants_has_prev %}
+                        <a class="link-button" href="{{ url_for('admin_products', page=page, variants_page=variants_page-1) }}">Prev</a>
+                    {% endif %}
+
+                    <span>Page {{ variants_page }} of {{ variants_total_pages }}</span>
+
+                    {% if variants_has_next %}
+                        <a class="link-button" href="{{ url_for('admin_products', page=page, variants_page=variants_page+1) }}">Next</a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p class="empty-message">No variants found.</p>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}
