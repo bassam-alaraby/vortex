@@ -19,6 +19,19 @@
                 <h1>COLLECTION</h1>
             </div>
 
+            <section class="custom-hero" aria-label="Custom design">
+                <div class="custom-hero__content">
+                    <div class="custom-hero__text">
+                        <span class="custom-hero__kicker">CUSTOM STUDIO</span>
+                        <p>Create your own statement piece with your uploaded design.</p>
+                    </div>
+                    <a href="{{ url_for('custom_collection') }}" class="custom-hero__cta">
+                        Design Your Own
+                        <span aria-hidden="true">-></span>
+                    </a>
+                </div>
+            </section>
+
             <div class="collection-grid">
                 {% for product in products %}
                 <div class="card">

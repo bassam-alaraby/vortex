@@ -34,6 +34,12 @@ pip install -r requirements.txt
 python3 database/init_db.py
 ```
 
+لو بتحدّث مشروع موجود للنسخة اللي فيها Custom Design feature شغّل:
+
+```bash
+python3 database/migrate_custom_design.py
+```
+
 6. شغّل التطبيق:
 
 ```bash

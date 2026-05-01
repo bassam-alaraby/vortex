@@ -167,12 +167,27 @@ a {
 }
 
 .admin-thumb {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
     border-radius: 10px;
     object-fit: cover;
     border: 1px solid #e5e7eb;
     background: #f9fafb;
+}
+
+.admin-image-link {
+    display: inline-block;
+    border-radius: 10px;
+    line-height: 0;
+}
+
+.admin-image-link:hover {
+    transform: translateY(-1px);
+}
+
+.admin-image-link:focus-visible {
+    outline: 2px solid #111827;
+    outline-offset: 2px;
 }
 
 .admin-muted {
@@ -226,6 +241,14 @@ a {
     font-weight: 600;
 }
 
+.admin-card--products .admin-table {
+    min-width: 760px;
+}
+
+.admin-card--variants .admin-table {
+    min-width: 980px;
+}
+
 .admin-form {
     display: grid;
     gap: 10px;
@@ -249,6 +272,30 @@ a {
 .admin-form-section__title {
     font-weight: 700;
     margin-bottom: 6px;
+}
+
+.upload-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.upload-actions input[type="file"] {
+    flex: 1;
+    min-width: 220px;
+}
+
+.upload-cancel-btn {
+    width: auto;
+    min-width: 130px;
+    background: #fff;
+    color: #111827;
+    border: 1px solid #d1d5db;
+}
+
+.upload-cancel-btn:hover {
+    background: #f3f4f6;
 }
 
 .upload-grid {
@@ -311,7 +358,31 @@ a {
 }
 
 .admin-form--season {
-    justify-items: center;
+    justify-items: stretch;
+    gap: 14px;
+}
+
+.admin-form--season label {
+    width: min(320px, 100%);
+}
+
+.settings-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px;
+    background: #f9fafb;
+    display: grid;
+    gap: 10px;
+}
+
+.settings-section h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.settings-submit {
+    display: flex;
+    justify-content: center;
 }
 
 .admin-form--season button {
@@ -345,6 +416,16 @@ a {
 .admin-form button:hover,
 .inline-form button:hover {
     background: #1f2937;
+}
+
+.admin-form .upload-cancel-btn {
+    background: #fff;
+    color: #111827;
+    border: 1px solid #d1d5db;
+}
+
+.admin-form .upload-cancel-btn:hover {
+    background: #f3f4f6;
 }
 
 .inline-form {
@@ -457,7 +538,7 @@ a {
 .season-options {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 18px;
     flex-wrap: wrap;
     width: 100%;
@@ -466,6 +547,13 @@ a {
 
 .radio-option input {
     width: auto;
+}
+
+.custom-design-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
 }
 
 .empty-message {

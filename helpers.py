@@ -1,4 +1,11 @@
+import os
+
 from flask import session, request, jsonify, flash, redirect, url_for, render_template
+from werkzeug.utils import secure_filename
+
+
+ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png"}
+ALLOWED_IMAGE_MIME_TYPES = {"image/jpeg", "image/png"}
 
 
 def get_sizes():
@@ -20,6 +27,25 @@ def get_cart_count(cart):
 def calculate_cart_total(cart, db):
     total = 0
     for item in cart:
+        if item.get("is_custom"):
+            unit_price = item.get("unit_price")
+
+            if unit_price is None:
+                row = db.execute("""
+                    SELECT products.price
+                    FROM variants
+                    JOIN products ON variants.product_id = products.id
+                    WHERE variants.id = ?
+                """, item["variant_id"])
+
+                if not row:
+                    continue
+
+                unit_price = float(row[0]["price"]) + get_custom_fee(db)
+
+            total += float(unit_price) * item["quantity"]
+            continue
+
         row = db.execute("""
             SELECT products.price
             FROM variants
@@ -33,6 +59,35 @@ def calculate_cart_total(cart, db):
         total += row[0]["price"] * item["quantity"]
 
     return total
+
+
+def get_custom_fee(db):
+    row = db.execute('SELECT value FROM settings WHERE key = "custom_fee"')
+    if not row:
+        return 0.0
+
+    try:
+        return float(row[0]["value"])
+    except (TypeError, ValueError, KeyError):
+        return 0.0
+
+
+def validate_image_upload(file_obj):
+    if not file_obj or not file_obj.filename:
+        return None, "Image file is required."
+
+    filename = secure_filename(file_obj.filename)
+    if not filename:
+        return None, "Invalid file name."
+
+    extension = os.path.splitext(filename)[1].lower().lstrip(".")
+    if extension not in ALLOWED_IMAGE_EXTENSIONS:
+        return None, "Only JPG and PNG images are allowed."
+
+    if file_obj.mimetype not in ALLOWED_IMAGE_MIME_TYPES:
+        return None, "Invalid image MIME type."
+
+    return filename, None
 
 def wants_json_response():
     return (

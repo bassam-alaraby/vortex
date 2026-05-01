@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block css %}
+    <link href="{{ url_for('static', filename='css/variant.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom_design.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+    VORTEX - Custom {{ variant_details.name }}
+{% endblock %}
+
+{% block main %}
+    <div class="rtl-page" lang="ar">
+        <main class="variant custom-design-page">
+            <div class="product-display">
+                <div class="product-gallery">
+                    <img src="{{ cloudinary_image_url(variant_details.image) }}" alt="{{ variant_details.name }}">
+                </div>
+
+                <form class="product-info" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="size" id="selected-size">
+                    <input type="hidden" name="quantity" id="selected-qty" value="1">
+
+                    <div class="product-header">
+                        <h1>{{ variant_details.name }}</h1>
+                        <p>{{ variant_details.description }}</p>
+                    </div>
+
+                    <div class="custom-price-breakdown">
+                        <p>سعر المنتج: <strong>{{ base_price | int }} ج.م</strong></p>
+                        <p>تكلفة التصميم: <strong>+{{ custom_fee | int }} ج.م</strong></p>
+                        <p class="total">الإجمالي: <strong>{{ total_price | int }} ج.م</strong></p>
+                    </div>
+
+                    <div class="size-selector">
+                        {% for option in sizes %}
+                        <button type="button" class="btn {% if loop.first %}active{% endif %}">{{ option }}</button>
+                        {% endfor %}
+                    </div>
+
+                    <div class="quantity-selector">
+                        <button type="button" class="btn" id="minus">
+                            <i class="ri-subtract-line"></i>
+                        </button>
+
+                        <div class="qty-display" id="qty">1</div>
+
+                        <button type="button" class="btn" id="plus">
+                            <i class="ri-add-line"></i>
+                        </button>
+                    </div>
+
+                    <div class="custom-upload-block">
+                        <div class="custom-upload-head">
+                            <h3>ارفع تصميمك</h3>
+                            <p>ارفع التصميم بتاعك (JPG أو PNG) وهيتم تنفيذه.</p>
+                        </div>
+
+                        <label for="custom-image" class="custom-file-picker">اختار الصورة من جهازك</label>
+                        <input type="file" id="custom-image" name="custom_image" accept="image/*" required>
+                        <button type="button" class="custom-upload-cancel" id="custom-image-clear">إلغاء الصورة المختارة</button>
+                        <img id="custom-preview" class="custom-preview" alt="معاينة التصميم" hidden>
+                    </div>
+
+                    <div class="product-actions">
+                        <button type="submit" name="action" value="cart" class="btn primary">أضف إلى السلة</button>
+                        <button type="submit" name="action" value="buy_now" class="btn">اشترِ الآن</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ url_for('static', filename='js/variant.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom_design.js') }}"></script>
+{% endblock %}

@@ -382,7 +382,8 @@ async function updateCartItem(card, changes) {
     const payload = {
         variant_id: Number(card.dataset.variantId),
         size: currentSize,
-        quantity
+        quantity,
+        cart_item_id: card.dataset.cartItemId
     };
 
     if (changes.newSize) {
@@ -410,7 +411,7 @@ async function updateCartItem(card, changes) {
 
         if (data.merged && changes.newSize) {
             const mergedTarget = document.querySelector(
-                `.cart-card[data-variant-id="${data.item.variant_id}"][data-size="${data.item.size}"]`
+                `.cart-card[data-cart-item-id="${data.item.cart_item_id}"]`
             );
 
             if (mergedTarget && mergedTarget !== card) {
@@ -418,6 +419,7 @@ async function updateCartItem(card, changes) {
                 card.remove();
             } else {
                 card.dataset.size = data.item.size;
+                card.dataset.cartItemId = data.item.cart_item_id;
                 card.querySelector(".qty-display").textContent = data.item.quantity;
                 setActiveSize(card, data.item.size);
             }
@@ -427,6 +429,7 @@ async function updateCartItem(card, changes) {
         }
 
         card.dataset.size = data.item.size;
+        card.dataset.cartItemId = data.item.cart_item_id;
         card.querySelector(".qty-display").textContent = data.item.quantity;
         setActiveSize(card, data.item.size);
         renderCheckoutSummary();

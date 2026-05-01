@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request
+from flask import Flask, request
 from cs50 import SQL
-import os
 
 from config import get_config
 from cloudinary_utils import configure_cloudinary

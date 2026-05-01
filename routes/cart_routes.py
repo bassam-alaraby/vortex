@@ -3,7 +3,7 @@ import re
 
 from helpers import (
     get_cart, normalize_size, get_cart_count, handle_cart_error,
-    calculate_cart_total, wants_json_response
+    calculate_cart_total, wants_json_response, get_custom_fee
 )
 from cloudinary_utils import cloudinary_image_url
 
@@ -56,6 +56,21 @@ def validate_checkout_input(name, phone, address, notes):
 
     return errors
 
+
+def _regular_cart_item_id(variant_id, size):
+    return f"regular-{variant_id}-{size}"
+
+
+def _ensure_cart_item_id(item, index):
+    existing = item.get("cart_item_id")
+    if existing:
+        return existing
+
+    if item.get("is_custom"):
+        return f"custom-{item.get('variant_id', 'x')}-{item.get('size', '-')}-{index}"
+
+    return _regular_cart_item_id(item.get("variant_id"), item.get("size"))
+
 def register_cart_routes(app, db):
     @app.route('/add_to_cart', methods=['POST'])
     def add_to_cart():
@@ -76,8 +91,12 @@ def register_cart_routes(app, db):
         found = False
 
         for item in cart:
+            if item.get('is_custom'):
+                continue
+
             if item['variant_id'] == variant_id and item['size'] == size:
                 item['quantity'] += quantity
+                item['cart_item_id'] = _regular_cart_item_id(variant_id, size)
                 found = True
                 break
 
@@ -85,7 +104,9 @@ def register_cart_routes(app, db):
             cart.append({
                 'variant_id': variant_id,
                 'size': size,
-                'quantity': quantity
+                'quantity': quantity,
+                'is_custom': 0,
+                'cart_item_id': _regular_cart_item_id(variant_id, size)
             })
 
         session['cart'] = cart
@@ -108,15 +129,18 @@ def register_cart_routes(app, db):
     @app.route("/cart")
     def cart():
         cart_list = get_cart()
+        custom_fee = get_custom_fee(db)
+        should_update_session = False
 
         cart_items = []
-        for item in cart_list:
+        for index, item in enumerate(cart_list):
             row = db.execute(
                 '''
                 SELECT 
                     variants.id,
                     variants.name,
                     variants.description,
+                    variants.style,
                     products.price,
                     variant_images.image
                 FROM variants
@@ -131,17 +155,34 @@ def register_cart_routes(app, db):
             if not row:
                 continue
 
+            cart_item_id = _ensure_cart_item_id(item, index)
+            if item.get("cart_item_id") != cart_item_id:
+                item["cart_item_id"] = cart_item_id
+                should_update_session = True
+
+            is_custom = bool(item.get("is_custom"))
+            base_price = float(row[0]["price"])
+            unit_price = float(item.get("unit_price", base_price + custom_fee if is_custom else base_price))
+
             cart_items.append({
                 'id': row[0]['id'],
                 'name': row[0]['name'],
                 'description': row[0]['description'],
-                'price': row[0]['price'],
+                'price': unit_price,
+                'base_price': base_price,
+                'custom_fee': custom_fee if is_custom else 0,
                 'image': row[0]['image'],
                 'size': item['size'],
-                'quantity': item['quantity']
+                'quantity': item['quantity'],
+                'is_custom': 1 if is_custom else 0,
+                'custom_image': item.get('custom_image'),
+                'cart_item_id': cart_item_id,
             })
 
-        total = sum(item['price'] * item['quantity'] for item in cart_items)
+        if should_update_session:
+            session['cart'] = cart_list
+
+        total = calculate_cart_total(cart_list, db)
 
         return render_template(
             "cart.html",
@@ -160,8 +201,9 @@ def register_cart_routes(app, db):
                 "message": "Invalid request payload"
             }), 400
 
+        cart_item_id = (data.get("cart_item_id") or "").strip()
+
         try:
-            variant_id = int(data.get("variant_id"))
             quantity = int(data.get("quantity"))
         except (TypeError, ValueError):
             return jsonify({
@@ -169,20 +211,37 @@ def register_cart_routes(app, db):
                 "message": "Invalid cart update"
             }), 400
 
+        try:
+            variant_id = int(data.get("variant_id"))
+        except (TypeError, ValueError):
+            variant_id = None
+
         size = normalize_size(data.get("size"))
         new_size = normalize_size(data.get("new_size"))
 
-        if not size:
+        if not cart_item_id and not size:
             return jsonify({
                 "success": False,
-                "message": "Missing cart item size"
+                "message": "Missing cart item identifier"
             }), 400
 
         cart = get_cart()
         current_item = None
 
         for item in cart:
-            if item["variant_id"] == variant_id and item["size"] == size:
+            item_id = item.get("cart_item_id")
+
+            if cart_item_id and item_id == cart_item_id:
+                current_item = item
+                break
+
+            if (
+                not cart_item_id
+                and variant_id is not None
+                and not item.get("is_custom")
+                and item["variant_id"] == variant_id
+                and item["size"] == size
+            ):
                 current_item = item
                 break
 
@@ -195,20 +254,34 @@ def register_cart_routes(app, db):
         if new_size:
             merge_target = None
 
-            for item in cart:
-                if item is current_item:
-                    continue
-                if item["variant_id"] == variant_id and item["size"] == new_size:
-                    merge_target = item
-                    break
+            is_custom_item = bool(current_item.get("is_custom"))
+
+            if not is_custom_item:
+                for item in cart:
+                    if item is current_item:
+                        continue
+                    if item.get("is_custom"):
+                        continue
+                    if item["variant_id"] == current_item["variant_id"] and item["size"] == new_size:
+                        merge_target = item
+                        break
 
             if merge_target:
                 merge_target["quantity"] += quantity
+                merge_target["cart_item_id"] = _regular_cart_item_id(
+                    merge_target["variant_id"],
+                    merge_target["size"],
+                )
                 cart.remove(current_item)
                 response_item = merge_target
                 merged = True
             else:
                 current_item["size"] = new_size
+                if not current_item.get("is_custom"):
+                    current_item["cart_item_id"] = _regular_cart_item_id(
+                        current_item["variant_id"],
+                        new_size,
+                    )
                 response_item = current_item
                 merged = False
         else:
@@ -217,6 +290,8 @@ def register_cart_routes(app, db):
                 response_item = None
             else:
                 current_item["quantity"] = quantity
+                if not current_item.get("cart_item_id"):
+                    current_item["cart_item_id"] = _ensure_cart_item_id(current_item, 0)
                 response_item = current_item
             merged = False
 
@@ -229,7 +304,8 @@ def register_cart_routes(app, db):
             "item": {
                 "variant_id": response_item["variant_id"],
                 "size": response_item["size"],
-                "quantity": response_item["quantity"]
+                "quantity": response_item["quantity"],
+                "cart_item_id": response_item.get("cart_item_id")
             } if response_item else None,
             "removed": response_item is None,
             "merged": merged
@@ -298,6 +374,8 @@ def register_cart_routes(app, db):
         )
 
         for item in cart:
+            is_custom = bool(item.get("is_custom"))
+
             price_row = db.execute(
                 """
                 SELECT products.price
@@ -311,16 +389,27 @@ def register_cart_routes(app, db):
             if not price_row:
                 continue
 
+            price_value = (
+                float(item.get("unit_price", 0))
+                if is_custom
+                else float(price_row[0]["price"])
+            )
+
+            if price_value <= 0:
+                continue
+
             db.execute(
                 """
-                INSERT INTO order_items (order_id, variant_id, size, quantity, price)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO order_items (order_id, variant_id, size, quantity, price, custom_image, is_custom)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 order_id,
                 item["variant_id"],
                 item["size"],
                 item["quantity"],
-                price_row[0]["price"]
+                price_value,
+                item.get("custom_image") if is_custom else None,
+                1 if is_custom else 0,
             )
 
         session["cart"] = []

@@ -21,7 +21,6 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Preview</th>
                                 <th>Name</th>
                                 <th>Fit</th>
                                 <th>Season</th>
@@ -33,13 +32,6 @@
                             {% for product in products %}
                                 <tr>
                                     <td>#{{ product.id }}</td>
-                                    <td>
-                                        {% if product.primary_image %}
-                                            <img class="admin-thumb" src="{{ cloudinary_image_url(product.primary_image) }}" alt="{{ product.name }}">
-                                        {% else %}
-                                            <span class="empty-message">No image</span>
-                                        {% endif %}
-                                    </td>
                                     <td>{{ product.name }}</td>
                                     <td>{{ product.fit }}</td>
                                     <td>{{ product.season }}</td>
@@ -100,7 +92,9 @@
                                     <td>#{{ variant.id }}</td>
                                     <td>
                                         {% if variant.primary_image %}
-                                            <img class="admin-thumb" src="{{ cloudinary_image_url(variant.primary_image) }}" alt="{{ variant.name }}">
+                                            <a class="admin-image-link" href="{{ cloudinary_image_url(variant.primary_image) }}" target="_blank" rel="noopener noreferrer">
+                                                <img class="admin-thumb" src="{{ cloudinary_image_url(variant.primary_image) }}" alt="{{ variant.name }}">
+                                            </a>
                                         {% else %}
                                             <span class="empty-message">No image</span>
                                         {% endif %}

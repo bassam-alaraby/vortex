@@ -19,7 +19,7 @@
                 <div class="cart-layout">
                     <div class="cart-items">
                         {% for item in cart_items %}
-                            <article class="product-display cart-card" data-variant-id="{{ item.id }}" data-size="{{ item.size }}">
+                            <article class="product-display cart-card" data-variant-id="{{ item.id }}" data-size="{{ item.size }}" data-cart-item-id="{{ item.cart_item_id }}">
                                 <div class="product-gallery">
                                     <img src="{{ cloudinary_image_url(item.image) }}" alt="{{ item.name }}">
                                 </div>
@@ -28,11 +28,23 @@
                                     <div class="product-header">
                                         <h2>{{ item.name }}</h2>
                                         <p>{{ item.description }}</p>
+                                        {% if item.is_custom %}
+                                            <p class="custom-tag">تصميم مخصص</p>
+                                        {% endif %}
                                     </div>
 
                                     <div class="product-price">
-                                        <span>{{ item.price | int }} ج.م</span>
+                                        {% if item.is_custom %}
+                                            <span>{{ item.price | int }} ج.م</span>
+                                            <small>السعر الأساسي {{ item.base_price | int }} + التصميم {{ item.custom_fee | int }}</small>
+                                        {% else %}
+                                            <span>{{ item.price | int }} ج.م</span>
+                                        {% endif %}
                                     </div>
+
+                                    {% if item.is_custom and item.custom_image %}
+                                        <a class="custom-preview-link" href="{{ cloudinary_image_url(item.custom_image) }}" target="_blank" rel="noopener noreferrer">عرض التصميم المرفوع</a>
+                                    {% endif %}
 
                                     <div class="size-selector">
                                         {% for option in sizes %}

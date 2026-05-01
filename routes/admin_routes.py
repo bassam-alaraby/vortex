@@ -4,9 +4,9 @@ from functools import wraps
 from math import ceil
 
 from flask import flash, redirect, render_template, request, session, url_for
-from werkzeug.utils import secure_filename
 
 from cloudinary_utils import cloudinary_image_url, upload_image
+from helpers import validate_image_upload
 
 
 SIZES = ["XL", "L", "M", "S"]
@@ -14,10 +14,6 @@ SIZES = ["XL", "L", "M", "S"]
 VALID_ORDER_STATUSES = {"pending", "confirmed", "shipped", "delivered"}
 VALID_SEASONS = {"summer", "winter", "all"}
 ORDER_STATUS_SEQUENCE = ["pending", "confirmed", "shipped", "delivered"]
-
-ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png"}
-ALLOWED_IMAGE_MIME_TYPES = {"image/jpeg", "image/png"}
-
 
 def admin_required(view_func):
     @wraps(view_func)
@@ -145,36 +141,59 @@ def register_admin_routes(app, db):
                 order_items.size,
                 order_items.quantity,
                 order_items.price,
+                order_items.custom_image,
+                order_items.is_custom,
                 variants.name AS variant_name,
                 variants.color,
                 variants.style,
                 variants.design,
                 products.fit,
-                products.season
+                products.season,
+                variant_images.image AS variant_image
             FROM order_items
             JOIN variants ON variants.id = order_items.variant_id
             JOIN products ON products.id = variants.product_id
+            LEFT JOIN variant_images
+                ON variant_images.variant_id = variants.id
+                AND variant_images.is_primary = 1
             WHERE order_items.order_id = ?
             ORDER BY order_items.id ASC
             """,
             order_id,
         )
 
-        return render_template("admin/order_details.html", order=order, items=items)
+        return render_template(
+            "admin/order_details.html",
+            order=order,
+            items=items,
+            cloudinary_image_url=cloudinary_image_url,
+        )
 
-    @app.route("/admin/season", methods=["GET", "POST"])
+    @app.route("/admin/settings", methods=["GET", "POST"])
     @admin_required
-    def admin_season():
+    def admin_settings():
         if request.method == "POST":
             season = (request.form.get("season") or "").strip().lower()
+            custom_fee_raw = (request.form.get("custom_fee") or "").strip()
 
             if season not in VALID_SEASONS:
                 flash("Invalid season value", "error")
-                return redirect(url_for("admin_season"))
+                return redirect(url_for("admin_settings"))
+
+            try:
+                custom_fee_value = int(custom_fee_raw)
+            except ValueError:
+                flash("Custom design fee must be a whole number.", "error")
+                return redirect(url_for("admin_settings"))
+
+            if custom_fee_value < 0:
+                flash("Custom design fee cannot be negative.", "error")
+                return redirect(url_for("admin_settings"))
 
             try:
                 db.execute("BEGIN")
                 current_row = db.execute('SELECT key FROM settings WHERE key = "season"')
+                custom_fee_row = db.execute('SELECT key FROM settings WHERE key = "custom_fee"')
 
                 if current_row:
                     db.execute('UPDATE settings SET value = ? WHERE key = "season"', season)
@@ -183,20 +202,41 @@ def register_admin_routes(app, db):
                         'INSERT INTO settings (key, value) VALUES ("season", ?)', season
                     )
 
+                if custom_fee_row:
+                    db.execute(
+                        'UPDATE settings SET value = ? WHERE key = "custom_fee"',
+                        str(int(custom_fee_value)),
+                    )
+                else:
+                    db.execute(
+                        'INSERT INTO settings (key, value) VALUES ("custom_fee", ?)',
+                        str(int(custom_fee_value)),
+                    )
+
                 db.execute("COMMIT")
-                flash("Season updated.", "success")
+                flash("Settings updated.", "success")
             except Exception:
                 db.execute("ROLLBACK")
-                flash("Failed to update season.", "error")
+                flash("Failed to update settings.", "error")
 
-            return redirect(url_for("admin_season"))
+            return redirect(url_for("admin_settings"))
 
         row = db.execute('SELECT value FROM settings WHERE key = "season"')
         current_season = row[0]["value"] if row else "summer"
         if current_season not in VALID_SEASONS:
             current_season = "summer"
 
-        return render_template("admin/season.html", current_season=current_season)
+        custom_fee_row = db.execute('SELECT value FROM settings WHERE key = "custom_fee"')
+        try:
+            current_custom_fee = int(float(custom_fee_row[0]["value"])) if custom_fee_row else 80
+        except (TypeError, ValueError, KeyError):
+            current_custom_fee = 80
+
+        return render_template(
+            "admin/settings.html",
+            current_season=current_season,
+            current_custom_fee=current_custom_fee,
+        )
 
     @app.route("/admin/products")
     @admin_required
@@ -672,18 +712,9 @@ def _handle_variant_uploads(db, variant_id, allow_empty):
         if not file_obj or not file_obj.filename:
             continue
 
-        filename = secure_filename(file_obj.filename)
-        if not filename:
-            flash("Invalid file name.", "error")
-            return None
-
-        extension = os.path.splitext(filename)[1].lower().lstrip(".")
-        if extension not in ALLOWED_IMAGE_EXTENSIONS:
-            flash("Only JPG and PNG images are allowed.", "error")
-            return None
-
-        if file_obj.mimetype not in ALLOWED_IMAGE_MIME_TYPES:
-            flash("Invalid image MIME type.", "error")
+        _, validation_error = validate_image_upload(file_obj)
+        if validation_error:
+            flash(validation_error, "error")
             return None
 
         valid_files.append(file_obj)

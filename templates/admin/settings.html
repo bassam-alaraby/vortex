@@ -1,0 +1,47 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+    Settings
+{% endblock %}
+
+{% block main %}
+    <section class="admin-card admin-card--narrow admin-card--season">
+        <div class="admin-card__head">
+            <h1>Store Settings</h1>
+        </div>
+
+        <form method="post" class="admin-form admin-form--season">
+            <section class="settings-section">
+                <h2>Season Control</h2>
+                <div class="season-options">
+                    <label class="radio-option">
+                        <input type="radio" name="season" value="summer" {% if current_season == 'summer' %}checked{% endif %}>
+                        <span>summer</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="season" value="winter" {% if current_season == 'winter' %}checked{% endif %}>
+                        <span>winter</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="season" value="all" {% if current_season == 'all' %}checked{% endif %}>
+                        <span>all</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h2>Custom Design Fee</h2>
+                <label>
+                    <span>Fee E£</span>
+                    <input type="number" name="custom_fee" min="0" step="1" value="{{ current_custom_fee }}" required>
+                </label>
+            </section>
+
+            <div class="settings-submit">
+                <button type="submit">Save Settings</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}

@@ -23,7 +23,7 @@ CREATE TABLE variants (
     style TEXT NOT NULL,              -- 'plain' or 'printed'
     design TEXT NOT NULL DEFAULT '',  -- '' for plain, ex: 'Fire' for printed
     FOREIGN KEY (product_id) REFERENCES products(id)
-    -- UNIQUE(product_id, color, style, design)
+    UNIQUE(product_id, color, style, design)
 ); 
 
 -- variant_images table
@@ -55,6 +55,8 @@ CREATE TABLE order_items (
     size TEXT NOT NULL,
     quantity INTEGER NOT NULL,
     price REAL NOT NULL,
+    custom_image TEXT,
+    is_custom INTEGER DEFAULT 0,
     FOREIGN KEY (order_id) REFERENCES orders(id),
     FOREIGN KEY (variant_id) REFERENCES variants(id)
 );

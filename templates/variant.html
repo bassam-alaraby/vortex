@@ -53,6 +53,9 @@
                         <div class="product-actions">
                             <button type="submit" name="action" value="cart" class="btn primary">أضف إلى السلة</button>
                             <button type="submit" name="action" value="buy_now" class="btn">اشترِ الآن</button>
+                            {% if variant_details.style == 'plain' %}
+                                <a href="{{ url_for('custom_design', variant_id=variant_details.id) }}" class="btn custom-link">صمم منتجك</a>
+                            {% endif %}
                         </div>
                     </form>
                 </div>

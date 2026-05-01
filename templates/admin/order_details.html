@@ -28,9 +28,11 @@
                     <thead>
                         <tr>
                             <th>Variant Name</th>
+                            <th>Variant Image</th>
                             <th>Size</th>
                             <th>Quantity</th>
                             <th>Item Price</th>
+                            <th>Custom Design</th>
                             <th>Color</th>
                             <th>Style</th>
                             <th>Design</th>
@@ -42,9 +44,30 @@
                         {% for item in items %}
                             <tr>
                                 <td>{{ item.variant_name }}</td>
+                                <td>
+                                    {% if item.variant_image %}
+                                        <a class="admin-image-link" href="{{ cloudinary_image_url(item.variant_image) }}" target="_blank" rel="noopener noreferrer">
+                                            <img class="admin-thumb" src="{{ cloudinary_image_url(item.variant_image) }}" alt="{{ item.variant_name }}">
+                                        </a>
+                                    {% else %}
+                                        <span class="empty-message">No image</span>
+                                    {% endif %}
+                                </td>
                                 <td>{{ item.size }}</td>
                                 <td>{{ item.quantity }}</td>
                                 <td>{{ item.price | int }}</td>
+                                <td>
+                                    {% if item.is_custom and item.custom_image %}
+                                        <div class="custom-design-cell">
+                                            <a class="admin-image-link" href="{{ cloudinary_image_url(item.custom_image) }}" target="_blank" rel="noopener noreferrer">
+                                                <img class="admin-thumb" src="{{ cloudinary_image_url(item.custom_image) }}" alt="Custom design">
+                                            </a>
+                                            <a class="link-button" href="{{ cloudinary_image_url(item.custom_image) }}" download target="_blank" rel="noopener noreferrer">Download</a>
+                                        </div>
+                                    {% else %}
+                                        <span class="empty-message">-</span>
+                                    {% endif %}
+                                </td>
                                 <td>{{ item.color }}</td>
                                 <td>{{ item.style }}</td>
                                 <td>{{ item.design or '-' }}</td>

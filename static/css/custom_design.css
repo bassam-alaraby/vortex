@@ -1,0 +1,97 @@
+.custom-design-page .custom-price-breakdown {
+    border: 1px solid #e5e5e5;
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fafafa;
+}
+
+.custom-design-page .custom-price-breakdown p {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    color: #111;
+    line-height: 1.8;
+}
+
+.custom-design-page .custom-price-breakdown p.total {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed #d4d4d4;
+    font-weight: 700;
+}
+
+.custom-upload-block {
+    border: 1px dashed #cfcfcf;
+    border-radius: 14px;
+    padding: 14px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.custom-upload-head h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #111;
+}
+
+.custom-upload-head p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #4a4a4a;
+}
+
+.custom-upload-block input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+}
+
+.custom-file-picker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    border: 1px solid #111;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 700;
+    color: #111;
+    cursor: pointer;
+    background: #fff;
+}
+
+.custom-file-picker:hover {
+    background: #f5f5f5;
+}
+
+.custom-upload-cancel {
+    width: fit-content;
+    border: 1px solid #d4d4d4;
+    background: #fff;
+    color: #111;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.custom-upload-cancel:hover {
+    background: #f5f5f5;
+}
+
+.custom-preview {
+    width: min(100%, 260px);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+}

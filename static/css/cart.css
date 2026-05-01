@@ -89,6 +89,17 @@
     line-height: 1.6;
 }
 
+.product-header .custom-tag {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f766e;
+    background: #ccfbf1;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
 .size-selector {
     display: flex;
     flex-wrap: wrap;
@@ -128,6 +139,20 @@
     font-size: 1.7rem;
     font-weight: 700;
     color: #111;
+}
+
+.product-price small {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.9rem;
+    color: #6a6a6a;
+}
+
+.custom-preview-link {
+    font-size: 0.92rem;
+    color: #0f172a;
+    font-weight: 700;
+    text-decoration: underline;
 }
 
 .quantity-selector {

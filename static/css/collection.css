@@ -23,6 +23,61 @@
     font-family: 'Exo 2', sans-serif;
 }
 
+.custom-hero {
+    margin: 24px 70px 0;
+    border-radius: 22px;
+    padding: 24px;
+    border: 1px solid #d9dde4;
+    background: #ffffff;
+    color: #111;
+}
+
+.custom-hero__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.custom-hero__text {
+    display: grid;
+    gap: 6px;
+}
+
+.custom-hero__kicker {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    color: #475467;
+}
+
+.custom-hero__content p {
+    margin: 0;
+    font-size: 1rem;
+    letter-spacing: 0;
+    color: #0f172a;
+}
+
+.custom-hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #0f172a;
+    border-radius: 999px;
+    padding: 10px 18px;
+    color: #0f172a;
+    text-decoration: none;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.custom-hero__cta:hover {
+    background: #0f172a;
+    color: #fff;
+}
+
 .collection-grid {
     display: grid;
     width: 100%;
@@ -84,6 +139,7 @@
     flex: 1;
 }
 
+.collection-grid .card-btn > .btn,
 .collection-grid .card-btn form button {
     width: 100%;
 }
@@ -91,10 +147,15 @@
 .collection-grid .add-to-cart {
     flex: 1 1 auto;
     min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
     text-align: center;
     padding: 8px 20px;
     color: white;
     border-color: white;
+    text-decoration: none;
 }
 
 .collection-grid .add-to-cart:hover {
@@ -179,6 +240,11 @@
         padding: 30px 16px 30px;
     }
 
+    .custom-hero {
+        margin: 16px;
+        padding: 18px 16px;
+    }
+
     .collection-grid .card {
         flex-direction: column;
     }
@@ -204,6 +270,11 @@
         row-gap: 24px;
         padding-inline: 12px;
         gap: 16px;
+    }
+
+    .custom-hero {
+        margin: 14px 12px 0;
+        padding: 16px 14px;
     }
 
     .collection-grid .card-btn {

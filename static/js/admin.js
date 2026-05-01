@@ -43,6 +43,8 @@ const setupImagePreview = (input, container) => {
             container.appendChild(card);
         });
     });
+
+    return clearPreview;
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -51,11 +53,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const imageInput = document.getElementById("variant-images");
     const previewContainer = document.getElementById("variant-image-preview");
+    const clearUploadButton = document.getElementById("variant-images-clear");
+
+    const setupUploadReset = () => {
+        if (!imageInput || !previewContainer) {
+            return;
+        }
+
+        const clearPreview = setupImagePreview(imageInput, previewContainer);
+
+        if (!clearUploadButton) {
+            return;
+        }
+
+        clearUploadButton.addEventListener("click", () => {
+            imageInput.value = "";
+            clearPreview();
+        });
+    };
 
     if (!hamburger || !nav) {
-        if (imageInput && previewContainer) {
-            setupImagePreview(imageInput, previewContainer);
-        }
+        setupUploadReset();
         return;
     }
 
@@ -86,7 +104,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    if (imageInput && previewContainer) {
-        setupImagePreview(imageInput, previewContainer);
-    }
+    setupUploadReset();
 });
