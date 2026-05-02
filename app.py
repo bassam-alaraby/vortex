@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, request
 from cs50 import SQL
 
@@ -14,6 +16,16 @@ from helpers import get_cart, get_cart_count, render_error_response, get_sizes
 app = Flask(__name__)
 app.config.from_object(get_config())
 configure_cloudinary()
+
+# Derive the raw filesystem path from the SQLAlchemy-style DATABASE_PATH so we
+# can check whether the file exists before cs50.SQL tries to open it.
+_db_url = app.config['DATABASE_PATH']
+_db_file = _db_url.replace('sqlite:///', '', 1) if _db_url.startswith('sqlite:///') else _db_url
+
+if not os.path.exists(_db_file):
+    app.logger.info("Database file not found at %s — running init_db.py", _db_file)
+    from database.init_db import init_db
+    init_db()
 
 db = SQL(app.config['DATABASE_PATH'])
 db.execute("PRAGMA foreign_keys = ON")
