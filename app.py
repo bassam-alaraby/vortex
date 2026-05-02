@@ -1,4 +1,5 @@
 import os
+import sys
 
 from flask import Flask, request
 from cs50 import SQL
@@ -24,7 +25,8 @@ _db_file = _db_url.replace('sqlite:///', '', 1) if _db_url.startswith('sqlite://
 
 if not os.path.exists(_db_file):
     app.logger.info("Database file not found at %s — running init_db.py", _db_file)
-    from database.init_db import init_db
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'database'))
+    from init_db import init_db
     init_db()
 
 db = SQL(app.config['DATABASE_PATH'])
