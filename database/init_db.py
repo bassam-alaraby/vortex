@@ -2,10 +2,17 @@ import os
 import sqlite3
 
 # Define paths
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-# Note: In a larger app you might read this from .env or config
-DB_PATH = os.path.join(BASE_DIR, 'app.db')
-SCHEMA_PATH = os.path.join(BASE_DIR, 'schema.sql')
+SCHEMA_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'schema.sql')
+
+# Derive the database path from the DATABASE_PATH env var when available so
+# init_db.py and app.py always agree on the file location.  The env var uses
+# the SQLAlchemy-style "sqlite:///" prefix which we strip before use.
+# Fallback: use the absolute container path /app/database/app.db so the file
+# lands on the Railway persistent volume.  For local development the env var
+# (or a .env file) should be set to match whatever path the app is configured
+# to use.
+_raw_db_path = os.environ.get('DATABASE_PATH', 'sqlite:////app/database/app.db')
+DB_PATH = _raw_db_path.replace('sqlite:///', '', 1) if _raw_db_path.startswith('sqlite:///') else _raw_db_path
 
 def init_db():
     print(f"Initializing database at {DB_PATH}...")
