@@ -35,7 +35,8 @@ if not _secret_key:
 class Config:
     SECRET_KEY = _secret_key
     
-    DATABASE_PATH = os.environ.get('DATABASE_PATH', 'sqlite:///database/app.db')
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+    DATABASE_PATH = os.environ.get('DATABASE_PATH', os.path.join(BASE_DIR, 'database', 'app.db'))
     
     TEMPLATES_AUTO_RELOAD = True
     

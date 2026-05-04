@@ -1,3 +1,6 @@
+import os
+import sqlite3
+
 from flask import Flask, request
 from cs50 import SQL
 
@@ -14,6 +17,23 @@ from helpers import get_cart, get_cart_count, render_error_response, get_sizes
 app = Flask(__name__)
 app.config.from_object(get_config())
 configure_cloudinary()
+
+def _ensure_db(db_path, schema_path):
+    if not os.path.exists(db_path):
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
+        with open(schema_path, 'r', encoding='utf-8') as f:
+            schema_sql = f.read()
+        conn = sqlite3.connect(db_path)
+        conn.executescript(schema_sql)
+        conn.commit()
+        conn.close()
+        print(f"DB initialized at {db_path}")
+
+_BASE = os.path.abspath(os.path.dirname(__file__))
+_ensure_db(
+    os.path.join(_BASE, 'database', 'app.db'),
+    os.path.join(_BASE, 'database', 'schema.sql')
+)
 
 db = SQL(app.config['DATABASE_PATH'])
 db.execute("PRAGMA foreign_keys = ON")
