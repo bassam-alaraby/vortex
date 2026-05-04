@@ -51,12 +51,28 @@ CREATE TABLE orders (
 CREATE TABLE order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_id INTEGER NOT NULL,
-    variant_id INTEGER NOT NULL,
+    variant_id INTEGER,
     size TEXT NOT NULL,
     quantity INTEGER NOT NULL,
     price REAL NOT NULL,
     custom_image TEXT,
     is_custom INTEGER DEFAULT 0,
+    variant_name TEXT,
+    variant_color TEXT,
+    variant_style TEXT,
+    variant_design TEXT,
+    product_name TEXT,
+    product_fit TEXT,
+    product_season TEXT,
+    variant_image TEXT,
     FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (variant_id) REFERENCES variants(id)
+    FOREIGN KEY (variant_id) REFERENCES variants(id) ON DELETE SET NULL
 );
+
+
+-- required settings:
+INSERT INTO settings (key, value)
+VALUES ('season', 'summer');
+
+INSERT INTO settings (key, value)
+VALUES ('custom_fee', '50');
