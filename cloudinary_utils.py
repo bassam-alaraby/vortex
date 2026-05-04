@@ -36,6 +36,23 @@ def cloudinary_image_url(public_id):
     )
 
 
+def cloudinary_download_url(public_id, filename=None):
+    if not public_id:
+        return ""
+
+    options = {
+        "fetch_format": "auto",
+        "quality": "auto",
+        "secure": True,
+        "flags": "attachment",
+    }
+
+    if filename:
+        options["filename"] = filename
+
+    return CloudinaryImage(public_id).build_url(**options)
+
+
 def upload_image(file_storage):
     result = cloudinary.uploader.upload(file_storage, resource_type="image")
     return result.get("public_id")

@@ -5,7 +5,7 @@ from math import ceil
 
 from flask import flash, redirect, render_template, request, session, url_for
 
-from cloudinary_utils import cloudinary_image_url, upload_image
+from cloudinary_utils import cloudinary_download_url, cloudinary_image_url, upload_image
 from helpers import validate_image_upload
 
 
@@ -143,16 +143,16 @@ def register_admin_routes(app, db):
                 order_items.price,
                 order_items.custom_image,
                 order_items.is_custom,
-                variants.name AS variant_name,
-                variants.color,
-                variants.style,
-                variants.design,
-                products.fit,
-                products.season,
-                variant_images.image AS variant_image
+                COALESCE(order_items.variant_name, variants.name) AS variant_name,
+                COALESCE(order_items.variant_color, variants.color) AS color,
+                COALESCE(order_items.variant_style, variants.style) AS style,
+                COALESCE(order_items.variant_design, variants.design) AS design,
+                COALESCE(order_items.product_fit, products.fit) AS fit,
+                COALESCE(order_items.product_season, products.season) AS season,
+                COALESCE(order_items.variant_image, variant_images.image) AS variant_image
             FROM order_items
-            JOIN variants ON variants.id = order_items.variant_id
-            JOIN products ON products.id = variants.product_id
+            LEFT JOIN variants ON variants.id = order_items.variant_id
+            LEFT JOIN products ON products.id = variants.product_id
             LEFT JOIN variant_images
                 ON variant_images.variant_id = variants.id
                 AND variant_images.is_primary = 1
@@ -166,7 +166,9 @@ def register_admin_routes(app, db):
             "admin/order_details.html",
             order=order,
             items=items,
+            custom_download_name=f"order-{order_id}-custom-design",
             cloudinary_image_url=cloudinary_image_url,
+            cloudinary_download_url=cloudinary_download_url,
         )
 
     @app.route("/admin/settings", methods=["GET", "POST"])
@@ -598,8 +600,16 @@ def register_admin_routes(app, db):
     @app.route("/admin/variants/<int:variant_id>/delete", methods=["POST"])
     @admin_required
     def admin_delete_variant(variant_id):
-        db.execute("DELETE FROM variant_images WHERE variant_id = ?", variant_id)
-        db.execute("DELETE FROM variants WHERE id = ?", variant_id)
+        try:
+            db.execute("BEGIN")
+            db.execute("DELETE FROM variant_images WHERE variant_id = ?", variant_id)
+            db.execute("DELETE FROM variants WHERE id = ?", variant_id)
+            db.execute("COMMIT")
+        except Exception:
+            db.execute("ROLLBACK")
+            flash("Failed to delete variant.", "error")
+            return redirect(url_for("admin_products"))
+
         flash("Variant deleted.", "success")
         return redirect(url_for("admin_products"))
 

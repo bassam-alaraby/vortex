@@ -26,19 +26,19 @@
             <div class="table-wrap">
                 <table class="admin-table">
                     <thead>
-                        <tr>
-                            <th>Variant Name</th>
-                            <th>Variant Image</th>
-                            <th>Size</th>
-                            <th>Quantity</th>
-                            <th>Item Price</th>
-                            <th>Custom Design</th>
-                            <th>Color</th>
-                            <th>Style</th>
-                            <th>Design</th>
-                            <th>Fit</th>
-                            <th>Season</th>
-                        </tr>
+                            <tr>
+                                <th>Variant Name</th>
+                                <th>Variant Image</th>
+                                <th>Size</th>
+                                <th>Quantity</th>
+                                <th>Item Price</th>
+                                <th>Custom Design</th>
+                                <th>Color</th>
+                                <th>Style</th>
+                                <th>Design</th>
+                                <th>Fit</th>
+                                <th>Season</th>
+                            </tr>
                     </thead>
                     <tbody>
                         {% for item in items %}
@@ -62,7 +62,7 @@
                                             <a class="admin-image-link" href="{{ cloudinary_image_url(item.custom_image) }}" target="_blank" rel="noopener noreferrer">
                                                 <img class="admin-thumb" src="{{ cloudinary_image_url(item.custom_image) }}" alt="Custom design">
                                             </a>
-                                            <a class="link-button" href="{{ cloudinary_image_url(item.custom_image) }}" download target="_blank" rel="noopener noreferrer">Download</a>
+                                            <a class="link-button" href="{{ cloudinary_download_url(item.custom_image, custom_download_name) }}" target="_blank" rel="noopener noreferrer">Download</a>
                                         </div>
                                     {% else %}
                                         <span class="empty-message">-</span>

@@ -376,23 +376,37 @@ def register_cart_routes(app, db):
         for item in cart:
             is_custom = bool(item.get("is_custom"))
 
-            price_row = db.execute(
+            variant_rows = db.execute(
                 """
-                SELECT products.price
+                SELECT
+                    variants.name AS variant_name,
+                    variants.color AS variant_color,
+                    variants.style AS variant_style,
+                    variants.design AS variant_design,
+                    products.name AS product_name,
+                    products.fit AS product_fit,
+                    products.season AS product_season,
+                    products.price AS product_price,
+                    variant_images.image AS variant_image
                 FROM variants
                 JOIN products ON products.id = variants.product_id
+                LEFT JOIN variant_images
+                    ON variant_images.variant_id = variants.id
+                    AND variant_images.is_primary = 1
                 WHERE variants.id = ?
                 """,
-                item["variant_id"]
+                item["variant_id"],
             )
 
-            if not price_row:
+            if not variant_rows:
                 continue
+
+            variant_row = variant_rows[0]
 
             price_value = (
                 float(item.get("unit_price", 0))
                 if is_custom
-                else float(price_row[0]["price"])
+                else float(variant_row["product_price"])
             )
 
             if price_value <= 0:
@@ -400,8 +414,24 @@ def register_cart_routes(app, db):
 
             db.execute(
                 """
-                INSERT INTO order_items (order_id, variant_id, size, quantity, price, custom_image, is_custom)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO order_items (
+                    order_id,
+                    variant_id,
+                    size,
+                    quantity,
+                    price,
+                    custom_image,
+                    is_custom,
+                    variant_name,
+                    variant_color,
+                    variant_style,
+                    variant_design,
+                    product_name,
+                    product_fit,
+                    product_season,
+                    variant_image
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 order_id,
                 item["variant_id"],
@@ -410,6 +440,14 @@ def register_cart_routes(app, db):
                 price_value,
                 item.get("custom_image") if is_custom else None,
                 1 if is_custom else 0,
+                variant_row["variant_name"],
+                variant_row["variant_color"],
+                variant_row["variant_style"],
+                variant_row["variant_design"],
+                variant_row["product_name"],
+                variant_row["product_fit"],
+                variant_row["product_season"],
+                variant_row["variant_image"],
             )
 
         session["cart"] = []
