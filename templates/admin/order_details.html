@@ -15,8 +15,10 @@
             <div><dt>الاسم</dt><dd>{{ order.name }}</dd></div>
             <div><dt>الهاتف</dt><dd>{{ order.phone }}</dd></div>
             <div><dt>العنوان</dt><dd>{{ order.address }}</dd></div>
+            <div><dt>منطقة الشحن</dt><dd>{{ delivery_region_labels.get(order.delivery_region, '-') }}</dd></div>
+            <div><dt>رسوم الشحن</dt><dd>{% if order.delivery_fee is not none %}{{ order.delivery_fee | int }} جم{% else %}-{% endif %}</dd></div>
             <div><dt>الملاحظات</dt><dd>{{ order.notes or '-' }}</dd></div>
-            <div><dt>إجمالي السعر</dt><dd>{{ order.total_price | int }}</dd></div>
+            <div><dt>إجمالي السعر</dt><dd>{{ order.total_price | int }} جم</dd></div>
             <div><dt>الحالة</dt><dd>{{ order.status }}</dd></div>
             <div><dt>تاريخ الطلب</dt><dd>{{ order.created_at }}</dd></div>
         </dl>

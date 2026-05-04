@@ -360,8 +360,9 @@ def register_shop_routes(app, db):
             if action == 'buy_now':
                 return redirect(url_for('checkout'))
 
-            flash('تمت إضافة المنتج المخصص إلى السلة.', 'success')
-            return redirect(url_for('cart'))
+            flash('Added to cart successfully', 'success')
+            fallback_url = url_for('custom_design', variant_id=variant_id)
+            return redirect(request.referrer or fallback_url)
 
         return render_template(
             'custom_design.html',

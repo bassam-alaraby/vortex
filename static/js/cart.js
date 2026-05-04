@@ -105,9 +105,13 @@ function formatPrice(value) {
 }
 
 function renderCheckoutSummary() {
+    const checkoutForm = document.getElementById("checkout-form");
     const summaryList = document.getElementById("checkout-summary-items");
     const emptyState = document.getElementById("checkout-summary-empty");
     const totalNode = document.getElementById("checkout-summary-total");
+    const feeNode = document.getElementById("checkout-summary-fee");
+    const deliverySelect = document.getElementById("delivery-region");
+    const deliveryHidden = document.getElementById("delivery-region-hidden");
     const submitButton = document.querySelector(".checkout-form__submit");
 
     if (!summaryList || !emptyState || !totalNode) {
@@ -120,6 +124,9 @@ function renderCheckoutSummary() {
     if (!cards.length) {
         emptyState.hidden = false;
         totalNode.textContent = formatPrice(0);
+        if (feeNode) {
+            feeNode.textContent = formatPrice(0);
+        }
         if (submitButton) {
             submitButton.disabled = true;
         }
@@ -162,10 +169,24 @@ function renderCheckoutSummary() {
         summaryList.appendChild(row);
     });
 
-    totalNode.textContent = formatPrice(total);
+    const selectedOption = deliverySelect?.selectedOptions?.[0];
+    const deliveryFee = selectedOption ? parsePrice(selectedOption.dataset.fee) : 0;
+    if (feeNode) {
+        feeNode.textContent = formatPrice(deliveryFee);
+    }
+
+    totalNode.textContent = formatPrice(total + deliveryFee);
+
+    if (deliveryHidden) {
+        deliveryHidden.value = deliverySelect?.value || "";
+    }
 
     if (submitButton) {
-        submitButton.disabled = false;
+        submitButton.disabled = !deliverySelect?.value;
+    }
+
+    if (!deliverySelect?.value && deliverySelect) {
+        setCheckoutFieldError(checkoutForm, "delivery_region", "يرجى اختيار منطقة الشحن.");
     }
 }
 
@@ -190,15 +211,33 @@ function clearCheckoutFieldErrors(form) {
     form.querySelectorAll("[data-error-for]").forEach((errorNode) => {
         errorNode.textContent = "";
     });
+
+    const deliveryField = document.querySelector('[data-field="delivery_region"]');
+    if (deliveryField) {
+        deliveryField.classList.remove("checkout-field-invalid");
+        deliveryField.removeAttribute("aria-invalid");
+    }
+
+    const deliveryError = document.querySelector('[data-error-for="delivery_region"]');
+    if (deliveryError) {
+        deliveryError.textContent = "";
+    }
 }
 
 function setCheckoutFieldError(form, fieldName, message) {
-    const field = form.querySelector(`[data-field="${fieldName}"]`);
-    const errorNode = form.querySelector(`[data-error-for="${fieldName}"]`);
+    const field = form?.querySelector(`[data-field="${fieldName}"]`)
+        || document.querySelector(`[data-field="${fieldName}"]`);
+    const errorNode = form?.querySelector(`[data-error-for="${fieldName}"]`)
+        || document.querySelector(`[data-error-for="${fieldName}"]`);
 
     if (field) {
-        field.classList.add("checkout-field-invalid");
-        field.setAttribute("aria-invalid", "true");
+        if (message) {
+            field.classList.add("checkout-field-invalid");
+            field.setAttribute("aria-invalid", "true");
+        } else {
+            field.classList.remove("checkout-field-invalid");
+            field.removeAttribute("aria-invalid");
+        }
     }
 
     if (errorNode) {
@@ -211,7 +250,8 @@ function validateCheckoutForm(form) {
         name: normalizeSpaces(form.querySelector('[name="name"]')?.value),
         phone: normalizePhone(form.querySelector('[name="phone"]')?.value),
         address: normalizeSpaces(form.querySelector('[name="address"]')?.value),
-        notes: normalizeSpaces(form.querySelector('[name="notes"]')?.value)
+        notes: normalizeSpaces(form.querySelector('[name="notes"]')?.value),
+        deliveryRegion: (document.getElementById("delivery-region")?.value || "").trim()
     };
 
     const errors = {};
@@ -247,6 +287,10 @@ function validateCheckoutForm(form) {
         errors.notes = "الملاحظات يجب ألا تتجاوز 500 حرف.";
     }
 
+    if (!values.deliveryRegion) {
+        errors.delivery_region = "يرجى اختيار منطقة الشحن.";
+    }
+
     return {
         values,
         errors,
@@ -260,6 +304,7 @@ function setupCheckoutModal() {
     const closeButtons = document.querySelectorAll("[data-close-checkout-modal]");
     const checkoutForm = document.getElementById("checkout-form");
     const feedback = document.getElementById("checkout-feedback");
+    const deliverySelect = document.getElementById("delivery-region");
 
     if (!checkoutModal || !openButton || !checkoutForm || !feedback) {
         return;
@@ -305,6 +350,13 @@ function setupCheckoutModal() {
         openModal();
     }
 
+    if (deliverySelect) {
+        deliverySelect.addEventListener("change", () => {
+            setCheckoutFieldError(checkoutForm, "delivery_region", "");
+            renderCheckoutSummary();
+        });
+    }
+
     checkoutForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
@@ -328,6 +380,10 @@ function setupCheckoutModal() {
         checkoutForm.querySelector('[name="phone"]').value = validation.values.phone;
         checkoutForm.querySelector('[name="address"]').value = validation.values.address;
         checkoutForm.querySelector('[name="notes"]').value = validation.values.notes;
+        const deliveryHidden = document.getElementById("delivery-region-hidden");
+        if (deliveryHidden) {
+            deliveryHidden.value = validation.values.deliveryRegion;
+        }
 
         if (submitButton) {
             submitButton.disabled = true;

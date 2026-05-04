@@ -43,6 +43,8 @@ CREATE TABLE orders (
     address TEXT NOT NULL,
     notes TEXT,
     total_price REAL NOT NULL,
+    delivery_region TEXT,
+    delivery_fee REAL,
     status TEXT DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -72,7 +74,8 @@ CREATE TABLE order_items (
 
 -- required settings:
 INSERT INTO settings (key, value)
-VALUES ('season', 'summer');
-
-INSERT INTO settings (key, value)
-VALUES ('custom_fee', '50');
+VALUES ('season', 'summer'),
+       ('custom_fee', '50'),
+       ('delivery_fee_menoufia', '40'),
+       ('delivery_fee_delta', '80'),
+       ('delivery_fee_upper_egypt', '100');

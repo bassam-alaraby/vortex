@@ -124,6 +124,26 @@
                             لا توجد منتجات في السلة.
                         </div>
 
+                        <div class="checkout-summary-shipping">
+                            <label for="delivery-region" class="checkout-summary-label">من فضلك اختر منطقة الشحن (مطلوب)</label>
+                            <div class="checkout-summary-select">
+                                <select id="delivery-region" required data-field="delivery_region">
+                                    <option value="" selected disabled>اختر المنطقة</option>
+                                    {% for region_key in delivery_region_order %}
+                                        <option value="{{ region_key }}" data-fee="{{ delivery_fees[region_key] | int }}">
+                                            {{ delivery_region_labels[region_key] }} - {{ delivery_fees[region_key] | int }} جم
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="checkout-field-error" data-error-for="delivery_region"></small>
+                            </div>
+                        </div>
+
+                        <div class="checkout-summary-fee">
+                            <span>رسوم الشحن</span>
+                            <strong id="checkout-summary-fee">0 ج.م</strong>
+                        </div>
+
                         <div class="checkout-summary-total">
                             <span>الإجمالي</span>
                             <strong id="checkout-summary-total">0 ج.م</strong>
@@ -131,6 +151,7 @@
                     </section>
 
                     <form id="checkout-form" class="checkout-form" action="{{ url_for('checkout_submit') }}" method="POST" dir="rtl" lang="ar">
+                        <input type="hidden" name="delivery_region" id="delivery-region-hidden" value="">
                         <label>
                             <span>الاسم</span>
                             <input

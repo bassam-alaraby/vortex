@@ -2,8 +2,9 @@ from flask import request, session, jsonify, redirect, flash, render_template, u
 import re
 
 from helpers import (
-    get_cart, normalize_size, get_cart_count, handle_cart_error,
-    calculate_cart_total, wants_json_response, get_custom_fee
+    DELIVERY_REGION_LABELS, DELIVERY_REGION_ORDER, get_cart, normalize_size,
+    get_cart_count, handle_cart_error, calculate_cart_total, wants_json_response,
+    get_custom_fee, get_delivery_fees
 )
 from cloudinary_utils import cloudinary_image_url
 
@@ -130,6 +131,7 @@ def register_cart_routes(app, db):
     def cart():
         cart_list = get_cart()
         custom_fee = get_custom_fee(db)
+        delivery_fees = get_delivery_fees(db)
         should_update_session = False
 
         cart_items = []
@@ -189,6 +191,9 @@ def register_cart_routes(app, db):
             cart_items=cart_items,
             total=total,
             cloudinary_image_url=cloudinary_image_url,
+            delivery_fees=delivery_fees,
+            delivery_region_labels=DELIVERY_REGION_LABELS,
+            delivery_region_order=DELIVERY_REGION_ORDER,
         )
 
     @app.route("/update_cart", methods=["POST"])
@@ -322,8 +327,16 @@ def register_cart_routes(app, db):
         address = normalize_spaces(request.form.get("address"))
         notes = normalize_spaces(request.form.get("notes"))
         notes = notes or None
+        delivery_region = (request.form.get("delivery_region") or "").strip()
 
         validation_errors = validate_checkout_input(name, phone, address, notes)
+
+        delivery_fees = get_delivery_fees(db)
+        delivery_fee = delivery_fees.get(delivery_region)
+        if delivery_fee is None:
+            validation_errors["delivery_region"] = "يرجى اختيار منطقة الشحن."
+        else:
+            delivery_fee = float(delivery_fee)
 
         if validation_errors:
             message = "يرجى مراجعة البيانات المدخلة."
@@ -350,6 +363,8 @@ def register_cart_routes(app, db):
             return redirect(url_for("cart"))
 
         total_price = calculate_cart_total(cart, db)
+        if delivery_fee is not None:
+            total_price += delivery_fee
         if total_price <= 0:
             message = "تعذر إتمام الطلب، يرجى مراجعة السلة."
             if wants_json_response():
@@ -363,14 +378,24 @@ def register_cart_routes(app, db):
 
         order_id = db.execute(
             """
-            INSERT INTO orders (name, phone, address, notes, total_price)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO orders (
+                name,
+                phone,
+                address,
+                notes,
+                total_price,
+                delivery_region,
+                delivery_fee
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             name,
             phone,
             address,
             notes,
-            total_price
+            total_price,
+            delivery_region,
+            delivery_fee
         )
 
         for item in cart:

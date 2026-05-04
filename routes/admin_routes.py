@@ -6,7 +6,7 @@ from math import ceil
 from flask import flash, redirect, render_template, request, session, url_for
 
 from cloudinary_utils import cloudinary_download_url, cloudinary_image_url, upload_image
-from helpers import validate_image_upload
+from helpers import DELIVERY_FEE_SETTINGS, DELIVERY_REGION_LABELS, validate_image_upload
 
 
 SIZES = ["XL", "L", "M", "S"]
@@ -122,7 +122,8 @@ def register_admin_routes(app, db):
     def admin_order_details(order_id):
         order_rows = db.execute(
             """
-            SELECT id, name, phone, address, notes, total_price, status, created_at
+            SELECT id, name, phone, address, notes, total_price, status, created_at,
+                   delivery_region, delivery_fee
             FROM orders
             WHERE id = ?
             """,
@@ -169,6 +170,7 @@ def register_admin_routes(app, db):
             custom_download_name=f"order-{order_id}-custom-design",
             cloudinary_image_url=cloudinary_image_url,
             cloudinary_download_url=cloudinary_download_url,
+            delivery_region_labels=DELIVERY_REGION_LABELS,
         )
 
     @app.route("/admin/settings", methods=["GET", "POST"])
@@ -177,6 +179,11 @@ def register_admin_routes(app, db):
         if request.method == "POST":
             season = (request.form.get("season") or "").strip().lower()
             custom_fee_raw = (request.form.get("custom_fee") or "").strip()
+            delivery_fee_inputs = {
+                "menoufia": (request.form.get("delivery_fee_menoufia") or "").strip(),
+                "delta": (request.form.get("delivery_fee_delta") or "").strip(),
+                "upper_egypt": (request.form.get("delivery_fee_upper_egypt") or "").strip(),
+            }
 
             if season not in VALID_SEASONS:
                 flash("Invalid season value", "error")
@@ -191,6 +198,24 @@ def register_admin_routes(app, db):
             if custom_fee_value < 0:
                 flash("Custom design fee cannot be negative.", "error")
                 return redirect(url_for("admin_settings"))
+
+            delivery_fee_values = {}
+            for region_key, raw_value in delivery_fee_inputs.items():
+                if raw_value == "":
+                    flash("Delivery fees are required.", "error")
+                    return redirect(url_for("admin_settings"))
+
+                try:
+                    fee_value = int(raw_value)
+                except ValueError:
+                    flash("Delivery fees must be whole numbers.", "error")
+                    return redirect(url_for("admin_settings"))
+
+                if fee_value < 0:
+                    flash("Delivery fees cannot be negative.", "error")
+                    return redirect(url_for("admin_settings"))
+
+                delivery_fee_values[region_key] = str(int(fee_value))
 
             try:
                 db.execute("BEGIN")
@@ -215,6 +240,24 @@ def register_admin_routes(app, db):
                         str(int(custom_fee_value)),
                     )
 
+                for region_key, (setting_key, _) in DELIVERY_FEE_SETTINGS.items():
+                    current_fee_row = db.execute(
+                        "SELECT key FROM settings WHERE key = ?",
+                        setting_key,
+                    )
+                    if current_fee_row:
+                        db.execute(
+                            "UPDATE settings SET value = ? WHERE key = ?",
+                            delivery_fee_values[region_key],
+                            setting_key,
+                        )
+                    else:
+                        db.execute(
+                            "INSERT INTO settings (key, value) VALUES (?, ?)",
+                            setting_key,
+                            delivery_fee_values[region_key],
+                        )
+
                 db.execute("COMMIT")
                 flash("Settings updated.", "success")
             except Exception:
@@ -234,10 +277,19 @@ def register_admin_routes(app, db):
         except (TypeError, ValueError, KeyError):
             current_custom_fee = 80
 
+        delivery_fee_values = {}
+        for region_key, (setting_key, default_value) in DELIVERY_FEE_SETTINGS.items():
+            row = db.execute("SELECT value FROM settings WHERE key = ?", setting_key)
+            try:
+                delivery_fee_values[region_key] = int(float(row[0]["value"])) if row else default_value
+            except (TypeError, ValueError, KeyError):
+                delivery_fee_values[region_key] = default_value
+
         return render_template(
             "admin/settings.html",
             current_season=current_season,
             current_custom_fee=current_custom_fee,
+            delivery_fee_values=delivery_fee_values,
         )
 
     @app.route("/admin/products")

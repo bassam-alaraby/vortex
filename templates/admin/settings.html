@@ -39,6 +39,43 @@
                 </label>
             </section>
 
+            <section class="settings-section">
+                <h2>Delivery Fees</h2>
+                <label>
+                    <span>Menoufia E£</span>
+                    <input
+                        type="number"
+                        name="delivery_fee_menoufia"
+                        min="0"
+                        step="1"
+                        value="{{ delivery_fee_values.menoufia }}"
+                        required
+                    >
+                </label>
+                <label>
+                    <span>Rest of Delta E£</span>
+                    <input
+                        type="number"
+                        name="delivery_fee_delta"
+                        min="0"
+                        step="1"
+                        value="{{ delivery_fee_values.delta }}"
+                        required
+                    >
+                </label>
+                <label>
+                    <span>Upper Egypt E£</span>
+                    <input
+                        type="number"
+                        name="delivery_fee_upper_egypt"
+                        min="0"
+                        step="1"
+                        value="{{ delivery_fee_values.upper_egypt }}"
+                        required
+                    >
+                </label>
+            </section>
+
             <div class="settings-submit">
                 <button type="submit">Save Settings</button>
             </div>

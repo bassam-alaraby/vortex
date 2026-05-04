@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block css %}
+    <link href="{{ url_for('static', filename='css/size_guide.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+    VORTEX - دليل المقاسات
+{% endblock %}
+
+{% block main %}
+<main class="size-guide">
+    <div class="heading">
+        <h1>SIZE GUIDE</h1>
+    </div>
+    <div class="fit rtl">
+        <p class="fit-name">ريلاكسيد فيت</p>
+        <p class="fit-desc">Relaxed fit</p>
+        <table>
+        <thead>
+            <tr>
+            <th>المقاس</th>
+            <th>العرض (سم)</th>
+            <th>الطول (سم)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>M</td><td>61 - 63</td><td>75 - 77</td></tr>
+            <tr><td>L</td><td>64 - 66</td><td>78 - 80</td></tr>
+            <tr><td>XL</td><td>67 - 69</td><td>81 - 83</td></tr>
+            <tr><td>2XL</td><td>70 - 72</td><td>83 - 86</td></tr>
+        </tbody>
+        </table>
+    </div>
+
+    <div class="fit rtl">
+        <p class="fit-name">بوكس فيت</p>
+        <p class="fit-desc">Box fit</p>
+        <table>
+        <thead>
+            <tr>
+            <th>المقاس</th>
+            <th>العرض (سم)</th>
+            <th>الطول (سم)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>M</td><td>59 – 61</td><td>71 – 73</td></tr>
+            <tr><td>L</td><td>62 – 64</td><td>74 – 76</td></tr>
+            <tr><td>XL</td><td>65 – 67</td><td>77 – 79</td></tr>
+            <tr><td>2XL</td><td>68 – 70</td><td>80 – 82</td></tr>
+        </tbody>
+        </table>
+        <p class="note">قِس تيشيرت بيناسبك وقارن الأبعاد — قد يكون في فرق ±1 سم.</p>
+    </div>
+</main>
+{% endblock %}

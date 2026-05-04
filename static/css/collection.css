@@ -27,7 +27,7 @@
     margin: 24px 70px 0;
     border-radius: 22px;
     padding: 24px;
-    border: 2px solid #475467;
+    border: 2px solid black;
     background: #ffffff;
     color: #111;
 }
@@ -46,10 +46,10 @@
 }
 
 .custom-hero__kicker {
-    font-size: 1rem;
+    font-size: 1.1rem;
     letter-spacing: 0.14em;
     font-weight: 700;
-    color: #475467;
+    color: black;
 }
 
 .custom-hero__content p {

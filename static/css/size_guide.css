@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+main {
+    width: 100%;
+    min-height: 100vh;
+    font-family: 'Cairo', sans-serif;
+    background-color: #fff;
+}
+
+.heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 105px;
+    background-image: url("/static/assets/background_image.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.heading h1 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 600;
+    font-family: 'Exo 2', sans-serif;
+}
+
+.fit {
+    padding: 1rem 0rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.fit-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.fit-desc {
+    font-size: 1.2rem;
+    color: #888;
+    margin-bottom: .5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    background: #111;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 400;
+    padding: 0.6rem 1rem;
+    text-align: center;
+}
+
+thead th:first-child { text-align: right; }
+
+tbody tr { border-bottom: 1px solid #e8e8e8; }
+tbody tr:last-child { border-bottom: none; }
+
+tbody td {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+tbody td:first-child {
+    text-align: right;
+    font-weight: 600;
+    color: #ff0000;
+}
+
+.note {
+    margin: 1rem 0rem 3rem;
+    font-size: 0.9rem;
+    color: #7d7d7d;
+    line-height: 1.8;
+}

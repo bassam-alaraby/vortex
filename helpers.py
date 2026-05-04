@@ -7,6 +7,20 @@ from werkzeug.utils import secure_filename
 ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png"}
 ALLOWED_IMAGE_MIME_TYPES = {"image/jpeg", "image/png"}
 
+DELIVERY_REGION_LABELS = {
+    "menoufia": "المنوفية",
+    "delta": "باقي محافظات الدلتا",
+    "upper_egypt": "الصعيد",
+}
+
+DELIVERY_REGION_ORDER = ["menoufia", "delta", "upper_egypt"]
+
+DELIVERY_FEE_SETTINGS = {
+    "menoufia": ("delivery_fee_menoufia", 40),
+    "delta": ("delivery_fee_delta", 80),
+    "upper_egypt": ("delivery_fee_upper_egypt", 100),
+}
+
 
 def get_sizes():
     from routes.admin_routes import SIZES
@@ -70,6 +84,22 @@ def get_custom_fee(db):
         return float(row[0]["value"])
     except (TypeError, ValueError, KeyError):
         return 0.0
+
+
+def get_delivery_fees(db):
+    fees = {}
+    for region_key, (setting_key, default_value) in DELIVERY_FEE_SETTINGS.items():
+        row = db.execute('SELECT value FROM settings WHERE key = ?', setting_key)
+        if not row:
+            fees[region_key] = float(default_value)
+            continue
+
+        try:
+            fees[region_key] = float(row[0]["value"])
+        except (TypeError, ValueError, KeyError):
+            fees[region_key] = float(default_value)
+
+    return fees
 
 
 def validate_image_upload(file_obj):
