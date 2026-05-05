@@ -1,5 +1,7 @@
 import os
 
+from database.init_db import BASE_DIR
+
 
 def load_env_file(file_path=".env"):
     if not os.path.exists(file_path):
@@ -36,7 +38,7 @@ class Config:
     SECRET_KEY = _secret_key
     
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    DATABASE_PATH = os.environ.get('DATABASE_PATH', os.path.join(BASE_DIR, 'database', 'app.db'))
+    DATABASE_PATH = os.environ.get('DATABASE_PATH', os.path.join(BASE_DIR, 'data', 'app.db'))
     
     TEMPLATES_AUTO_RELOAD = True
     

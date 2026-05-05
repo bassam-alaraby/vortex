@@ -31,7 +31,7 @@ def _ensure_db(db_path, schema_path):
 
 _BASE = os.path.abspath(os.path.dirname(__file__))
 _ensure_db(
-    os.path.join(_BASE, 'database', 'app.db'),
+    os.path.join(_BASE, 'data', 'app.db'),
     os.path.join(_BASE, 'database', 'schema.sql')
 )
 
