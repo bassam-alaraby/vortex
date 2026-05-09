@@ -1,60 +1,243 @@
-# Vortex
+# VORTEX
 
-مشروع متجر بسيط مبني بـ Flask.
+Modern Flask-based e-commerce platform with secure admin management, Cloudinary media storage, Turso database integration, and production-ready deployment support.
 
-## التشغيل السريع
+---
 
-1. افتح التيرمنال داخل مجلد المشروع:
+## Features
 
-```bash
-cd vortex
+* Product catalog and product variants
+* Shopping cart system
+* Custom design uploads
+* Admin dashboard
+* Cloudinary image uploads
+* Turso database integration
+* CSRF protection
+* Rate-limited admin login
+* Production-ready configuration
+* Responsive frontend
+
+---
+
+# Tech Stack
+
+## Backend
+
+* Python
+* Flask
+* Flask-WTF
+* Flask-Limiter
+
+## Database
+
+* Turso (LibSQL)
+
+## Media Storage
+
+* Cloudinary
+
+## Deployment
+
+* Vercel
+
+---
+
+# Project Structure
+
+```text
+VORTEX/
+├── app.py
+├── wsgi.py
+├── config.py
+├── extensions.py
+├── requirements.txt
+├── routes/
+├── templates/
+├── static/
+├── database/
+├── cloudinary_utils.py
+└── .env.example
 ```
 
-2. أنشئ virtual environment:
+---
+
+# Environment Variables
+
+Create a `.env` file in the project root.
+
+Example:
+
+```env
+SECRET_KEY=your_secret_key
+
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=CHANGE_ME_STRONG_PASSWORD
+
+FLASK_ENV=development
+
+TURSO_DATABASE_URL=your_database_url
+TURSO_AUTH_TOKEN=your_auth_token
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+---
+
+# Installation
+
+## 1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd VORTEX
+```
+
+## 2. Create virtual environment
+
+### Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+### Linux / macOS
 
 ```bash
 python3 -m venv venv
-```
-
-3. فعّل البيئة:
-
-```bash
 source venv/bin/activate
 ```
 
-4. نزّل المكتبات من ملف المتطلبات:
+---
+
+## 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-5. جهّز قاعدة البيانات (أول مرة فقط):
+---
+
+## 4. Run the application
 
 ```bash
-python3 database/init_db.py
+python app.py
 ```
 
-لو بتحدّث مشروع موجود للنسخة اللي فيها Custom Design feature شغّل:
+Or:
 
 ```bash
-python3 database/migrate_custom_design.py
+flask run
 ```
 
-6. شغّل التطبيق:
+---
 
-```bash
-python3 app.py
-```
+# Cloudinary Upload Structure
 
-7. افتح المتصفح على:
+Images are organized into folders:
 
 ```text
-http://127.0.0.1:5000
+products/
+custom_designs/
 ```
 
-## المكتبات المطلوبة
+Examples:
 
-المشروع يحتاج فقط:
+* Product images → `products/`
+* User custom designs → `custom_designs/`
 
-- `Flask`
-- `cs50`
+---
+
+# Security
+
+The project includes:
+
+* CSRF protection
+* Secure session cookies in production
+* Environment-based secrets
+* Admin login rate limiting
+* Input validation for cart operations
+
+Admin login is protected with:
+
+```text
+5 requests per minute
+```
+
+using Flask-Limiter.
+
+---
+
+# Deployment (Vercel)
+
+## Required Environment Variables
+
+Set these inside your Vercel project settings:
+
+```env
+SECRET_KEY=
+ADMIN_USERNAME=
+ADMIN_PASSWORD=
+FLASK_ENV=production
+TURSO_DATABASE_URL=
+TURSO_AUTH_TOKEN=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+---
+
+## vercel.json
+
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "wsgi.py"
+    }
+  ]
+}
+```
+
+---
+
+# Production Notes
+
+* Do not commit `.env`
+* Use strong admin credentials
+* Keep Cloudinary credentials private
+* Always deploy with `FLASK_ENV=production`
+
+---
+
+# Future Improvements
+
+* User authentication system
+* Order tracking
+* Payment integration
+* Redis-based rate limiting
+* Email notifications
+* Admin analytics
+
+---
+
+# License
+
+This project is intended for educational, portfolio, and personal business purposes.
+
+---
+
+# Author
+
+Bassem Tarek Al-Arabi

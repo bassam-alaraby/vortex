@@ -1,19 +1,28 @@
 # Local and secrets
+
 .env
 .env.*
+!.env.example
 .codex
 AGENTS.md
 
+# Vercel
+
+.vercel/
+
 # Python
-__pycache__/
+
+**pycache**/
 *.py[cod]
 *$py.class
 venv/
 .venv/
 env/
 ENV/
+.python-version
 
 # Test / tooling caches
+
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -24,6 +33,7 @@ htmlcov/
 .nox/
 
 # Build artifacts
+
 build/
 dist/
 .eggs/
@@ -31,15 +41,24 @@ dist/
 pip-wheel-metadata/
 
 # Database
+
 *.db
+*.sqlite3
+*.sqlite3-journal
 
 # Editor / OS
+
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+.AppleDouble
+.LSOverride
 
 # Misc
+
 *.log
+*.tmp
+*.temp
 .ipynb_checkpoints/
 instance/
