@@ -36,7 +36,8 @@ class Config:
     WTF_CSRF_ENABLED = True
     
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    DATABASE_PATH = os.environ.get('DATABASE_PATH', 'sqlite:///database/app.db')
+    TURSO_DATABASE_URL = os.environ.get("TURSO_DATABASE_URL")
+    TURSO_DATABASE_TOKEN = os.environ.get("TURSO_AUTH_TOKEN")
     
     TEMPLATES_AUTO_RELOAD = True
     
