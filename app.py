@@ -1,11 +1,11 @@
 import os
 
 from flask import Flask, request
-from flask_wtf.csrf import CSRFProtect
 
 from config import get_config
 from cloudinary_utils import configure_cloudinary
 from database.db import TursoDB
+from extensions import csrf, limiter
 
 from routes.main_routes import register_main_routes
 from routes.shop_routes import register_shop_routes
@@ -16,7 +16,8 @@ from helpers import inject_cart_count, inject_sizes_ctx, render_error_response
 
 app = Flask(__name__)
 app.config.from_object(get_config())
-csrf = CSRFProtect(app)
+csrf.init_app(app)
+limiter.init_app(app)
 configure_cloudinary()
 
 db = TursoDB()

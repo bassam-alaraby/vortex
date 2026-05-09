@@ -5,6 +5,7 @@ from math import ceil
 
 from flask import flash, redirect, render_template, request, session, url_for
 
+from extensions import limiter
 from cloudinary_utils import cloudinary_download_url, cloudinary_image_url, upload_image
 from helpers import (
     DELIVERY_FEE_SETTINGS,
@@ -28,6 +29,7 @@ def admin_required(view_func):
 
 def register_admin_routes(app, db):
     @app.route("/admin/login", methods=["GET", "POST"])
+    @limiter.limit("5 per minute")
     def admin_login():
         error_message = None
 

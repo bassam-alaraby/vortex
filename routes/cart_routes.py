@@ -38,6 +38,17 @@ def register_cart_routes(app, db):
     def add_to_cart():
         try:
             variant_id = int(request.form.get('variant_id'))
+        except (TypeError, ValueError):
+            return handle_cart_error('Invalid request data', 400)
+
+        variant_exists = db.execute(
+            "SELECT id FROM variants WHERE id = ?", variant_id
+        )
+
+        if not variant_exists:
+            return handle_cart_error('Product not found', 404)
+
+        try:
             quantity = int(request.form.get('quantity'))
         except (TypeError, ValueError):
             return handle_cart_error('Invalid product data', 400)
