@@ -795,7 +795,7 @@ def _handle_variant_uploads(db, variant_id, allow_empty):
     uploaded_images = []
     for index, file_obj in enumerate(valid_files, start=1):
         try:
-            public_id = upload_image(file_obj)
+            public_id = upload_image(file_obj, folder="products")
         except Exception:
             flash("Image upload failed.", "error")
             return None

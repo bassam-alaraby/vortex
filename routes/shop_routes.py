@@ -15,7 +15,7 @@ def _handle_custom_upload(file_obj):
         raise ValueError(validation_error)
 
     try:
-        return upload_image(file_obj)
+        return upload_image(file_obj, folder="custom_designs")
     except Exception as upload_error:
         raise RuntimeError("Image upload failed.") from upload_error
 

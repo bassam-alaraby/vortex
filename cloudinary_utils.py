@@ -53,6 +53,17 @@ def cloudinary_download_url(public_id, filename=None):
     return CloudinaryImage(public_id).build_url(**options)
 
 
-def upload_image(file_storage):
-    result = cloudinary.uploader.upload(file_storage, resource_type="image")
+def upload_image(file_storage, folder=None):
+    options = {
+        "resource_type": "image"
+    }
+
+    if folder:
+        options["folder"] = folder
+
+    result = cloudinary.uploader.upload(
+        file_storage,
+        **options
+    )
+
     return result.get("public_id")
