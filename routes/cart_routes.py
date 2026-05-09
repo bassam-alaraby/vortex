@@ -4,7 +4,7 @@ import re
 from helpers import (
     DELIVERY_REGION_LABELS, DELIVERY_REGION_ORDER, get_cart, normalize_size,
     get_cart_count, handle_cart_error, calculate_cart_total, wants_json_response,
-    get_custom_fee, get_delivery_fees
+    get_custom_fee, get_delivery_fees, _safe_redirect
 )
 from cloudinary_utils import cloudinary_image_url
 
@@ -125,7 +125,7 @@ def register_cart_routes(app, db):
             return redirect(url_for('checkout'))
         else:
             flash('Added to cart successfully', "success")
-            return redirect(request.referrer)
+            return redirect(request.referrer or url_for('collection'))
 
     @app.route("/cart")
     def cart():

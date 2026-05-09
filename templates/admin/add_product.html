@@ -12,6 +12,7 @@
         </div>
 
         <form method="post" class="admin-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label>
                 <span>Name</span>
                 <input type="text" name="name" value="{{ form.get('name', '') }}" required>

@@ -1,4 +1,6 @@
+import imghdr
 import os
+from urllib.parse import urlparse
 
 from flask import session, request, jsonify, flash, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
@@ -102,6 +104,16 @@ def get_delivery_fees(db):
     return fees
 
 
+def _safe_redirect(fallback_url):
+    referrer = request.referrer
+    if referrer:
+        ref_host = urlparse(referrer).netloc
+        own_host = urlparse(request.host_url).netloc
+        if ref_host == own_host:
+            return redirect(referrer)
+    return redirect(fallback_url)
+
+
 def validate_image_upload(file_obj):
     if not file_obj or not file_obj.filename:
         return None, "Image file is required."
@@ -116,6 +128,19 @@ def validate_image_upload(file_obj):
 
     if file_obj.mimetype not in ALLOWED_IMAGE_MIME_TYPES:
         return None, "Invalid image MIME type."
+
+    MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+    file_obj.seek(0, 2)
+    size = file_obj.tell()
+    file_obj.seek(0)
+    if size > MAX_IMAGE_SIZE:
+        return None, "Image must be under 5MB."
+
+    header = file_obj.read(512)
+    file_obj.seek(0)
+    detected = imghdr.what(None, h=header)
+    if detected not in {"jpeg", "png"}:
+        return None, "Invalid image file."
 
     return filename, None
 

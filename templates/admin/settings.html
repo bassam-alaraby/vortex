@@ -11,6 +11,7 @@
         </div>
 
         <form method="post" class="admin-form admin-form--season">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <section class="settings-section">
                 <h2>Season Control</h2>
                 <div class="season-options">

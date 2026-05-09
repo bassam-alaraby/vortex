@@ -6,7 +6,7 @@ from cloudinary_utils import cloudinary_image_url
 from cloudinary_utils import upload_image
 from math import ceil
 
-from helpers import get_cart, get_custom_fee, normalize_size, validate_image_upload
+from helpers import get_cart, get_custom_fee, normalize_size, validate_image_upload, _safe_redirect
 
 
 def _handle_custom_upload(file_obj):
@@ -362,7 +362,7 @@ def register_shop_routes(app, db):
 
             flash('Added to cart successfully', 'success')
             fallback_url = url_for('custom_design', variant_id=variant_id)
-            return redirect(request.referrer or fallback_url)
+            return _safe_redirect(fallback_url)
 
         return render_template(
             'custom_design.html',

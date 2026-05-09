@@ -41,6 +41,7 @@
                                             <a class="link-button" href="{{ url_for('admin_edit_product', product_id=product.id) }}">Edit</a>
                                             <a class="link-button" href="{{ url_for('admin_add_variant_for_product', product_id=product.id) }}">Add variant</a>
                                             <form method="post" action="{{ url_for('admin_delete_product', product_id=product.id) }}" class="inline-form" onsubmit="return confirm('Delete this product?')">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                                 <button type="submit">Delete</button>
                                             </form>
                                         </div>
@@ -108,6 +109,7 @@
                                         <div class="admin-action-row">
                                             <a class="link-button" href="{{ url_for('admin_edit_variant', variant_id=variant.id) }}">Edit</a>
                                             <form method="post" action="{{ url_for('admin_delete_variant', variant_id=variant.id) }}" class="inline-form" onsubmit="return confirm('Delete this variant?')">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                                 <button type="submit">Delete</button>
                                             </form>
                                         </div>

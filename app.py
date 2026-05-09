@@ -2,6 +2,7 @@ import os
 import sqlite3
 
 from flask import Flask, request
+from flask_wtf.csrf import CSRFProtect
 from cs50 import SQL
 
 from config import get_config
@@ -16,6 +17,7 @@ from helpers import get_cart, get_cart_count, render_error_response, get_sizes
 
 app = Flask(__name__)
 app.config.from_object(get_config())
+csrf = CSRFProtect(app)
 configure_cloudinary()
 
 def _ensure_db(db_path, schema_path):

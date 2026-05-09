@@ -12,6 +12,7 @@
         </div>
 
         <form method="post" class="admin-form" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label>
                 <span>Product</span>
                 {% if lock_product and selected_product_id %}

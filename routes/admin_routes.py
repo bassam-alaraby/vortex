@@ -666,12 +666,17 @@ def register_admin_routes(app, db):
         return redirect(url_for("admin_products"))
 
 
+ALLOWED_COLUMNS = {"fit", "season", "color", "style", "design"}
+ALLOWED_TABLES = {"products", "variants"}
+
+
 def _get_distinct_values(db, table, column):
+    if table not in ALLOWED_TABLES or column not in ALLOWED_COLUMNS:
+        return []
     rows = db.execute(
         f"SELECT DISTINCT {column} AS value FROM {table} WHERE {column} IS NOT NULL AND {column} != ''"
     )
-    values = [row["value"] for row in rows if row["value"]]
-    return values
+    return [row["value"] for row in rows if row["value"]]
 
 
 def _resolve_dynamic_value(form, field_name):

@@ -14,6 +14,7 @@
             {% endif %}
 
             <form method="post" class="admin-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <label for="username">اسم المستخدم</label>
                 <input id="username" name="username" type="text" required autocomplete="username">
 
