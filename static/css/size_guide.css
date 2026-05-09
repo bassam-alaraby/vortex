@@ -86,3 +86,14 @@ tbody td:first-child {
     color: #7d7d7d;
     line-height: 1.8;
 }
+
+@media (max-width: 900px) {
+    .fit-name, .fit-desc {
+        padding: 0rem 1rem;
+    }
+
+    .note { 
+        font-size: 0.8rem;
+        padding: 0rem 1rem;
+    }
+}

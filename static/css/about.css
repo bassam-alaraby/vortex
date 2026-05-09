@@ -118,7 +118,7 @@ h2 {
     background-color: black;
 }
 
-@media (min-width: 421px) and (max-width: 768px) {
+@media (max-width: 768px) {
     .about .heading h1 { font-size: 2.2rem; }
 
     h2 { font-size: 2.2rem; }

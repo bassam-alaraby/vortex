@@ -29,6 +29,7 @@
     transform: translate(-50%, -50%);
     width: 290px;
     height: auto;
+    max-width: 90vw;
 }
 
 .hero-tagline {
@@ -38,6 +39,7 @@
     transform: translate(-50%, -50%);
     width: 550px;
     height: auto;
+    max-width: 90vw;
 }
 
 .hero .btn {
@@ -92,7 +94,7 @@
     white-space: nowrap;
 }
 
-@media (min-width: 481px) and (max-width: 900px) {
+@media (max-width: 900px) {
     .hero-logo {
         width: 220px;
     }

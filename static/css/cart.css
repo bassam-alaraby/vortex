@@ -586,7 +586,7 @@ body.checkout-open {
     color: #fff;
 }
 
-@media (min-width: 701px) and (max-width: 900px) {
+@media (max-width: 900px) {
     .cart-layout {
         padding: 30px 40px 30px;
     }

@@ -35,7 +35,7 @@ class Config:
     SECRET_KEY = _secret_key
     
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    DATABASE_PATH = os.environ.get('DATABASE_PATH', 'sqlite:////app/data/app.db')
+    DATABASE_PATH = os.environ.get('DATABASE_PATH', 'sqlite:///database/app.db')
     
     TEMPLATES_AUTO_RELOAD = True
     

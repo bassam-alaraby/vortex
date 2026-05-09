@@ -122,6 +122,10 @@ a {
     gap: 18px;
 }
 
+.admin-products-page > .admin-card {
+    min-width: 0;
+}
+
 .admin-card--narrow {
     width: min(520px, 100%);
 }
@@ -157,11 +161,12 @@ a {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-left: auto;
 }
 
 .admin-action-row {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 8px;
     align-items: center;
 }
@@ -239,14 +244,6 @@ a {
 .admin-table th {
     background: #f9fafb;
     font-weight: 600;
-}
-
-.admin-card--products .admin-table {
-    min-width: 760px;
-}
-
-.admin-card--variants .admin-table {
-    min-width: 980px;
 }
 
 .admin-form {
@@ -579,8 +576,9 @@ a {
     .admin-nav {
         position: absolute;
         top: calc(100% + 8px);
-        right: 0;
+        right: 12px;
         min-width: 180px;
+        max-width: calc(100vw - 24px);
         background: #111827;
         border: 1px solid #374151;
         border-radius: 12px;
@@ -606,7 +604,18 @@ a {
         background: #1f2937;
     }
 
-    .admin-table {
-        min-width: 760px;
+    .admin-card__head {
+    flex-wrap: wrap;
+    }
+
+    .admin-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .upload-actions input[type="file"] {
+        flex: 1 1 220px;
+        min-width: 0;
+        max-width: 100%;
     }
 }

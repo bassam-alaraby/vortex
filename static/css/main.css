@@ -207,6 +207,7 @@
 .footer-tagline {
     width: 330px;
     height: auto;
+    max-width: 90vw;
 }
 
 .footer .social-links {

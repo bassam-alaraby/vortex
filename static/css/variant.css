@@ -201,7 +201,59 @@
     display: block;
 }
 
-@media (min-width: 381px) and (max-width: 600px) {
+@media (max-width: 1024px) {
+    .variant { 
+        padding: 30px 40px 0; 
+    }
+
+    .product-display { 
+        grid-template-columns: minmax(260px, 350px) 1fr;
+        gap: 2rem;
+    }
+
+    .product-gallery {
+        width: 100%;
+        max-width: 350px;
+    }
+
+    .product-gallery img {
+        width: 100%;
+    }
+
+    .product-header h1 { font-size: 1.5rem; }
+    .product-header p { font-size: 1rem; }
+
+    .size-selector {
+        justify-content: flex-start;
+    }
+
+    .size-selector .btn {
+        width: auto;
+        min-width: 0;
+        padding-inline: 18px;
+    }
+
+    .quantity-selector {
+        width: fit-content;
+        justify-content: flex-start;
+        align-self: flex-start;
+    }
+
+    .qty-display {
+        width: auto;
+        min-width: 64px;
+        flex: 0 0 auto;
+    }
+
+    .product-actions { width: min(100%, 340px); }
+
+    .thumbnails { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
     .variant { 
         padding: 20px 16px 0; 
     }
@@ -266,58 +318,6 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0.8rem;
         padding: 10px 0;  
-    }
-}
-
-@media (min-width: 601px) and (max-width: 1024px) {
-    .variant { 
-        padding: 30px 40px 0; 
-    }
-
-    .product-display { 
-        grid-template-columns: minmax(260px, 350px) 1fr;
-        gap: 2rem;
-    }
-
-    .product-gallery {
-        width: 100%;
-        max-width: 350px;
-    }
-
-    .product-gallery img {
-        width: 100%;
-    }
-
-    .product-header h1 { font-size: 1.5rem; }
-    .product-header p { font-size: 1rem; }
-
-    .size-selector {
-        justify-content: flex-start;
-    }
-
-    .size-selector .btn {
-        width: auto;
-        min-width: 0;
-        padding-inline: 18px;
-    }
-
-    .quantity-selector {
-        width: fit-content;
-        justify-content: flex-start;
-        align-self: flex-start;
-    }
-
-    .qty-display {
-        width: auto;
-        min-width: 64px;
-        flex: 0 0 auto;
-    }
-
-    .product-actions { width: min(100%, 340px); }
-
-    .thumbnails { 
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 1rem;
     }
 }
 

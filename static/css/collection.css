@@ -221,7 +221,7 @@
     font-weight: bold;
 }
 
-@media (min-width: 421px) and (max-width: 768px) {
+@media (max-width: 768px) {
     .collection .heading h1 { font-size: 2.2rem; }
 
     .collection-grid {
@@ -259,17 +259,13 @@
     .collection-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         row-gap: 24px;
-        padding-inline: 12px;
+        padding: 40px 12px 40px;
         gap: 16px;
     }
 
     .custom-hero {
         margin: 14px 12px 0;
         padding: 16px 14px;
-    }
-
-    .collection-grid .card-btn {
-        bottom: 65px;
     }
 
     .collection-grid .price .before {
@@ -279,4 +275,10 @@
     .collection-grid .price .after {
         font-size: 1.2rem;
     }
+
+    /* .collection-grid .add-to-cart {
+        padding: 4px 10px;
+        font-size: 0.78rem;
+        bottom: 40px;
+    } */
 }
