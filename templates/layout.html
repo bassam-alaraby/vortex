@@ -23,6 +23,20 @@
 
         <title>{% block title %}{% endblock %}</title>
 
+        <!-- Open Graph -->
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="VORTEX">
+        <meta property="og:title" content="{% block og_title %}VORTEX — NOT MADE FOR EVERYONE.{% endblock %}">
+        <meta property="og:description" content="{% block og_description %}VORTEX — Egyptian streetwear for those who stand out.{% endblock %}">
+        <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='assets/favicon/favicon-96x96.png', _external=True) }}{% endblock %}">
+        <meta property="og:url" content="{{ request.url }}">
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="VORTEX — NOT MADE FOR EVERYONE.">
+        <meta name="twitter:description" content="VORTEX — Egyptian streetwear for those who stand out.">
+        <meta name="twitter:image" content="{{ url_for('static', filename='assets/favicon/favicon-96x96.png', _external=True) }}">
+
     </head>
 
     <body>

@@ -90,7 +90,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 ## 1. Clone the repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/bassam-alaraby/vortex.git
 cd VORTEX
 ```
 
@@ -131,6 +131,19 @@ Or:
 ```bash
 flask run
 ```
+
+---
+
+# Database Setup (Turso)
+
+After creating your Turso database, run the schema manually:
+
+1. Open your database on [Turso Dashboard](https://app.turso.tech)
+2. Go to **Edit Data** tab
+3. Copy the contents of `database/schema.sql`
+4. Paste and click **Run**
+
+This only needs to be done once.
 
 ---
 
@@ -240,4 +253,4 @@ This project is intended for educational, portfolio, and personal business purpo
 
 # Author
 
-Bassem Tarek Al-Arabi
+Bassam Tarek Al-Arabi
