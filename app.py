@@ -13,7 +13,7 @@ from routes.shop_routes import register_shop_routes
 from routes.cart_routes import register_cart_routes
 from routes.admin_routes import register_admin_routes
 
-from helpers import get_cart, get_cart_count, render_error_response, get_sizes
+from helpers import inject_cart_count, inject_sizes_ctx, render_error_response
 
 app = Flask(__name__)
 app.config.from_object(get_config())
@@ -40,15 +40,8 @@ _ensure_db(
 db = SQL(app.config['DATABASE_PATH'])
 db.execute("PRAGMA foreign_keys = ON")
 
-@app.context_processor
-def inject_cart_count():
-    cart = get_cart()
-    return dict(cart_count=get_cart_count(cart))
-
-
-@app.context_processor
-def inject_sizes():
-    return dict(sizes=get_sizes())
+app.context_processor(inject_cart_count)
+app.context_processor(inject_sizes_ctx)
 
 @app.errorhandler(404)
 def not_found(error):

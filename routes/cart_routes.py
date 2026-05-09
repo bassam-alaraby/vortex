@@ -1,61 +1,22 @@
 from flask import request, session, jsonify, redirect, flash, render_template, url_for
-import re
 
 from helpers import (
-    DELIVERY_REGION_LABELS, DELIVERY_REGION_ORDER, get_cart, normalize_size,
-    get_cart_count, handle_cart_error, calculate_cart_total, wants_json_response,
-    get_custom_fee, get_delivery_fees, _safe_redirect
+    DELIVERY_REGION_LABELS,
+    DELIVERY_REGION_ORDER,
+    calculate_cart_total,
+    get_cart,
+    get_cart_count,
+    get_custom_fee,
+    get_delivery_fees,
+    handle_cart_error,
+    normalize_phone,
+    normalize_size,
+    normalize_spaces,
+    validate_checkout_input,
+    wants_json_response,
+    _safe_redirect,
 )
 from cloudinary_utils import cloudinary_image_url
-
-
-ARABIC_INDIC_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
-EASTERN_ARABIC_DIGITS = str.maketrans("۰۱۲۳۴۵۶۷۸۹", "0123456789")
-NAME_PATTERN = re.compile(r"^[A-Za-z\u0600-\u06FF\s]+$")
-
-
-def normalize_spaces(value):
-    return " ".join((value or "").strip().split())
-
-
-def normalize_phone(value):
-    phone = (value or "").strip()
-    phone = phone.translate(ARABIC_INDIC_DIGITS)
-    phone = phone.translate(EASTERN_ARABIC_DIGITS)
-    phone = "".join(phone.split())
-    return phone
-
-
-def validate_checkout_input(name, phone, address, notes):
-    errors = {}
-
-    if not name:
-        errors["name"] = "يرجى إدخال الاسم."
-    elif len(name) < 2:
-        errors["name"] = "الاسم قصير جدًا."
-    elif len(name) > 60:
-        errors["name"] = "الاسم طويل جدًا."
-    elif not NAME_PATTERN.fullmatch(name):
-        errors["name"] = "الاسم يجب أن يحتوي على حروف ومسافات فقط."
-
-    if not phone:
-        errors["phone"] = "يرجى إدخال رقم الهاتف."
-    elif not phone.isdigit():
-        errors["phone"] = "رقم الهاتف يجب أن يحتوي على أرقام فقط."
-    elif len(phone) < 8 or len(phone) > 15:
-        errors["phone"] = "رقم الهاتف يجب أن يكون من 8 إلى 15 رقمًا."
-
-    if not address:
-        errors["address"] = "يرجى إدخال العنوان."
-    elif len(address) < 8:
-        errors["address"] = "العنوان قصير جدًا."
-    elif len(address) > 220:
-        errors["address"] = "العنوان طويل جدًا."
-
-    if notes and len(notes) > 500:
-        errors["notes"] = "الملاحظات يجب ألا تتجاوز 500 حرف."
-
-    return errors
 
 
 def _regular_cart_item_id(variant_id, size):

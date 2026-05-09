@@ -6,14 +6,15 @@ from math import ceil
 from flask import flash, redirect, render_template, request, session, url_for
 
 from cloudinary_utils import cloudinary_download_url, cloudinary_image_url, upload_image
-from helpers import DELIVERY_FEE_SETTINGS, DELIVERY_REGION_LABELS, validate_image_upload
-
-
-SIZES = ["XL", "L", "M", "S"]
-
-VALID_ORDER_STATUSES = {"pending", "confirmed", "shipped", "delivered"}
-VALID_SEASONS = {"summer", "winter", "all"}
-ORDER_STATUS_SEQUENCE = ["pending", "confirmed", "shipped", "delivered"]
+from helpers import (
+    DELIVERY_FEE_SETTINGS,
+    DELIVERY_REGION_LABELS,
+    ORDER_STATUS_SEQUENCE,
+    SIZES,
+    VALID_ORDER_STATUSES,
+    VALID_SEASONS,
+    validate_image_upload,
+)
 
 def admin_required(view_func):
     @wraps(view_func)
