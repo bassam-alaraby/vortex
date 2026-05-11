@@ -23,7 +23,7 @@ def register_shop_routes(app, db):
     @app.route('/collection')
     def collection():
         # get the current season
-        row = db.execute('SELECT value FROM settings WHERE key = "season"')
+        row = db.execute("SELECT value FROM settings WHERE key = 'season'")
         current_season = row[0]['value'] if row else 'summer'
 
         valid_seasons = ['summer', 'winter', 'all']
@@ -124,7 +124,7 @@ def register_shop_routes(app, db):
 
     @app.route('/custom')
     def custom_collection():
-        row = db.execute('SELECT value FROM settings WHERE key = "season"')
+        row = db.execute("SELECT value FROM settings WHERE key = 'season'")
         current_season = row[0]['value'] if row else 'summer'
 
         valid_seasons = ['summer', 'winter', 'all']

@@ -7,7 +7,7 @@ from flask import session, request, jsonify, flash, redirect, url_for, render_te
 from werkzeug.utils import secure_filename
 
 
-SIZES = ["XL", "L", "M", "S"]
+SIZES = ["XXL", "XL", "L", "M"]
 
 VALID_ORDER_STATUSES = {"pending", "confirmed", "shipped", "delivered"}
 VALID_SEASONS = {"summer", "winter", "all"}
@@ -128,7 +128,7 @@ def calculate_cart_total(cart, db):
 
 
 def get_custom_fee(db):
-    row = db.execute('SELECT value FROM settings WHERE key = "custom_fee"')
+    row = db.execute("SELECT value FROM settings WHERE key = 'custom_fee'")
     if not row:
         return 0.0
 
@@ -141,7 +141,7 @@ def get_custom_fee(db):
 def get_delivery_fees(db):
     fees = {}
     for region_key, (setting_key, default_value) in DELIVERY_FEE_SETTINGS.items():
-        row = db.execute('SELECT value FROM settings WHERE key = ?', setting_key)
+        row = db.execute("SELECT value FROM settings WHERE key = ?", setting_key)
         if not row:
             fees[region_key] = float(default_value)
             continue

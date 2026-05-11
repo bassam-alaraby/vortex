@@ -221,26 +221,29 @@ def register_admin_routes(app, db):
                 delivery_fee_values[region_key] = str(int(fee_value))
 
             try:
-                db.execute("BEGIN")
-                current_row = db.execute('SELECT key FROM settings WHERE key = "season"')
-                custom_fee_row = db.execute('SELECT key FROM settings WHERE key = "custom_fee"')
+                current_row = db.execute("SELECT key FROM settings WHERE key = 'season'")
+                custom_fee_row = db.execute("SELECT key FROM settings WHERE key = 'custom_fee'")
+
+                statements = []
 
                 if current_row:
-                    db.execute('UPDATE settings SET value = ? WHERE key = "season"', season)
+                    statements.append(("UPDATE settings SET value = ? WHERE key = 'season'", [season]))
                 else:
-                    db.execute(
-                        'INSERT INTO settings (key, value) VALUES ("season", ?)', season
-                    )
+                    statements.append(("INSERT INTO settings (key, value) VALUES ('season', ?)", [season]))
 
                 if custom_fee_row:
-                    db.execute(
-                        'UPDATE settings SET value = ? WHERE key = "custom_fee"',
-                        str(int(custom_fee_value)),
+                    statements.append(
+                        (
+                            "UPDATE settings SET value = ? WHERE key = 'custom_fee'",
+                            [str(int(custom_fee_value))],
+                        )
                     )
                 else:
-                    db.execute(
-                        'INSERT INTO settings (key, value) VALUES ("custom_fee", ?)',
-                        str(int(custom_fee_value)),
+                    statements.append(
+                        (
+                            "INSERT INTO settings (key, value) VALUES ('custom_fee', ?)",
+                            [str(int(custom_fee_value))],
+                        )
                     )
 
                 for region_key, (setting_key, _) in DELIVERY_FEE_SETTINGS.items():
@@ -249,32 +252,33 @@ def register_admin_routes(app, db):
                         setting_key,
                     )
                     if current_fee_row:
-                        db.execute(
-                            "UPDATE settings SET value = ? WHERE key = ?",
-                            delivery_fee_values[region_key],
-                            setting_key,
+                        statements.append(
+                            (
+                                "UPDATE settings SET value = ? WHERE key = ?",
+                                [delivery_fee_values[region_key], setting_key],
+                            )
                         )
                     else:
-                        db.execute(
-                            "INSERT INTO settings (key, value) VALUES (?, ?)",
-                            setting_key,
-                            delivery_fee_values[region_key],
+                        statements.append(
+                            (
+                                "INSERT INTO settings (key, value) VALUES (?, ?)",
+                                [setting_key, delivery_fee_values[region_key]],
+                            )
                         )
 
-                db.execute("COMMIT")
+                db.execute_transaction(statements)
                 flash("Settings updated.", "success")
             except Exception:
-                db.execute("ROLLBACK")
                 flash("Failed to update settings.", "error")
 
             return redirect(url_for("admin_settings"))
 
-        row = db.execute('SELECT value FROM settings WHERE key = "season"')
+        row = db.execute("SELECT value FROM settings WHERE key = 'season'")
         current_season = row[0]["value"] if row else "summer"
         if current_season not in VALID_SEASONS:
             current_season = "summer"
 
-        custom_fee_row = db.execute('SELECT value FROM settings WHERE key = "custom_fee"')
+        custom_fee_row = db.execute("SELECT value FROM settings WHERE key = 'custom_fee'")
         try:
             current_custom_fee = int(float(custom_fee_row[0]["value"])) if custom_fee_row else 80
         except (TypeError, ValueError, KeyError):
@@ -440,20 +444,18 @@ def register_admin_routes(app, db):
                 )
 
             try:
-                db.execute("BEGIN")
-                db.execute(
-                    """
-                    INSERT INTO products (name, fit, price, season)
-                    VALUES (?, ?, ?, ?)
-                    """,
-                    name,
-                    fit,
-                    price_value,
-                    season,
+                db.execute_transaction(
+                    [
+                        (
+                            """
+                            INSERT INTO products (name, fit, price, season)
+                            VALUES (?, ?, ?, ?)
+                            """,
+                            [name, fit, price_value, season],
+                        )
+                    ]
                 )
-                db.execute("COMMIT")
             except Exception:
-                db.execute("ROLLBACK")
                 flash("Failed to create product.", "error")
                 return render_template(
                     "admin/add_product.html",
@@ -515,22 +517,19 @@ def register_admin_routes(app, db):
                 )
 
             try:
-                db.execute("BEGIN")
-                db.execute(
-                    """
-                    UPDATE products
-                    SET name = ?, fit = ?, price = ?, season = ?
-                    WHERE id = ?
-                    """,
-                    name,
-                    fit,
-                    price_value,
-                    season,
-                    product_id,
+                db.execute_transaction(
+                    [
+                        (
+                            """
+                            UPDATE products
+                            SET name = ?, fit = ?, price = ?, season = ?
+                            WHERE id = ?
+                            """,
+                            [name, fit, price_value, season, product_id],
+                        )
+                    ]
                 )
-                db.execute("COMMIT")
             except Exception:
-                db.execute("ROLLBACK")
                 flash("Failed to update product.", "error")
                 return render_template(
                     "admin/edit_product.html",
@@ -656,12 +655,13 @@ def register_admin_routes(app, db):
     @admin_required
     def admin_delete_variant(variant_id):
         try:
-            db.execute("BEGIN")
-            db.execute("DELETE FROM variant_images WHERE variant_id = ?", variant_id)
-            db.execute("DELETE FROM variants WHERE id = ?", variant_id)
-            db.execute("COMMIT")
+            db.execute_transaction(
+                [
+                    ("DELETE FROM variant_images WHERE variant_id = ?", [variant_id]),
+                    ("DELETE FROM variants WHERE id = ?", [variant_id]),
+                ]
+            )
         except Exception:
-            db.execute("ROLLBACK")
             flash("Failed to delete variant.", "error")
             return redirect(url_for("admin_products"))
 
@@ -765,16 +765,23 @@ def _validate_variant_inputs(db, product_id, name, description, color, style):
     return errors
 
 
-def _set_primary_image(db, variant_id, image_id):
-    db.execute("UPDATE variant_images SET is_primary = 0 WHERE variant_id = ?", variant_id)
-    db.execute(
-        "UPDATE variant_images SET is_primary = 1 WHERE id = ? AND variant_id = ?",
-        image_id,
-        variant_id,
-    )
+def _set_primary_image(variant_id, image_id):
+    return [
+        ("UPDATE variant_images SET is_primary = 0 WHERE variant_id = ?", [variant_id]),
+        (
+            "UPDATE variant_images SET is_primary = 1 WHERE id = ? AND variant_id = ?",
+            [image_id, variant_id],
+        ),
+    ]
 
 
-def _handle_variant_uploads(db, variant_id, allow_empty):
+def _handle_variant_uploads(
+    variant_id,
+    allow_empty,
+    primary_upload_index=None,
+    default_primary_index=None,
+    reset_existing_primary=False,
+):
     files = request.files.getlist("images")
     valid_files = []
 
@@ -790,9 +797,20 @@ def _handle_variant_uploads(db, variant_id, allow_empty):
         valid_files.append(file_obj)
 
     if not valid_files:
-        return [] if allow_empty else None
+        return ([], 0) if allow_empty else None
 
-    uploaded_images = []
+    effective_primary_index = None
+    if primary_upload_index is not None and 1 <= primary_upload_index <= len(valid_files):
+        effective_primary_index = primary_upload_index
+    elif default_primary_index is not None and 1 <= default_primary_index <= len(valid_files):
+        effective_primary_index = default_primary_index
+
+    statements = []
+    if reset_existing_primary and effective_primary_index is not None:
+        statements.append(
+            ("UPDATE variant_images SET is_primary = 0 WHERE variant_id = ?", [variant_id])
+        )
+
     for index, file_obj in enumerate(valid_files, start=1):
         try:
             public_id = upload_image(file_obj, folder="products")
@@ -800,18 +818,18 @@ def _handle_variant_uploads(db, variant_id, allow_empty):
             flash("Image upload failed.", "error")
             return None
 
-        db.execute(
-            """
-            INSERT INTO variant_images (variant_id, image, is_primary)
-            VALUES (?, ?, 0)
-            """,
-            variant_id,
-            public_id,
+        is_primary = 1 if effective_primary_index == index else 0
+        statements.append(
+            (
+                """
+                INSERT INTO variant_images (variant_id, image, is_primary)
+                VALUES (?, ?, ?)
+                """,
+                [variant_id, public_id, is_primary],
+            )
         )
-        image_id = db.execute("SELECT last_insert_rowid() AS id")[0]["id"]
-        uploaded_images.append((index, image_id))
 
-    return uploaded_images
+    return statements, len(valid_files)
 
 
 def _handle_variant_create(db, products, locked_product_id=None):
@@ -844,42 +862,46 @@ def _handle_variant_create(db, products, locked_product_id=None):
 
     product_id_int = int(product_id)
 
+    variant_id = None
     try:
-        db.execute("BEGIN")
-        db.execute(
+        result = db.execute(
             """
             INSERT INTO variants (product_id, name, description, color, style, design)
             VALUES (?, ?, ?, ?, ?, ?)
+            RETURNING id
             """,
-            product_id_int,
-            name,
-            description,
-            color,
-            style,
-            design or "",
+            product_id_int, name, description, color, style, design or "",
         )
-        variant_id = db.execute("SELECT last_insert_rowid() AS id")[0]["id"]
-
-        uploaded_images = _handle_variant_uploads(db, variant_id, allow_empty=False)
-        if uploaded_images is None:
-            raise RuntimeError("Image upload failed")
+        if not result:
+            raise RuntimeError("Variant insert failed")
+        variant_id = result[0]["id"]
 
         primary_upload = (form.get("primary_upload") or "").strip()
-        primary_id = None
-        if primary_upload.isdigit():
-            selected_index = int(primary_upload)
-            for index, image_id in uploaded_images:
-                if index == selected_index:
-                    primary_id = image_id
-                    break
+        primary_upload_index = int(primary_upload) if primary_upload.isdigit() else None
 
-        if primary_id is None:
-            primary_id = uploaded_images[0][1]
+        upload_result = _handle_variant_uploads(
+            variant_id,
+            allow_empty=False,
+            primary_upload_index=primary_upload_index,
+            default_primary_index=1,
+            reset_existing_primary=False,
+        )
+        if upload_result is None:
+            raise RuntimeError("Image upload failed")
 
-        _set_primary_image(db, variant_id, primary_id)
-        db.execute("COMMIT")
+        upload_statements, _ = upload_result
+        db.execute_transaction(upload_statements)
     except Exception:
-        db.execute("ROLLBACK")
+        if variant_id is not None:
+            try:
+                db.execute_transaction(
+                    [
+                        ("DELETE FROM variant_images WHERE variant_id = ?", [variant_id]),
+                        ("DELETE FROM variants WHERE id = ?", [variant_id]),
+                    ]
+                )
+            except Exception:
+                pass
         if not request.files.getlist("images"):
             flash("At least one image is required.", "error")
         else:
@@ -932,47 +954,57 @@ def _handle_variant_update(db, variant, products, existing_images):
     )
 
     try:
-        db.execute("BEGIN")
-        db.execute(
-            """
-            UPDATE variants
-            SET product_id = ?, name = ?, description = ?, color = ?, style = ?, design = ?
-            WHERE id = ?
-            """,
-            product_id_int,
-            name,
-            description,
-            color,
-            style,
-            design or "",
-            variant["id"],
-        )
-
-        uploaded_images = _handle_variant_uploads(db, variant["id"], allow_empty=True)
-        if uploaded_images is None:
-            raise RuntimeError("Image upload failed")
-
         primary_upload = (form.get("primary_upload") or "").strip()
         primary_image = (form.get("primary_image") or "").strip()
 
-        if primary_upload.isdigit() and uploaded_images:
-            selected_index = int(primary_upload)
-            selected_id = None
-            for index, image_id in uploaded_images:
-                if index == selected_index:
-                    selected_id = image_id
-                    break
+        primary_upload_index = int(primary_upload) if primary_upload.isdigit() else None
+        default_primary_index = 1 if existing_primary_id is None else None
+        reset_existing_primary = primary_upload_index is not None
 
-            if selected_id is not None:
-                _set_primary_image(db, variant["id"], selected_id)
-        elif primary_image.isdigit():
-            _set_primary_image(db, variant["id"], int(primary_image))
-        elif uploaded_images and existing_primary_id is None:
-            _set_primary_image(db, variant["id"], uploaded_images[0][1])
+        upload_result = _handle_variant_uploads(
+            variant["id"],
+            allow_empty=True,
+            primary_upload_index=primary_upload_index,
+            default_primary_index=default_primary_index,
+            reset_existing_primary=reset_existing_primary,
+        )
+        if upload_result is None:
+            raise RuntimeError("Image upload failed")
 
-        db.execute("COMMIT")
+        upload_statements, upload_count = upload_result
+
+        statements = [
+            (
+                """
+                UPDATE variants
+                SET product_id = ?, name = ?, description = ?, color = ?, style = ?, design = ?
+                WHERE id = ?
+                """,
+                [
+                    product_id_int,
+                    name,
+                    description,
+                    color,
+                    style,
+                    design or "",
+                    variant["id"],
+                ],
+            )
+        ]
+
+        statements.extend(upload_statements)
+
+        if primary_upload_index is None and primary_image.isdigit():
+            statements.extend(_set_primary_image(variant["id"], int(primary_image)))
+        elif (
+            primary_upload_index is not None
+            and upload_count == 0
+            and primary_image.isdigit()
+        ):
+            statements.extend(_set_primary_image(variant["id"], int(primary_image)))
+
+        db.execute_transaction(statements)
     except Exception:
-        db.execute("ROLLBACK")
         flash("Failed to update variant.", "error")
         return _render_variant_form(
             db=db,
