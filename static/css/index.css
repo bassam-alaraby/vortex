@@ -77,7 +77,6 @@
     display: block;
     object-fit: cover;
     border-radius: 15px;
-    box-shadow: -6px 8px 15px rgba(0, 0, 0, 0.3);
 }
 
 .categories .btn {
