@@ -35,7 +35,7 @@
                                 <td>
                                     <span class="status status--{{ order.status }}">{{ order.status }}</span>
                                 </td>
-                                <td>{{ order.created_at }}</td>
+                                <td>{{ order.created_at | egypt_time }}</td>
                                 <td>
                                     <a class="link-button" href="{{ url_for('admin_order_details', order_id=order.id) }}">Open</a>
                                 </td>

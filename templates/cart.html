@@ -151,6 +151,7 @@
                     </section>
 
                     <form id="checkout-form" class="checkout-form" action="{{ url_for('checkout_submit') }}" method="POST" dir="rtl" lang="ar">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="delivery_region" id="delivery-region-hidden" value="">
                         <label>
                             <span>الاسم</span>

@@ -18,6 +18,7 @@
                     </div>
 
                     <form class="product-info" method="POST" action="/add_to_cart">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="variant_id" value="{{ variant_details.id }}">
                         <input type="hidden" name="size" id="selected-size">
                         <input type="hidden" name="quantity" id="selected-qty" value="1">

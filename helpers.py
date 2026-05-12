@@ -1,6 +1,8 @@
 import imghdr
 import os
 import re
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
 
 from flask import session, request, jsonify, flash, redirect, url_for, render_template
@@ -223,6 +225,16 @@ def render_error_response(status_code, template_name, title, message):
         error_title=title,
         error_message=message
     ), status_code
+
+
+def egypt_time(value):
+    if not value:
+        return ""
+
+    dt = datetime.fromisoformat(value)
+    dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+    cairo_time = dt.astimezone(ZoneInfo("Africa/Cairo"))
+    return cairo_time.strftime("%Y-%m-%d %I:%M %p")
 
 
 def inject_cart_count():

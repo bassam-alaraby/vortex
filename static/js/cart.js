@@ -5,16 +5,22 @@ function updateCartTotal(total) {
     }
 }
 
+function getCsrfToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
+}
+
 function setCardPending(card, isPending) {
     card.style.pointerEvents = isPending ? "none" : "auto";
     card.style.opacity = isPending ? "0.65" : "1";
 }
 
 async function sendCartUpdate(payload) {
+    const csrfToken = getCsrfToken();
     const response = await fetch("/update_cart", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
         },
         body: JSON.stringify(payload)
     });
@@ -391,11 +397,13 @@ function setupCheckoutModal() {
         }
 
         try {
+            const csrfToken = getCsrfToken();
             const response = await fetch(checkoutUrl, {
                 method: "POST",
                 body: new FormData(checkoutForm),
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": csrfToken
                 }
             });
 

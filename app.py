@@ -12,7 +12,7 @@ from routes.shop_routes import register_shop_routes
 from routes.cart_routes import register_cart_routes
 from routes.admin_routes import register_admin_routes
 
-from helpers import inject_cart_count, inject_sizes_ctx, render_error_response
+from helpers import inject_cart_count, inject_sizes_ctx, render_error_response, egypt_time
 
 app = Flask(__name__)
 app.config.from_object(get_config())
@@ -24,6 +24,7 @@ db = TursoDB()
 
 app.context_processor(inject_cart_count)
 app.context_processor(inject_sizes_ctx)
+app.jinja_env.filters["egypt_time"] = egypt_time
 
 @app.errorhandler(404)
 def not_found(error):

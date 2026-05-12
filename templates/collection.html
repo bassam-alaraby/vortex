@@ -47,6 +47,7 @@
 
                         <div class="card-btn">
                             <form action="/add_to_cart" method="POST" data-ajax-add-to-cart="true">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="variant_id" value="{{ product.id }}">
                                 <input type="hidden" name="size" value="{{ sizes[0] }}">
                                 <input type="hidden" name="quantity" value="1">

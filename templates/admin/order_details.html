@@ -20,7 +20,7 @@
             <div><dt>الملاحظات</dt><dd>{{ order.notes or '-' }}</dd></div>
             <div><dt>إجمالي السعر</dt><dd>{{ order.total_price | int }} جم</dd></div>
             <div><dt>الحالة</dt><dd>{{ order.status }}</dd></div>
-            <div><dt>تاريخ الطلب</dt><dd>{{ order.created_at }}</dd></div>
+            <div><dt>تاريخ الطلب</dt><dd>{{ order.created_at | egypt_time }}</dd></div>
         </dl>
 
         <h2>Order Items</h2>
