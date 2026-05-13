@@ -1,10 +1,10 @@
 # VORTEX
 
-Modern Flask-based e-commerce platform with secure admin management, Cloudinary media storage, Turso database integration, and production-ready deployment support.
+Modern Flask-based e-commerce platform with secure admin management, Cloudinary media storage, Turso database integration, Telegram order notifications, and production-ready deployment support.
 
 ---
 
-## Features
+# Features
 
 * Product catalog and product variants
 * Shopping cart system
@@ -12,6 +12,7 @@ Modern Flask-based e-commerce platform with secure admin management, Cloudinary 
 * Admin dashboard
 * Cloudinary image uploads
 * Turso database integration
+* Telegram order notifications
 * CSRF protection
 * Rate-limited admin login
 * Production-ready configuration
@@ -27,6 +28,7 @@ Modern Flask-based e-commerce platform with secure admin management, Cloudinary 
 * Flask
 * Flask-WTF
 * Flask-Limiter
+* Requests
 
 ## Database
 
@@ -35,6 +37,10 @@ Modern Flask-based e-commerce platform with secure admin management, Cloudinary 
 ## Media Storage
 
 * Cloudinary
+
+## Notifications
+
+* Telegram Bot API
 
 ## Deployment
 
@@ -81,6 +87,10 @@ TURSO_AUTH_TOKEN=your_auth_token
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+
+TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_CHAT_ID_1=your_chat_id
+TELEGRAM_CHAT_ID_2=your_second_chat_id
 ```
 
 ---
@@ -163,6 +173,30 @@ Examples:
 
 ---
 
+# Telegram Order Notifications
+
+VORTEX includes a Telegram notification system that automatically sends a formatted order summary to store owner chat IDs whenever a new order is placed.
+
+Notifications include:
+
+* Order ID
+* Customer information
+* Ordered products
+* Quantities and sizes
+* Total price
+* Delivery address
+* Cairo timezone timestamp
+
+The notification system uses:
+
+* Telegram Bot API
+* HTML-formatted messages
+* Multi-chat support
+* Safe error handling
+* Requests-based API calls
+
+---
+
 # Security
 
 The project includes:
@@ -194,11 +228,17 @@ SECRET_KEY=
 ADMIN_USERNAME=
 ADMIN_PASSWORD=
 FLASK_ENV=production
+
 TURSO_DATABASE_URL=
 TURSO_AUTH_TOKEN=
+
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
+
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID_1=
+TELEGRAM_CHAT_ID_2=
 ```
 
 ---
@@ -230,6 +270,7 @@ CLOUDINARY_API_SECRET=
 * Do not commit `.env`
 * Use strong admin credentials
 * Keep Cloudinary credentials private
+* Keep Telegram bot credentials private
 * Always deploy with `FLASK_ENV=production`
 
 ---
@@ -239,7 +280,6 @@ CLOUDINARY_API_SECRET=
 * User authentication system
 * Order tracking
 * Payment integration
-* Redis-based rate limiting
 * Email notifications
 * Admin analytics
 

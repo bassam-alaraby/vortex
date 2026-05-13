@@ -17,6 +17,7 @@ from helpers import (
     _safe_redirect,
 )
 from cloudinary_utils import cloudinary_image_url
+from extensions import send_order_telegram_notification
 
 
 def _regular_cart_item_id(variant_id, size):
@@ -447,6 +448,7 @@ def register_cart_routes(app, db):
                 variant_row["variant_image"],
             )
 
+        send_order_telegram_notification(db, order_id)
         session["cart"] = []
 
         success_message = "تم استلام طلبك بنجاح، سيتم التواصل معك قريبًا."
