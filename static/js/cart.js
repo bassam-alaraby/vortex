@@ -366,9 +366,7 @@ function setupCheckoutModal() {
     checkoutForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        if (submitButton?.disabled) {
-            return;
-        }
+        window.VortexUI?.disableFormSubmit(checkoutForm);
 
         clearCheckoutFieldErrors(checkoutForm);
         showFeedback("", false);
@@ -379,6 +377,7 @@ function setupCheckoutModal() {
                 setCheckoutFieldError(checkoutForm, fieldName, message);
             });
             showFeedback("يرجى مراجعة البيانات المدخلة.", true);
+            window.VortexUI?.enableFormSubmit(checkoutForm);
             return;
         }
 
@@ -392,7 +391,6 @@ function setupCheckoutModal() {
         }
 
         if (submitButton) {
-            submitButton.disabled = true;
             submitButton.textContent = "جاري تأكيد الطلب...";
         }
 
@@ -431,9 +429,9 @@ function setupCheckoutModal() {
         } catch (error) {
             console.error("Checkout failed:", error);
             showFeedback(error.message, true);
+            window.VortexUI?.enableFormSubmit(checkoutForm);
 
             if (submitButton) {
-                submitButton.disabled = false;
                 submitButton.textContent = "تأكيد الطلب";
             }
         }

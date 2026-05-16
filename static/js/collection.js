@@ -11,13 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            if (submitButton.disabled) {
-                return;
-            }
+            window.VortexUI?.disableFormSubmit(form);
 
             const originalText = submitButton.dataset.originalText || submitButton.textContent;
             submitButton.dataset.originalText = originalText;
-            submitButton.disabled = true;
             submitButton.textContent = "Adding...";
 
             window.clearTimeout(resetTimerId);
@@ -25,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const restoreButton = () => {
                 submitButton.textContent = originalText;
                 submitButton.classList.remove("is-added");
-                submitButton.disabled = false;
+                window.VortexUI?.enableFormSubmit(form);
             };
 
             try {
