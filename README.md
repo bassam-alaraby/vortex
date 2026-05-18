@@ -56,12 +56,14 @@ VORTEX/
 ├── wsgi.py
 ├── config.py
 ├── extensions.py
+├── helpers.py
+├── cloudinary_utils.py
 ├── requirements.txt
+├── vercel.json
 ├── routes/
 ├── templates/
 ├── static/
 ├── database/
-├── cloudinary_utils.py
 └── .env.example
 ```
 
