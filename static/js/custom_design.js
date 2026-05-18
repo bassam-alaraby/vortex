@@ -1,42 +1,66 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const fileInput = document.getElementById("custom-image");
-    const preview = document.getElementById("custom-preview");
-    const clearButton = document.getElementById("custom-image-clear");
-    let currentObjectUrl = null;
+    const fileInput = document.getElementById("custom-images");
+    const previewList = document.getElementById("custom-preview-list");
+    let selectedFiles = [];
+    let currentObjectUrls = [];
 
-    if (!fileInput || !preview) {
+    if (!fileInput || !previewList) {
         return;
     }
 
-    const resetPreview = () => {
-        if (currentObjectUrl) {
-            URL.revokeObjectURL(currentObjectUrl);
-            currentObjectUrl = null;
-        }
-
-        fileInput.value = "";
-        preview.hidden = true;
-        preview.removeAttribute("src");
+    const revokePreviewUrls = () => {
+        currentObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+        currentObjectUrls = [];
     };
 
-    fileInput.addEventListener("change", () => {
-        const file = fileInput.files && fileInput.files[0];
+    const syncInputFiles = () => {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach((file) => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
+    };
 
-        if (!file) {
-            resetPreview();
+    const renderPreview = () => {
+        revokePreviewUrls();
+        previewList.innerHTML = "";
+
+        if (!selectedFiles.length) {
+            previewList.hidden = true;
             return;
         }
 
-        if (currentObjectUrl) {
-            URL.revokeObjectURL(currentObjectUrl);
-        }
+        selectedFiles.forEach((file, index) => {
+            const objectUrl = URL.createObjectURL(file);
+            currentObjectUrls.push(objectUrl);
 
-        currentObjectUrl = URL.createObjectURL(file);
-        preview.src = currentObjectUrl;
-        preview.hidden = false;
+            const card = document.createElement("div");
+            card.className = "custom-preview-card";
+
+            const preview = document.createElement("img");
+            preview.className = "custom-preview";
+            preview.src = objectUrl;
+            preview.alt = `معاينة التصميم ${index + 1}`;
+
+            const removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.className = "custom-preview-remove";
+            removeButton.setAttribute("aria-label", `إزالة الصورة ${index + 1}`);
+            removeButton.innerHTML = '<i class="ri-close-line" aria-hidden="true"></i>';
+            removeButton.addEventListener("click", () => {
+                selectedFiles = selectedFiles.filter((_, fileIndex) => fileIndex !== index);
+                syncInputFiles();
+                renderPreview();
+            });
+
+            card.appendChild(preview);
+            card.appendChild(removeButton);
+            previewList.appendChild(card);
+        });
+
+        previewList.hidden = false;
+    };
+
+    fileInput.addEventListener("change", () => {
+        selectedFiles = Array.from(fileInput.files || []);
+        renderPreview();
     });
-
-    if (clearButton) {
-        clearButton.addEventListener("click", resetPreview);
-    }
 });

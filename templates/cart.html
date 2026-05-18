@@ -42,8 +42,10 @@
                                         {% endif %}
                                     </div>
 
-                                    {% if item.is_custom and item.custom_image %}
-                                        <a class="custom-preview-link" href="{{ cloudinary_image_url(item.custom_image) }}" target="_blank" rel="noopener noreferrer">عرض التصميم المرفوع</a>
+                                    {% if item.is_custom and item.custom_images %}
+                                        {% for custom_image in item.custom_images %}
+                                            <a class="custom-preview-link" href="{{ cloudinary_image_url(custom_image) }}" target="_blank" rel="noopener noreferrer">عرض التصميم المرفوع {% if item.custom_images|length > 1 %}{{ loop.index }}{% endif %}</a>
+                                        {% endfor %}
                                     {% endif %}
 
                                     <div class="size-selector">

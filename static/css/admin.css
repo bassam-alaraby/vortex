@@ -283,18 +283,6 @@ a {
     min-width: 220px;
 }
 
-.upload-cancel-btn {
-    width: auto;
-    min-width: 130px;
-    background: #fff;
-    color: #111827;
-    border: 1px solid #d1d5db;
-}
-
-.upload-cancel-btn:hover {
-    background: #f3f4f6;
-}
-
 .upload-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -312,8 +300,10 @@ a {
 
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 130px));
     gap: 12px;
+    justify-content: start;
+    width: min(100%, 420px);
 }
 
 .image-card {
@@ -336,12 +326,32 @@ a {
 .image-preview {
     margin-top: 12px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 130px));
     gap: 12px;
+    justify-content: start;
+    width: min(100%, 420px);
 }
 
 .image-preview .image-card {
     cursor: pointer;
+    position: relative;
+}
+
+.image-card-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.image-primary-label {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.image-primary-radio {
+    margin: 0;
 }
 
 .image-preview .image-card input {
@@ -352,6 +362,34 @@ a {
 .image-card input {
     width: auto;
     margin: 0 auto;
+}
+
+.admin-form .image-preview .image-remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: rgba(17, 24, 39, 0.78);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.admin-form .image-preview .image-remove-btn i {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.admin-form .image-preview .image-remove-btn:hover {
+    background: #111827;
 }
 
 .admin-form--season {
@@ -413,16 +451,6 @@ a {
 .admin-form button:hover,
 .inline-form button:hover {
     background: #1f2937;
-}
-
-.admin-form .upload-cancel-btn {
-    background: #fff;
-    color: #111827;
-    border: 1px solid #d1d5db;
-}
-
-.admin-form .upload-cancel-btn:hover {
-    background: #f3f4f6;
 }
 
 .inline-form {

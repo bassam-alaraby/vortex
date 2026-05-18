@@ -59,12 +59,14 @@
                                 <td>{{ item.quantity }}</td>
                                 <td>{{ item.price | int }}</td>
                                 <td>
-                                    {% if item.is_custom and item.custom_image %}
+                                    {% if item.is_custom and item.custom_images %}
                                         <div class="custom-design-cell">
-                                            <a class="admin-image-link" href="{{ cloudinary_image_url(item.custom_image) }}" target="_blank" rel="noopener noreferrer">
-                                                <img class="admin-thumb" src="{{ cloudinary_image_url(item.custom_image) }}" alt="Custom design">
-                                            </a>
-                                            <a class="link-button" href="{{ cloudinary_download_url(item.custom_image, custom_download_name) }}" target="_blank" rel="noopener noreferrer">Download</a>
+                                            {% for custom_image in item.custom_images %}
+                                                <a class="admin-image-link" href="{{ cloudinary_image_url(custom_image) }}" target="_blank" rel="noopener noreferrer">
+                                                    <img class="admin-thumb" src="{{ cloudinary_image_url(custom_image) }}" alt="Custom design {{ loop.index }}">
+                                                </a>
+                                                <a class="link-button" href="{{ cloudinary_download_url(custom_image, custom_download_name ~ '-' ~ loop.index) }}" target="_blank" rel="noopener noreferrer">Download{% if item.custom_images|length > 1 %} {{ loop.index }}{% endif %}</a>
+                                            {% endfor %}
                                         </div>
                                     {% else %}
                                         <span class="empty-message">-</span>

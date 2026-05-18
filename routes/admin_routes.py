@@ -1,3 +1,4 @@
+import json
 import hmac
 import os
 from functools import wraps
@@ -16,6 +17,29 @@ from helpers import (
     VALID_SEASONS,
     validate_image_upload,
 )
+
+
+def _parse_custom_images(value):
+    if isinstance(value, list):
+        return [image for image in value if isinstance(image, str) and image]
+
+    if isinstance(value, str):
+        raw = value.strip()
+        if not raw:
+            return []
+
+        if raw.startswith("["):
+            try:
+                parsed = json.loads(raw)
+            except (TypeError, ValueError):
+                return [raw]
+
+            if isinstance(parsed, list):
+                return [image for image in parsed if isinstance(image, str) and image]
+
+        return [raw]
+
+    return []
 
 def admin_required(view_func):
     @wraps(view_func)
@@ -165,6 +189,9 @@ def register_admin_routes(app, db):
             """,
             order_id,
         )
+
+        for item in items:
+            item["custom_images"] = _parse_custom_images(item.get("custom_image"))
 
         return render_template(
             "admin/order_details.html",

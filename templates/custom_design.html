@@ -56,13 +56,13 @@
                     <div class="custom-upload-block">
                         <div class="custom-upload-head">
                             <h3>ارفع تصميمك</h3>
-                            <p>ارفع التصميم بتاعك (JPG أو PNG) وهيتم تنفيذه.</p>
+                            <p>ارفع التصميم بتاعك (JPG أو PNG) وهيتم تنفيذه.<br>
+                             صورة واحدة = رسوم التصميم العادية، صورتين أو أكثر = رسوم مضاعفة.</p>
                         </div>
 
-                        <label for="custom-image" class="custom-file-picker">اختار الصورة من جهازك</label>
-                        <input type="file" id="custom-image" name="custom_image" accept="image/*" required>
-                        <button type="button" class="custom-upload-cancel" id="custom-image-clear">إلغاء الصورة المختارة</button>
-                        <img id="custom-preview" class="custom-preview" alt="معاينة التصميم" hidden>
+                        <label for="custom-images" class="custom-file-picker">اختار الصور من جهازك</label>
+                        <input type="file" id="custom-images" name="custom_images" accept="image/*" multiple required>
+                        <div id="custom-preview-list" class="custom-preview-list" hidden></div>
                     </div>
 
                     <div class="product-actions">

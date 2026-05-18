@@ -1,3 +1,5 @@
+import json
+
 from flask import request, session, jsonify, redirect, flash, render_template, url_for
 
 from helpers import (
@@ -33,6 +35,29 @@ def _ensure_cart_item_id(item, index):
         return f"custom-{item.get('variant_id', 'x')}-{item.get('size', '-')}-{index}"
 
     return _regular_cart_item_id(item.get("variant_id"), item.get("size"))
+
+
+def _parse_custom_images(value):
+    if isinstance(value, list):
+        return [image for image in value if isinstance(image, str) and image]
+
+    if isinstance(value, str):
+        raw = value.strip()
+        if not raw:
+            return []
+
+        if raw.startswith("["):
+            try:
+                parsed = json.loads(raw)
+            except (TypeError, ValueError):
+                return [raw]
+
+            if isinstance(parsed, list):
+                return [image for image in parsed if isinstance(image, str) and image]
+
+        return [raw]
+
+    return []
 
 def register_cart_routes(app, db):
     @app.route('/add_to_cart', methods=['POST'])
@@ -138,6 +163,19 @@ def register_cart_routes(app, db):
             is_custom = bool(item.get("is_custom"))
             base_price = float(row[0]["price"])
             unit_price = float(item.get("unit_price", base_price + custom_fee if is_custom else base_price))
+            custom_images = _parse_custom_images(item.get("custom_images"))
+            if not custom_images:
+                custom_images = _parse_custom_images(item.get("custom_image"))
+
+            custom_image = custom_images[0] if custom_images else None
+
+            if is_custom:
+                try:
+                    applied_custom_fee = float(item.get("custom_fee_applied"))
+                except (TypeError, ValueError):
+                    applied_custom_fee = max(0.0, unit_price - base_price)
+            else:
+                applied_custom_fee = 0.0
 
             cart_items.append({
                 'id': row[0]['id'],
@@ -145,12 +183,13 @@ def register_cart_routes(app, db):
                 'description': row[0]['description'],
                 'price': unit_price,
                 'base_price': base_price,
-                'custom_fee': custom_fee if is_custom else 0,
+                'custom_fee': applied_custom_fee,
                 'image': row[0]['image'],
                 'size': item['size'],
                 'quantity': item['quantity'],
                 'is_custom': 1 if is_custom else 0,
-                'custom_image': item.get('custom_image'),
+                'custom_image': custom_image,
+                'custom_images': custom_images,
                 'cart_item_id': cart_item_id,
             })
 
@@ -373,6 +412,17 @@ def register_cart_routes(app, db):
 
         for item in cart:
             is_custom = bool(item.get("is_custom"))
+            custom_images = _parse_custom_images(item.get("custom_images"))
+            if not custom_images:
+                custom_images = _parse_custom_images(item.get("custom_image"))
+
+            custom_image_value = None
+            if is_custom and custom_images:
+                custom_image_value = (
+                    json.dumps(custom_images)
+                    if len(custom_images) > 1
+                    else custom_images[0]
+                )
 
             variant_rows = db.execute(
                 """
@@ -436,7 +486,7 @@ def register_cart_routes(app, db):
                 item["size"],
                 item["quantity"],
                 price_value,
-                item.get("custom_image") if is_custom else None,
+                custom_image_value,
                 1 if is_custom else 0,
                 variant_row["variant_name"],
                 variant_row["variant_color"],

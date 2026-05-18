@@ -19,6 +19,24 @@ def _handle_custom_upload(file_obj):
     except Exception as upload_error:
         raise RuntimeError("Image upload failed.") from upload_error
 
+
+def _handle_custom_uploads(file_objects):
+    valid_files = [file_obj for file_obj in file_objects if file_obj and file_obj.filename]
+    if not valid_files:
+        raise ValueError("Image file is required.")
+
+    public_ids = []
+
+    for file_obj in valid_files:
+        public_id = _handle_custom_upload(file_obj)
+        if public_id:
+            public_ids.append(public_id)
+
+    if not public_ids:
+        raise RuntimeError("Image upload failed.")
+
+    return public_ids
+
 def register_shop_routes(app, db):
     @app.route('/collection')
     def collection():
@@ -308,7 +326,9 @@ def register_shop_routes(app, db):
                 quantity = 0
 
             action = request.form.get('action')
-            custom_image_file = request.files.get('custom_image')
+            custom_image_files = request.files.getlist('custom_images')
+            if not custom_image_files:
+                custom_image_files = [request.files.get('custom_image')]
 
             if not size or quantity <= 0:
                 flash('يرجى اختيار المقاس والكمية بشكل صحيح.', 'error')
@@ -322,7 +342,7 @@ def register_shop_routes(app, db):
                 )
 
             try:
-                custom_image_public_id = _handle_custom_upload(custom_image_file)
+                custom_image_public_ids = _handle_custom_uploads(custom_image_files)
             except ValueError:
                 flash('يرجى رفع صورة JPG أو PNG صالحة.', 'error')
                 return render_template(
@@ -344,15 +364,22 @@ def register_shop_routes(app, db):
                     cloudinary_image_url=cloudinary_image_url,
                 )
 
+            custom_image_count = len(custom_image_public_ids)
+            applied_custom_fee = custom_fee * (2 if custom_image_count > 1 else 1)
+            unit_price = base_price + applied_custom_fee
+
             cart = get_cart()
             cart.append({
                 'variant_id': variant_id,
                 'size': size,
                 'quantity': quantity,
                 'is_custom': 1,
-                'custom_image': custom_image_public_id,
+                'custom_image': custom_image_public_ids[0],
+                'custom_images': custom_image_public_ids,
+                'custom_image_count': custom_image_count,
+                'custom_fee_applied': applied_custom_fee,
                 'base_price': base_price,
-                'unit_price': total_price,
+                'unit_price': unit_price,
                 'cart_item_id': uuid.uuid4().hex,
             })
             session['cart'] = cart
