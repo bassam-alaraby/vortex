@@ -12,6 +12,14 @@ from routes.admin_routes import register_admin_routes
 
 from helpers import inject_cart_count, inject_sizes_ctx, render_error_response, egypt_time
 
+ADMIN_PATH_PREFIX = "/admin"
+ADMIN_NO_CACHE_HEADERS = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0",
+}
+
+
 app = Flask(__name__)
 app.config.from_object(get_config())
 csrf.init_app(app)
@@ -45,10 +53,9 @@ def internal_server_error(error):
     
 @app.after_request
 def add_no_cache_headers(response):
-    if request.path.startswith("/admin"):
-        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "0"
+    if request.path.startswith(ADMIN_PATH_PREFIX):
+        for header_name, header_value in ADMIN_NO_CACHE_HEADERS.items():
+            response.headers[header_name] = header_value
     return response
 
 register_main_routes(app)

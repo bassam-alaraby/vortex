@@ -8,6 +8,12 @@ from math import ceil
 
 from helpers import get_cart, get_custom_fee, normalize_size, validate_image_upload, _safe_redirect
 
+CUSTOM_UPLOAD_FOLDER = "custom_designs"
+DEFAULT_SEASON = "summer"
+VALID_SEASONS = ("summer", "winter", "all")
+PAGE_DEFAULT = 1
+COLLECTION_PER_PAGE = 12
+
 
 def _handle_custom_upload(file_obj):
     _, validation_error = validate_image_upload(file_obj)
@@ -15,7 +21,7 @@ def _handle_custom_upload(file_obj):
         raise ValueError(validation_error)
 
     try:
-        return upload_image(file_obj, folder="custom_designs")
+        return upload_image(file_obj, folder=CUSTOM_UPLOAD_FOLDER)
     except Exception as upload_error:
         raise RuntimeError("Image upload failed.") from upload_error
 
@@ -42,12 +48,10 @@ def register_shop_routes(app, db):
     def collection():
         # get the current season
         row = db.execute("SELECT value FROM settings WHERE key = 'season'")
-        current_season = row[0]['value'] if row else 'summer'
+        current_season = row[0]['value'] if row else DEFAULT_SEASON
 
-        valid_seasons = ['summer', 'winter', 'all']
-
-        if current_season not in valid_seasons:
-            current_season = 'summer'
+        if current_season not in VALID_SEASONS:
+            current_season = DEFAULT_SEASON
 
         fit = request.args.get('fit')
 
@@ -62,12 +66,12 @@ def register_shop_routes(app, db):
         try:
             page = int(page)
         except (TypeError, ValueError):
-            page = 1
+            page = PAGE_DEFAULT
 
-        if page < 1:
-            page = 1
+        if page < PAGE_DEFAULT:
+            page = PAGE_DEFAULT
 
-        per_page = 12
+        per_page = COLLECTION_PER_PAGE
 
         count_query = '''
         SELECT COUNT(*) AS count
@@ -143,12 +147,10 @@ def register_shop_routes(app, db):
     @app.route('/custom')
     def custom_collection():
         row = db.execute("SELECT value FROM settings WHERE key = 'season'")
-        current_season = row[0]['value'] if row else 'summer'
+        current_season = row[0]['value'] if row else DEFAULT_SEASON
 
-        valid_seasons = ['summer', 'winter', 'all']
-
-        if current_season not in valid_seasons:
-            current_season = 'summer'
+        if current_season not in VALID_SEASONS:
+            current_season = DEFAULT_SEASON
 
         fit = request.args.get('fit')
 
@@ -163,12 +165,12 @@ def register_shop_routes(app, db):
         try:
             page = int(page)
         except (TypeError, ValueError):
-            page = 1
+            page = PAGE_DEFAULT
 
-        if page < 1:
-            page = 1
+        if page < PAGE_DEFAULT:
+            page = PAGE_DEFAULT
 
-        per_page = 12
+        per_page = COLLECTION_PER_PAGE
 
         count_query = '''
         SELECT COUNT(*) AS count

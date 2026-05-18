@@ -18,7 +18,11 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
+TELEGRAM_CHAT_ID_ENV_KEYS = ("TELEGRAM_CHAT_ID_1", "TELEGRAM_CHAT_ID_2")
 TELEGRAM_REQUEST_TIMEOUT = 10
+TELEGRAM_PARSE_MODE = "HTML"
+UTC_ZONE = "UTC"
+CAIRO_ZONE = "Africa/Cairo"
 logger = logging.getLogger(__name__)
 
 
@@ -33,10 +37,7 @@ def send_order_telegram_notification(db, order_id):
 
     try:
         bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
-        chat_ids = [
-            os.environ.get("TELEGRAM_CHAT_ID_1"),
-            os.environ.get("TELEGRAM_CHAT_ID_2"),
-        ]
+        chat_ids = [os.environ.get(env_key) for env_key in TELEGRAM_CHAT_ID_ENV_KEYS]
         chat_ids = [chat_id for chat_id in chat_ids if chat_id]
 
         if not bot_token or not chat_ids:
@@ -70,7 +71,7 @@ def send_order_telegram_notification(db, order_id):
         if created_at:
             try:
                 dt = datetime.fromisoformat(str(created_at).replace(" ", "T"))
-                dt = dt.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("Africa/Cairo"))
+                dt = dt.replace(tzinfo=ZoneInfo(UTC_ZONE)).astimezone(ZoneInfo(CAIRO_ZONE))
                 time_text = dt.strftime("%H:%M")
                 date_text = dt.strftime("%Y-%m-%d")
             except Exception:
@@ -114,7 +115,7 @@ def send_order_telegram_notification(db, order_id):
                     json={
                         "chat_id": chat_id,
                         "text": message,
-                        "parse_mode": "HTML",
+                        "parse_mode": TELEGRAM_PARSE_MODE,
                     },
                     timeout=TELEGRAM_REQUEST_TIMEOUT,
                 )

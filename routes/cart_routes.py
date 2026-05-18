@@ -21,6 +21,9 @@ from helpers import (
 from cloudinary_utils import cloudinary_image_url
 from extensions import send_order_telegram_notification
 
+AJAX_HEADER_NAME = "X-Requested-With"
+AJAX_HEADER_VALUE = "XMLHttpRequest"
+
 
 def _regular_cart_item_id(variant_id, size):
     return f"regular-{variant_id}-{size}"
@@ -110,7 +113,7 @@ def register_cart_routes(app, db):
 
         session['cart'] = cart
 
-        is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+        is_ajax = request.headers.get(AJAX_HEADER_NAME) == AJAX_HEADER_VALUE
         is_collection_ajax = is_ajax and source == 'collection'
 
         if is_collection_ajax:

@@ -12,11 +12,17 @@ from werkzeug.utils import secure_filename
 SIZES = ["XXL", "XL", "L", "M"]
 
 VALID_ORDER_STATUSES = {"pending", "confirmed", "shipped", "delivered"}
-VALID_SEASONS = {"summer", "winter", "all"}
 ORDER_STATUS_SEQUENCE = ["pending", "confirmed", "shipped", "delivered"]
+VALID_SEASONS = {"summer", "winter", "all"}
 
 ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png"}
 ALLOWED_IMAGE_MIME_TYPES = {"image/jpeg", "image/png"}
+ALLOWED_DETECTED_IMAGE_TYPES = {"jpeg", "png"}
+MAX_IMAGE_SIZE = 5 * 1024 * 1024
+IMAGE_HEADER_READ_SIZE = 512
+
+AJAX_HEADER_NAME = "X-Requested-With"
+AJAX_HEADER_VALUE = "XMLHttpRequest"
 
 DELIVERY_REGION_LABELS = {
     "menoufia": "المنوفية",
@@ -181,24 +187,23 @@ def validate_image_upload(file_obj):
     if file_obj.mimetype not in ALLOWED_IMAGE_MIME_TYPES:
         return None, "Invalid image MIME type."
 
-    MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
     file_obj.seek(0, 2)
     size = file_obj.tell()
     file_obj.seek(0)
     if size > MAX_IMAGE_SIZE:
         return None, "Image must be under 5MB."
 
-    header = file_obj.read(512)
+    header = file_obj.read(IMAGE_HEADER_READ_SIZE)
     file_obj.seek(0)
     detected = imghdr.what(None, h=header)
-    if detected not in {"jpeg", "png"}:
+    if detected not in ALLOWED_DETECTED_IMAGE_TYPES:
         return None, "Invalid image file."
 
     return filename, None
 
 def wants_json_response():
     return (
-        request.headers.get("X-Requested-With") == "XMLHttpRequest"
+        request.headers.get(AJAX_HEADER_NAME) == AJAX_HEADER_VALUE
         or request.is_json
     )
 

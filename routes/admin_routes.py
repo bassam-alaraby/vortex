@@ -18,6 +18,13 @@ from helpers import (
     validate_image_upload,
 )
 
+ADMIN_LOGIN_RATE_LIMIT = "5 per minute"
+ORDERS_PER_PAGE = 8
+PRODUCTS_PER_PAGE = 12
+VARIANTS_PER_PAGE = 12
+DEFAULT_CUSTOM_FEE = 80
+PRODUCT_UPLOAD_FOLDER = "products"
+
 
 def _parse_custom_images(value):
     if isinstance(value, list):
@@ -53,7 +60,7 @@ def admin_required(view_func):
 
 def register_admin_routes(app, db):
     @app.route("/admin/login", methods=["GET", "POST"])
-    @limiter.limit("5 per minute")
+    @limiter.limit(ADMIN_LOGIN_RATE_LIMIT)
     def admin_login():
         error_message = None
 
@@ -97,7 +104,7 @@ def register_admin_routes(app, db):
         if page < 1:
             page = 1
 
-        per_page = 8
+        per_page = ORDERS_PER_PAGE
 
         total_count = db.execute("SELECT COUNT(*) as count FROM orders")[0]["count"]
         total_pages = ceil(total_count / per_page) if total_count else 1
@@ -307,9 +314,9 @@ def register_admin_routes(app, db):
 
         custom_fee_row = db.execute("SELECT value FROM settings WHERE key = 'custom_fee'")
         try:
-            current_custom_fee = int(float(custom_fee_row[0]["value"])) if custom_fee_row else 80
+            current_custom_fee = int(float(custom_fee_row[0]["value"])) if custom_fee_row else DEFAULT_CUSTOM_FEE
         except (TypeError, ValueError, KeyError):
-            current_custom_fee = 80
+            current_custom_fee = DEFAULT_CUSTOM_FEE
 
         delivery_fee_values = {}
         for region_key, (setting_key, default_value) in DELIVERY_FEE_SETTINGS.items():
@@ -347,11 +354,11 @@ def register_admin_routes(app, db):
         if variants_page < 1:
             variants_page = 1
 
-        per_page = 12
+        per_page = PRODUCTS_PER_PAGE
         total_count = db.execute("SELECT COUNT(*) AS count FROM products")[0]["count"]
         total_pages = ceil(total_count / per_page) if total_count else 1
 
-        variants_per_page = 12
+        variants_per_page = VARIANTS_PER_PAGE
         variants_total_count = db.execute("SELECT COUNT(*) AS count FROM variants")[0]["count"]
         variants_total_pages = (
             ceil(variants_total_count / variants_per_page) if variants_total_count else 1
@@ -840,7 +847,7 @@ def _handle_variant_uploads(
 
     for index, file_obj in enumerate(valid_files, start=1):
         try:
-            public_id = upload_image(file_obj, folder="products")
+            public_id = upload_image(file_obj, folder=PRODUCT_UPLOAD_FOLDER)
         except Exception:
             flash("Image upload failed.", "error")
             return None
