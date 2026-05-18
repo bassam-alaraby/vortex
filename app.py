@@ -1,5 +1,3 @@
-import os
-
 from flask import Flask, request
 
 from config import get_config

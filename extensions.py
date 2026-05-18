@@ -1,9 +1,11 @@
+import logging
 import os
 from datetime import datetime
 from html import escape
 from zoneinfo import ZoneInfo
 
 import requests
+from flask import current_app, has_app_context
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect
@@ -16,7 +18,19 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
+TELEGRAM_REQUEST_TIMEOUT = 10
+logger = logging.getLogger(__name__)
+
+
+def _get_logger():
+    if has_app_context():
+        return current_app.logger
+    return logger
+
+
 def send_order_telegram_notification(db, order_id):
+    app_logger = _get_logger()
+
     try:
         bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
         chat_ids = [
@@ -102,12 +116,20 @@ def send_order_telegram_notification(db, order_id):
                         "text": message,
                         "parse_mode": "HTML",
                     },
-                    timeout=10,
+                    timeout=TELEGRAM_REQUEST_TIMEOUT,
                 )
                 if response.status_code != 200:
-                    print(f"Telegram API Error ({response.status_code}): {response.text}")
+                    app_logger.warning(
+                        "Telegram API error: status=%s chat_id=%s",
+                        response.status_code,
+                        chat_id,
+                    )
             except Exception as inner_error:
-                print(f"Telegram send error ({chat_id}): {inner_error}")
+                app_logger.warning(
+                    "Telegram send error: chat_id=%s error=%s",
+                    chat_id,
+                    inner_error,
+                )
 
     except Exception as error:
-        print(f"Telegram notification error: {error}")
+        app_logger.warning("Telegram notification error: %s", error)

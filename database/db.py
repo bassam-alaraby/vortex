@@ -1,11 +1,24 @@
 import os
-import threading
 import requests
+
+REQUEST_TIMEOUT = 10
+
+
+class DatabaseError(Exception):
+    pass
+
+
+class DatabaseRequestError(DatabaseError):
+    pass
+
+
+class DatabaseResponseError(DatabaseError):
+    pass
 
 
 class TursoDB:
     def __init__(self):
-        self._lock = threading.Lock()
+        self._session = requests.Session()
 
     def _get_creds(self):
         url = os.environ["TURSO_DATABASE_URL"].replace("libsql://", "https://")
@@ -33,30 +46,36 @@ class TursoDB:
     def execute(self, sql, *args):
         url, token = self._get_creds()
 
-        response = requests.post(
-            f"{url}/v2/pipeline",
-            headers={
-                "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "requests": [
-                    {
-                        "type": "execute",
-                        "stmt": {
-                            "sql": sql,
-                            "args": self._serialize_args(args),
-                        },
-                    }
-                ]
-            },
-        )
-        response.raise_for_status()
-        data = response.json()
+        try:
+            response = self._session.post(
+                f"{url}/v2/pipeline",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "requests": [
+                        {
+                            "type": "execute",
+                            "stmt": {
+                                "sql": sql,
+                                "args": self._serialize_args(args),
+                            },
+                        }
+                    ]
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+            data = response.json()
+        except requests.RequestException as error:
+            raise DatabaseRequestError("Database request failed") from error
+        except ValueError as error:
+            raise DatabaseRequestError("Invalid database response payload") from error
 
         result = data["results"][0]
         if result["type"] == "error":
-            raise Exception(result["error"]["message"])
+            raise DatabaseResponseError(result["error"]["message"])
 
         rows_data = result["response"]["result"]
         sql_upper = sql.strip().upper()
@@ -96,28 +115,34 @@ class TursoDB:
 
         requests_payload.append({"type": "close"})
 
-        response = requests.post(
-            f"{url}/v2/pipeline",
-            headers={
-                "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json",
-            },
-            json={"requests": requests_payload},
-        )
-        response.raise_for_status()
-        data = response.json()
+        try:
+            response = self._session.post(
+                f"{url}/v2/pipeline",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json",
+                },
+                json={"requests": requests_payload},
+                timeout=REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+            data = response.json()
+        except requests.RequestException as error:
+            raise DatabaseRequestError("Database request failed") from error
+        except ValueError as error:
+            raise DatabaseRequestError("Invalid database response payload") from error
 
         results = data.get("results", [])
 
         for result in results:
             if result.get("type") == "error":
-                raise Exception(result["error"]["message"])
+                raise DatabaseResponseError(result["error"]["message"])
 
         if not statements:
             return None
 
         if len(results) < len(statements):
-            raise Exception("Invalid transaction response from Turso")
+            raise DatabaseResponseError("Invalid transaction response from Turso")
 
         last_statement_result = results[len(statements) - 1]
         rows_data = last_statement_result.get("response", {}).get("result", {})
