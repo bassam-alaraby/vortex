@@ -1,6 +1,16 @@
 # VORTEX
+### CS50x 2026 — Final Project
 
-Modern Flask-based e-commerce platform with secure admin management, Cloudinary media storage, Turso database integration, Telegram order notifications, and production-ready deployment support.
+Modern Flask-based e-commerce platform with secure admin management,
+Cloudinary media storage, Turso database integration, Telegram order
+notifications, and production-ready deployment support.
+
+This repository contains the original submitted version of VORTEX for CS50x.
+The project is still actively developed with new features and improvements.
+
+[![Live Demo](https://img.shields.io/badge/Open-VORTEX-black?style=for-the-badge&logo=vercel)](https://vortex-brand.vercel.app/)
+
+> The live site reflects ongoing development and improvements made after the course submission.
 
 ---
 
