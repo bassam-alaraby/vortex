@@ -6,7 +6,7 @@ function getSubmitControls(form) {
     return Array.from(form.querySelectorAll(SUBMIT_CONTROL_SELECTOR));
 }
 
-function disableFormSubmit(form) {
+function disableFormSubmit(form, submitter = null) {
     if (!(form instanceof HTMLFormElement)) {
         return;
     }
@@ -14,6 +14,7 @@ function disableFormSubmit(form) {
     form.dataset[SUBMIT_LOCK_ATTR] = "true";
 
     getSubmitControls(form).forEach((control) => {
+        if (control === submitter) return;
         control.dataset[SUBMIT_PREV_DISABLED_ATTR] = control.disabled ? "1" : "0";
         control.disabled = true;
         control.setAttribute("aria-disabled", "true");
@@ -46,7 +47,7 @@ document.addEventListener("submit", (event) => {
         return;
     }
 
-    disableFormSubmit(form);
+    disableFormSubmit(form, event.submitter);
 
     window.setTimeout(() => {
         if (event.defaultPrevented) {
