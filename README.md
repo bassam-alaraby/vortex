@@ -289,7 +289,9 @@ TELEGRAM_CHAT_ID_2=
 
 # License
 
-This project is intended for educational, portfolio, and personal business purposes.
+This project is licensed under the MIT License.
+If you fork or reuse this project, you must remove all VORTEX branding,
+personal links, and author-specific content before publishing.
 
 ---
 
