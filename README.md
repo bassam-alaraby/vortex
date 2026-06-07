@@ -1,16 +1,28 @@
 # VORTEX
 ### CS50x 2026 — Final Project
 
-Modern Flask-based e-commerce platform with secure admin management,
-Cloudinary media storage, Turso database integration, Telegram order
-notifications, and production-ready deployment support.
+## Video Demo:
+- https://youtu.be/sUh0Bc4E2A0
 
-This repository contains the original submitted version of VORTEX for CS50x.
-The project is still actively developed with new features and improvements.
+---
 
-[![Live Demo](https://img.shields.io/badge/Open-VORTEX-black?style=for-the-badge&logo=vercel)](https://vortex-brand.vercel.app/)
+# Description
 
-> The live site reflects ongoing development and improvements made after the course submission.
+VORTEX is a modern Flask-based e-commerce platform developed as my CS50x final project.
+
+The project was designed to simulate a real-world production-ready online store rather than a simple academic prototype. The platform allows users to browse products, select variants such as sizes, upload custom clothing designs, and place orders through a responsive shopping experience.
+
+The backend is built using Flask with a modular project structure to improve maintainability and scalability. The application uses Turso (LibSQL) for database management, Cloudinary for image hosting, and Telegram Bot API integration for automated order notifications.
+
+A major focus during development was security and deployment readiness. The project includes CSRF protection, rate-limited admin authentication using Flask-Limiter, environment-based secret management, secure production cookie settings, and input validation for cart operations.
+
+The admin dashboard allows product management while Telegram notifications automatically deliver formatted order details to store owner chat IDs whenever a customer places an order.
+
+The frontend was designed to be responsive across desktop and mobile devices, with an emphasis on clean layouts and simplified user interactions.
+
+During development, I made several design decisions regarding scalability, deployment structure, media storage, and backend organization. For example, I chose Cloudinary instead of local file storage to simplify deployment and improve media management. I also separated configuration, extension initialization, utility logic, and route handling into dedicated files to keep the codebase organized and easier to maintain.
+
+This project combines concepts learned throughout CS50x including Python, Flask, SQL, APIs, web development, security practices, and deployment workflows.
 
 ---
 
@@ -79,7 +91,48 @@ VORTEX/
 
 ---
 
-# Environment Variables
+# File Overview
+
+## app.py
+- Main Flask application entry point. Responsible for initializing the application, registering routes, loading configuration, and starting the server.
+
+## wsgi.py
+- WSGI entry point used for production deployment on Vercel.
+
+## config.py
+- Contains environment-based configuration logic, secret loading, production settings, and application configuration values.
+
+## extensions.py
+- Initializes reusable Flask extensions such as CSRF protection and rate limiting.
+
+## helpers.py
+- Contains reusable helper functions used across different parts of the application.
+
+## cloudinary_utils.py
+- Handles Cloudinary upload functionality and media management operations.
+
+## requirements.txt
+- Lists all Python dependencies required to run the application.
+
+## vercel.json
+- Defines the deployment configuration used by Vercel for routing and Python server execution.
+
+## routes/
+- Contains the application's route modules. Separating routes into dedicated files improves maintainability and keeps the application structure modular.
+
+## templates/
+- Contains Jinja2 HTML templates used to render frontend pages and admin dashboard views.
+
+## static/
+- Stores frontend assets including CSS, JavaScript, uploaded assets, and images used by the interface.
+
+## database/
+- Contains SQL schema files and database-related setup logic.
+
+---
+
+# Environment
+Variables
 
 Create a `.env` file in the project root.
 
