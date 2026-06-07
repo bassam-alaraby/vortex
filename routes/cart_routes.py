@@ -3,8 +3,6 @@ import json
 from flask import request, session, jsonify, redirect, flash, render_template, url_for
 
 from helpers import (
-    DELIVERY_REGION_LABELS,
-    DELIVERY_REGION_ORDER,
     calculate_cart_total,
     get_cart,
     get_cart_count,
@@ -123,16 +121,55 @@ def register_cart_routes(app, db):
             })
 
         if action == 'buy_now':
+            if is_ajax:
+                return jsonify({"success": True, "cart_count": get_cart_count(cart)})
             return redirect(url_for('checkout'))
         else:
             flash('Added to cart successfully', "success")
             return redirect(request.referrer or url_for('collection'))
 
+    @app.route("/api/cart_summary")
+    def cart_summary():
+        cart_list = get_cart()
+        custom_fee = get_custom_fee(db)
+        items = []
+
+        for item in cart_list:
+            row = db.execute(
+                """
+                SELECT
+                    variants.name,
+                    products.price
+                FROM variants
+                JOIN products ON products.id = variants.product_id
+                WHERE variants.id = ?
+                """,
+                item.get("variant_id"),
+            )
+
+            if not row:
+                continue
+
+            is_custom = bool(item.get("is_custom"))
+            base_price = float(row[0]["price"])
+            unit_price = item.get("unit_price")
+
+            if unit_price is None:
+                unit_price = base_price + custom_fee if is_custom else base_price
+
+            items.append({
+                "name": str(row[0]["name"]),
+                "size": str(item.get("size") or ""),
+                "quantity": int(item.get("quantity", 1)),
+                "unit_price": float(unit_price),
+            })
+
+        return jsonify({"items": items})
+
     @app.route("/cart")
     def cart():
         cart_list = get_cart()
         custom_fee = get_custom_fee(db)
-        delivery_fees = get_delivery_fees(db)
         should_update_session = False
 
         cart_items = []
@@ -206,9 +243,6 @@ def register_cart_routes(app, db):
             cart_items=cart_items,
             total=total,
             cloudinary_image_url=cloudinary_image_url,
-            delivery_fees=delivery_fees,
-            delivery_region_labels=DELIVERY_REGION_LABELS,
-            delivery_region_order=DELIVERY_REGION_ORDER,
         )
 
     @app.route("/update_cart", methods=["POST"])

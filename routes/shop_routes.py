@@ -1,6 +1,6 @@
 import uuid
 
-from flask import render_template, request, abort, redirect, flash, url_for, session
+from flask import render_template, request, abort, redirect, flash, url_for, session, jsonify
 
 from cloudinary_utils import cloudinary_image_url
 from cloudinary_utils import upload_image
@@ -332,8 +332,10 @@ def register_shop_routes(app, db):
             if not custom_image_files:
                 custom_image_files = [request.files.get('custom_image')]
 
-            if not size or quantity <= 0:
-                flash('يرجى اختيار المقاس والكمية بشكل صحيح.', 'error')
+            def custom_ajax_error(message, status_code=400):
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return jsonify({"success": False, "message": message}), status_code
+                flash(message, 'error')
                 return render_template(
                     'custom_design.html',
                     variant_details=variant_details,
@@ -343,28 +345,15 @@ def register_shop_routes(app, db):
                     cloudinary_image_url=cloudinary_image_url,
                 )
 
+            if not size or quantity <= 0:
+                return custom_ajax_error('يرجى اختيار المقاس والكمية بشكل صحيح.')
+
             try:
                 custom_image_public_ids = _handle_custom_uploads(custom_image_files)
             except ValueError:
-                flash('يرجى رفع صورة JPG أو PNG صالحة.', 'error')
-                return render_template(
-                    'custom_design.html',
-                    variant_details=variant_details,
-                    base_price=base_price,
-                    custom_fee=custom_fee,
-                    total_price=total_price,
-                    cloudinary_image_url=cloudinary_image_url,
-                )
+                return custom_ajax_error('يرجى رفع صورة JPG أو PNG صالحة.')
             except RuntimeError:
-                flash('تعذر رفع التصميم، حاول مرة أخرى.', 'error')
-                return render_template(
-                    'custom_design.html',
-                    variant_details=variant_details,
-                    base_price=base_price,
-                    custom_fee=custom_fee,
-                    total_price=total_price,
-                    cloudinary_image_url=cloudinary_image_url,
-                )
+                return custom_ajax_error('تعذر رفع التصميم، حاول مرة أخرى.')
 
             custom_image_count = len(custom_image_public_ids)
             applied_custom_fee = custom_fee * (2 if custom_image_count > 1 else 1)
@@ -386,7 +375,11 @@ def register_shop_routes(app, db):
             })
             session['cart'] = cart
 
+            is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
             if action == 'buy_now':
+                if is_ajax:
+                    cart_count = sum(item.get('quantity', 1) for item in session.get('cart', []))
+                    return jsonify({"success": True, "cart_count": cart_count})
                 return redirect(url_for('checkout'))
 
             flash('Added to cart successfully', 'success')

@@ -20,6 +20,7 @@
         <link rel="manifest" href="{{ url_for('static', filename='assets/favicon/site.webmanifest') }}" />
 
         <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/checkout_modal.css') }}" rel="stylesheet">
         {% block css %}{% endblock %}
 
         <title>{% block title %}{% endblock %}</title>
@@ -119,8 +120,11 @@
             <p class="footer-copy"><i class="ri-copyright-line"></i> 2026 VORTEX. All rights reserved.</p>
         </footer>
 
+        {% include 'partials/checkout_modal.html' %}
+
         <script src="{{ url_for('static', filename='js/main.js') }}"></script>
         <script src="{{ url_for('static', filename='js/form_submit_guard.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/checkout_modal.js') }}"></script>
         {% block js %}{% endblock %}
 
     </body>
