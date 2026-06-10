@@ -5,12 +5,9 @@ Modern Flask-based e-commerce platform with secure admin management,
 Cloudinary media storage, Turso database integration, Telegram order
 notifications, and production-ready deployment support.
 
-This repository contains the original submitted version of VORTEX for CS50x.
-The project is still actively developed with new features and improvements.
+> The CS50x submitted version is preserved in the [`cs50-submit`](https://github.com/bassam-alaraby/vortex/tree/cs50-submit) branch.
 
 [![Live Demo](https://img.shields.io/badge/Open-VORTEX-black?style=for-the-badge&logo=vercel)](https://vortex-brand.vercel.app/)
-
-> The live site reflects ongoing development and improvements made after the course submission.
 
 ---
 
