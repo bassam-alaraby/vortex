@@ -157,7 +157,7 @@ flask run
 
 After creating your Turso database, run the schema manually:
 
-1. Open your database on [Turso Dashboard](https://app.turso.tech)
+1. Open your database on [`Turso Dashboard`](https://app.turso.tech)
 2. Go to **Edit Data** tab
 3. Copy the contents of `database/schema.sql`
 4. Paste and click **Run**
