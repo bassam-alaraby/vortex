@@ -1,44 +1,69 @@
 # VORTEX
-### CS50x 2026 — Final Project
 
-## Video Demo:
-- https://youtu.be/sUh0Bc4E2A0
+### A Flask-based e-commerce platform
+
+## Video Demo
+
+[Watch the demo on YouTube](https://youtu.be/sUh0Bc4E2A0)
 
 ---
 
 # Description
 
-VORTEX is a modern Flask-based e-commerce platform developed as my CS50x final project.
+VORTEX is a Flask-based e-commerce platform originally developed as a CS50x final project.
 
-The project was designed to simulate a real-world production-ready online store rather than a simple academic prototype. The platform allows users to browse products, select variants such as sizes, upload custom clothing designs, and place orders through a responsive shopping experience.
+The project was built around a practical e-commerce use case rather than a simple academic prototype. It provides a storefront where users can browse products, select variants such as sizes, upload custom clothing designs, and place orders through a responsive shopping experience.
 
-The backend is built using Flask with a modular project structure to improve maintainability and scalability. The application uses Turso (LibSQL) for database management, Cloudinary for image hosting, and Telegram Bot API integration for automated order notifications.
+The backend is built with Flask using a modular project structure designed to improve maintainability and scalability. The application uses Turso (LibSQL) for database management, Cloudinary for image hosting, and the Telegram Bot API for automated order notifications.
 
-A major focus during development was security and deployment readiness. The project includes CSRF protection, rate-limited admin authentication using Flask-Limiter, environment-based secret management, secure production cookie settings, and input validation for cart operations.
+Security and deployment readiness were important considerations throughout development. The project includes CSRF protection, rate-limited admin authentication using Flask-Limiter, environment-based secret management, secure production cookie settings, and input validation for cart operations.
 
-The admin dashboard allows product management while Telegram notifications automatically deliver formatted order details to store owner chat IDs whenever a customer places an order.
+The admin dashboard provides product and order management capabilities, while Telegram notifications can automatically deliver formatted order details to one or more configured store-owner chat IDs whenever a customer places an order.
 
-The frontend was designed to be responsive across desktop and mobile devices, with an emphasis on clean layouts and simplified user interactions.
+The frontend was designed to be responsive across desktop and mobile devices, with an emphasis on clean layouts and straightforward user interactions.
 
-During development, I made several design decisions regarding scalability, deployment structure, media storage, and backend organization. For example, I chose Cloudinary instead of local file storage to simplify deployment and improve media management. I also separated configuration, extension initialization, utility logic, and route handling into dedicated files to keep the codebase organized and easier to maintain.
+The project also demonstrates practical decisions around deployment, media storage, application structure, and backend organization. For example, Cloudinary was used instead of local file storage to simplify deployment and centralize media management. Configuration, extension initialization, utility logic, and route handling are separated into dedicated modules to keep the codebase organized.
 
-This project combines concepts learned throughout CS50x including Python, Flask, SQL, APIs, web development, security practices, and deployment workflows.
+VORTEX combines concepts covered throughout CS50x, including Python, Flask, SQL, APIs, web development, security practices, version control, and deployment workflows.
+
+---
+
+# Project Evolution
+
+VORTEX was originally developed as a CS50x final project. After the course, the project continued to evolve beyond its original academic scope, with its initial architecture and implementation serving as the foundation for a real-world e-commerce product.
 
 ---
 
 # Features
 
-* Product catalog and product variants
+## Storefront
+
+* Product catalog
+* Product variants and sizes
 * Shopping cart system
-* Custom design uploads
-* Admin dashboard
-* Cloudinary image uploads
-* Turso database integration
-* Telegram order notifications
-* CSRF protection
-* Rate-limited admin login
-* Production-ready configuration
+* Custom clothing design uploads
 * Responsive frontend
+
+## Administration
+
+* Admin dashboard
+* Product management
+* Order management
+* Protected admin authentication
+
+## Integrations
+
+* Turso (LibSQL) database
+* Cloudinary image hosting
+* Telegram order notifications
+
+## Security
+
+* CSRF protection
+* Rate-limited admin authentication
+* Input validation
+* Environment-based secret management
+* Secure production cookie configuration
 
 ---
 
@@ -51,6 +76,13 @@ This project combines concepts learned throughout CS50x including Python, Flask,
 * Flask-WTF
 * Flask-Limiter
 * Requests
+
+## Frontend
+
+* HTML
+* CSS
+* JavaScript
+* Jinja2
 
 ## Database
 
@@ -93,46 +125,24 @@ VORTEX/
 
 # File Overview
 
-## app.py
-- Main Flask application entry point. Responsible for initializing the application, registering routes, loading configuration, and starting the server.
-
-## wsgi.py
-- WSGI entry point used for production deployment on Vercel.
-
-## config.py
-- Contains environment-based configuration logic, secret loading, production settings, and application configuration values.
-
-## extensions.py
-- Initializes reusable Flask extensions such as CSRF protection and rate limiting.
-
-## helpers.py
-- Contains reusable helper functions used across different parts of the application.
-
-## cloudinary_utils.py
-- Handles Cloudinary upload functionality and media management operations.
-
-## requirements.txt
-- Lists all Python dependencies required to run the application.
-
-## vercel.json
-- Defines the deployment configuration used by Vercel for routing and Python server execution.
-
-## routes/
-- Contains the application's route modules. Separating routes into dedicated files improves maintainability and keeps the application structure modular.
-
-## templates/
-- Contains Jinja2 HTML templates used to render frontend pages and admin dashboard views.
-
-## static/
-- Stores frontend assets including CSS, JavaScript, uploaded assets, and images used by the interface.
-
-## database/
-- Contains SQL schema files and database-related setup logic.
+| File / Directory      | Purpose                                                  |
+| --------------------- | -------------------------------------------------------- |
+| `app.py`              | Main Flask application entry point                       |
+| `wsgi.py`             | WSGI entry point for deployment                          |
+| `config.py`           | Environment-based configuration and application settings |
+| `extensions.py`       | Flask extension initialization                           |
+| `helpers.py`          | Shared application utilities                             |
+| `cloudinary_utils.py` | Cloudinary upload and media management functions         |
+| `requirements.txt`    | Python dependencies                                      |
+| `vercel.json`         | Vercel deployment configuration                          |
+| `routes/`             | Application route modules                                |
+| `templates/`          | Jinja2 HTML templates                                    |
+| `static/`             | Frontend assets such as CSS and JavaScript               |
+| `database/`           | Database schema and setup files                          |
 
 ---
 
-# Environment
-Variables
+# Configuration
 
 Create a `.env` file in the project root.
 
@@ -158,6 +168,14 @@ TELEGRAM_CHAT_ID_1=your_chat_id
 TELEGRAM_CHAT_ID_2=your_second_chat_id
 ```
 
+### Telegram Chat Configuration
+
+The application supports sending order notifications to multiple Telegram chats.
+
+* `TELEGRAM_CHAT_ID_1` is required when Telegram notifications are enabled.
+* `TELEGRAM_CHAT_ID_2` is optional.
+* If only one chat is needed, leave `TELEGRAM_CHAT_ID_2` unset.
+
 ---
 
 # Installation
@@ -166,10 +184,10 @@ TELEGRAM_CHAT_ID_2=your_second_chat_id
 
 ```bash
 git clone https://github.com/bassam-alaraby/vortex.git
-cd VORTEX
+cd vortex
 ```
 
-## 2. Create virtual environment
+## 2. Create a virtual environment
 
 ### Windows
 
@@ -185,17 +203,17 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
----
-
 ## 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
+## 4. Configure environment variables
 
-## 4. Run the application
+Create a `.env` file using the configuration described above.
+
+## 5. Run the application
 
 ```bash
 python app.py
@@ -209,22 +227,25 @@ flask run
 
 ---
 
-# Database Setup (Turso)
+# Database Setup
 
-After creating your Turso database, run the schema manually:
+VORTEX uses Turso (LibSQL) for database storage.
 
-1. Open your database on [Turso Dashboard](https://app.turso.tech)
-2. Go to **Edit Data** tab
-3. Copy the contents of `database/schema.sql`
-4. Paste and click **Run**
+After creating a Turso database:
 
-This only needs to be done once.
+1. Create the required database.
+2. Configure `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`.
+3. Execute the contents of `database/schema.sql` against the database.
+
+The schema only needs to be initialized once for a new database.
 
 ---
 
-# Cloudinary Upload Structure
+# Cloudinary Media Storage
 
-Images are organized into folders:
+VORTEX uses Cloudinary for image storage instead of relying on local file storage.
+
+Images are organized into dedicated folders:
 
 ```text
 products/
@@ -236,13 +257,15 @@ Examples:
 * Product images → `products/`
 * User custom designs → `custom_designs/`
 
+This keeps uploaded media separate from the application filesystem and simplifies deployment.
+
 ---
 
 # Telegram Order Notifications
 
-VORTEX includes a Telegram notification system that automatically sends a formatted order summary to store owner chat IDs whenever a new order is placed.
+VORTEX includes a Telegram notification system that can automatically send a formatted order summary to configured store-owner chat IDs whenever a new order is placed.
 
-Notifications include:
+Notifications can include:
 
 * Order ID
 * Customer information
@@ -250,7 +273,7 @@ Notifications include:
 * Quantities and sizes
 * Total price
 * Delivery address
-* Cairo timezone timestamp
+* Order timestamp
 
 The notification system uses:
 
@@ -260,104 +283,40 @@ The notification system uses:
 * Safe error handling
 * Requests-based API calls
 
+A single Telegram chat is sufficient, while a second chat can be configured when notifications need to be delivered to multiple recipients.
+
 ---
 
 # Security
 
-The project includes:
+The project includes several security measures:
 
-* CSRF protection
+* CSRF protection using Flask-WTF
 * Secure session cookies in production
-* Environment-based secrets
-* Admin login rate limiting
+* Environment-based secret management
+* Rate-limited admin authentication using Flask-Limiter
 * Input validation for cart operations
 
-Admin login is protected with:
-
-```text
-5 requests per minute
-```
-
-using Flask-Limiter.
+Admin authentication is protected by request rate limiting to reduce the risk of repeated login attempts.
 
 ---
 
-# Deployment (Vercel)
+# Deployment
 
-## Required Environment Variables
+The project includes a Vercel deployment configuration through `vercel.json`.
 
-Set these inside your Vercel project settings:
-
-```env
-SECRET_KEY=
-ADMIN_USERNAME=
-ADMIN_PASSWORD=
-FLASK_ENV=production
-
-TURSO_DATABASE_URL=
-TURSO_AUTH_TOKEN=
-
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-
-TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID_1=
-TELEGRAM_CHAT_ID_2=
-```
-
----
-
-## vercel.json
-
-```json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "wsgi.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "wsgi.py"
-    }
-  ]
-}
-```
-
----
-
-# Production Notes
-
-* Do not commit `.env`
-* Use strong admin credentials
-* Keep Cloudinary credentials private
-* Keep Telegram bot credentials private
-* Always deploy with `FLASK_ENV=production`
-
----
-
-# Future Improvements
-
-* User authentication system
-* Order tracking
-* Payment integration
-* Email notifications
-* Admin analytics
+For deployment, configure the required environment variables in the hosting platform rather than committing sensitive credentials to the repository.
 
 ---
 
 # License
 
 This project is licensed under the MIT License.
-If you fork or reuse this project, you must remove all VORTEX branding,
-personal links, and author-specific content before publishing.
+
+If you fork or reuse this project, you must remove all VORTEX branding, personal links, and author-specific content before publishing.
 
 ---
 
 # Author
 
-Bassam Tarek Al-Arabi
+Bassam Tarek Al-Araby
