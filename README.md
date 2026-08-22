@@ -28,12 +28,6 @@ VORTEX combines concepts covered throughout CS50x, including Python, Flask, SQL,
 
 ---
 
-# Project Evolution
-
-VORTEX was originally developed as a CS50x final project. After the course, the project continued to evolve beyond its original academic scope, with its initial architecture and implementation serving as the foundation for a real-world e-commerce product.
-
----
-
 # Features
 
 ## Storefront
